@@ -13,7 +13,7 @@
     "check-deps": "npm outdated",
     "lint": "standard",
     "postversion": "git push origin v${npm_package_version}; npm publish; git push origin master",
-    "test": "tape test.js"
+    "test": "tape test.js | tap-min"
   },
   "pre-commit": [
     "lint",
@@ -27,6 +27,7 @@
   "devDependencies": {
     "pre-commit": "^1.1.2",
     "standard": "^6.0.4",
+    "tap-min": "^1.1.0",
     "tape": "^4.4.0"
   }
 }
