@@ -8,13 +8,18 @@
     "url": "http://g14n.info"
   },
   "license": "MIT",
-  "main": "tris3d.js",
+  "main": "index.js",
   "scripts": {
     "check-deps": "npm outdated",
     "lint": "standard",
     "postversion": "git push origin v${npm_package_version}; npm publish; git push origin master",
     "test": "tape test.js"
   },
+  "pre-commit": [
+    "lint",
+    "test",
+    "check-deps"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/fibo/tris3d.git"
