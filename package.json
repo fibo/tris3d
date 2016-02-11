@@ -1,28 +1,27 @@
 {
   "name": "tris3d",
+  "description": "is a 3d tic tac toe algorithm powered by Z3 space",
   "version": "0.1.0",
-  "description": "3d tic tac toe",
+  "homepage": "http://npm.im/tris3d",
+  "author": {
+    "name": "Gianluca Casati",
+    "url": "http://g14n.info"
+  },
+  "license": "MIT",
   "main": "tris3d.js",
   "scripts": {
-    "test": "mocha --bail --require should --reporter min"
+    "check-deps": "npm outdated",
+    "lint": "standard",
+    "postversion": "git push origin v${npm_package_version}; npm publish; git push origin master",
+    "test": "tape test.js"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/fibo/tris3d.git"
   },
-  "author": {
-    "name": "fibo",
-    "url": "http://g14n.info"
-  },
-  "license": [
-    {
-      "type": "MIT",
-      "url": "http://g14n.info/mit-license"
-    }
-  ],
-  "homepage": "http://g14n.info/tris3d",
   "devDependencies": {
-    "should": "~4.0.4",
-    "mocha": "~1.20.1"
+    "pre-commit": "^1.1.2",
+    "standard": "^6.0.4",
+    "tape": "^4.4.0"
   }
 }
