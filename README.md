@@ -36,8 +36,8 @@ var point = [
 ]
 ```
 
-**NOTA BENE**: in dimension three the games makes sense only if
-there are three players (🐨 🐬 🐯 ), and is more fun if they can negotiate.
+**NOTA BENE**: in dimension three the game makes sense only if
+there are three players (🐨 🐬 🐯), and is more fun if they can negotiate.
 
 ## API
 
