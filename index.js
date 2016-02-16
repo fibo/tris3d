@@ -94,7 +94,7 @@ exports.isTris = isTris
  * (a + b) * 2 = (a + b) / 2
  * ```
  *
- * Since I'm wirking with integers I prefer to multiply by 2 to avoid floats.
+ * Since I'm working with integers I prefer to multiply by 2 to avoid floats.
 
  * Z3xZ3xZ3 is the cartesian product of Z3, seen as a 3 dimensional space immersed in R3.
  *
