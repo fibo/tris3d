@@ -1,0 +1,24 @@
+{
+  "name": "tris3d",
+  "main": "dist/dflow.js",
+  "homepage": "http://g14n.info/dflow",
+  "authors": [
+    "Gianluca Casati"
+  ],
+  "description": "is a 3d tic tac toe algorithm powered by Z3 space",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "algorithm",
+    "game",
+    "3d"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "package.json",
+    "test.js"
+  ]
+}

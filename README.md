@@ -2,6 +2,13 @@
 
 > is a 3d [tic tac toe](https://en.wikipedia.org/wiki/Tic-tac-toe) algorithm powered by Z3 space
 
+**Table Of Contents:**
+
+* [Installation](#installation)
+* [Description](#description)
+* [API](#api)
+* [License](#license)
+
 [![NPM version](https://badge.fury.io/js/tris3d.svg)](http://badge.fury.io/js/tris3d) [![Build Status](https://travis-ci.org/fibo/tris3d.svg?branch=master)](https://travis-ci.org/fibo/tris3d.svg?branch=master) [![Dependency Status](https://gemnasium.com/fibo/tris3d.svg)](https://gemnasium.com//tris3d)
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
@@ -12,6 +19,18 @@ With [npm](https://npmjs.org/) do
 
 ```bash
 npm install tris3d
+```
+
+With [bower](http://bower.io/) do
+
+```bash
+$ bower install tris3d
+```
+
+or use a CDN adding this to your HTML page
+
+```
+<script src="https://cdn.rawgit.com/fibo/tris3d/master/dist/tris3d.min.js"></script>
 ```
 
 ## Description

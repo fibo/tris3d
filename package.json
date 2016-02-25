@@ -10,8 +10,11 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
+    "_build": "npm run browserify && npm run minify; git status",
+    "browserify": "browserify -r ./index.js:${npm_package_name} -o dist/${npm_package_name}.js",
     "check-deps": "npm outdated",
-    "lint": "standard",
+    "lint": "standard *js",
+    "minify": "cd dist; uglifyjs ${npm_package_name}.js --source-map ${npm_package_name}.map --output ${npm_package_name}.min.js --compress --mangle --preamble \"// ${npm_package_name}.js ${npm_package_homepage} \n// license ${npm_package_license}\"; cd -",
     "postversion": "git push origin v${npm_package_version}; npm publish; git push origin master",
     "test": "tape test.js | tap-min"
   },
@@ -20,14 +23,21 @@
     "test",
     "check-deps"
   ],
+  "keywords": [
+    "algorithm",
+    "game",
+    "3d"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/fibo/tris3d.git"
   },
   "devDependencies": {
+    "browserify": "^13.0.0",
     "pre-commit": "^1.1.2",
     "standard": "^6.0.4",
     "tap-min": "^1.1.0",
-    "tape": "^4.4.0"
+    "tape": "^4.4.0",
+    "uglify-js": "^2.6.2"
   }
 }
