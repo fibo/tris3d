@@ -1,7 +1,7 @@
 {
   "name": "tris3d",
   "description": "is a 3d tic tac toe algorithm powered by Z3 space",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "homepage": "http://npm.im/tris3d",
   "author": {
     "name": "Gianluca Casati",
