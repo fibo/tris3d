@@ -121,7 +121,7 @@ exports.semiSumInZ3xZ3xZ3 = semiSumInZ3xZ3xZ3
 /**
  * Convert point in Z3xZ3xZ3 to index
  *
- * @param {Array} coordinates
+ * @param {Array} point
  *
  * @returns {Number} index
  */

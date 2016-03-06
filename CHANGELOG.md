@@ -8,6 +8,7 @@ Changelog format adheres to [Keep a Changelog](http://keepachangelog.com/)</sub>
 ## [Unreleased]
 ### Added
 - CHANGELOG.md
+- more API docs
 
 ## [0.0.3] - 2016-02-25
 ### Added
