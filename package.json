@@ -10,7 +10,7 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "_build": "npm run browserify && npm run minify; git status",
+    "build": "npm run browserify && npm run minify; git status",
     "browserify": "browserify -r ./index.js:${npm_package_name} -o dist/${npm_package_name}.js",
     "check-deps": "npm outdated",
     "lint": "standard *js",
