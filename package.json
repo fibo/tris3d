@@ -1,0 +1,10 @@
+{
+  "name": "tris3d",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Play Tic Tac Toe in 3D",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gianluca Casati (https://fibo.github.io/)"
+}
