@@ -4,7 +4,12 @@
   "private": true,
   "description": "Play Tic Tac Toe in 3D",
   "scripts": {
+    "demo": "npm start -w demo",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Gianluca Casati (https://fibo.github.io/)"
+  "author": "Gianluca Casati (https://fibo.github.io/)",
+  "workspaces": [
+    "canvas",
+    "demo"
+  ]
 }
