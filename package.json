@@ -1,15 +1,21 @@
 {
   "name": "tris3d",
   "version": "0.0.0",
+  "type": "module",
   "private": true,
   "description": "Play Tic Tac Toe in 3D",
   "scripts": {
     "demo": "npm start -w demo",
+    "prepare": "node scripts/prepare.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Gianluca Casati (https://fibo.github.io/)",
   "workspaces": [
     "canvas",
     "demo"
-  ]
+  ],
+  "devDependencies": {
+    "@stylistic/eslint-plugin": "^5.2.3",
+    "eslint": "^9.34.0"
+  }
 }
