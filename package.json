@@ -7,13 +7,15 @@
   "scripts": {
     "demo": "npm start -w demo",
     "prepare": "node scripts/prepare.js",
+    "server": "node server/app.js",
     "test": "npm run test --workspaces --if-present"
   },
   "author": "Gianluca Casati (https://fibo.github.io/)",
   "workspaces": [
     "canvas",
     "demo",
-    "game"
+    "game",
+    "server"
   ],
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.2.3",

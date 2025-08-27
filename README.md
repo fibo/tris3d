@@ -10,3 +10,10 @@ Install dependencies and run demo.
 npm install
 npm run demo
 ```
+
+To try out multiplayer mode, launch server with
+
+```shell
+npm run server
+```
+
