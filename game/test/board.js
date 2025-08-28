@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
-import { Tris3dBoard } from 'tris3d-game'
+import { Tris3dBoard } from '@tris3d/game'
 
 test('new Board', () => {
   const board = new Tris3dBoard()

@@ -1,9 +1,12 @@
 {
-  "name": "tris3d-demo",
+  "name": "@tris3d/demo",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "dependencies": {
+    "@tris3d/game": "0.0.0"
+  },
   "devDependencies": {
-    "esbuild": "^0.25.9"
+    "@tris3d/repo": "0.0.0"
   }
 }

@@ -1,6 +1,6 @@
 import { AmbientLight, BoxGeometry, Mesh, MeshBasicMaterial, Scene, PerspectiveCamera, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { Tris3dBoard } from 'tris3d-game'
+import { Tris3dBoard } from '@tris3d/game'
 
 class Tris3dCanvas extends HTMLElement {
   board = new Tris3dBoard()

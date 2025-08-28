@@ -1,4 +1,4 @@
-import 'tris3d-canvas'
+import '@tris3d/canvas'
 
 function connect(event) {
   event.preventDefault()

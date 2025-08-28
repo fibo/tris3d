@@ -1,0 +1,19 @@
+{
+  "name": "@tris3d/pwa",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "build": "node src/build.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@tris3d/canvas": "0.0.0"
+  },
+  "devDependencies": {
+    "@tris3d/repo": "0.0.0"
+  }
+}

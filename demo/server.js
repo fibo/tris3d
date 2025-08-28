@@ -1,22 +1,11 @@
 import { exec } from 'node:child_process'
-import { mkdir } from 'node:fs/promises'
 import os from 'node:os'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
+import { ensureDir } from '@tris3d/repo'
 import { context } from 'esbuild'
+import { outDir, srcDir } from './src/package.js'
 
-async function ensureDir(dir) {
-  try {
-    await mkdir(dir, { recursive: true })
-  } catch (err) {
-    if (err.code !== 'EEXIST') throw err
-  }
-}
-
-async function startServer({ demoDir, port }) {
-  const outDir = join(demoDir, 'out')
-  const srcDir = join(demoDir, 'src')
-
+async function startServer({ port }) {
   await ensureDir(outDir)
 
   const ctx = await context({
@@ -47,9 +36,6 @@ function openBrowser({ port }) {
 
 const port = 3000
 
-await startServer({
-  demoDir: fileURLToPath(dirname(import.meta.url)),
-  port,
-})
+await startServer({ port })
 
 openBrowser({ port })

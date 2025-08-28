@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+
+    "paths": {
+      "@tris3d/game": ["./game/src/index.js"],
+      "@tris3d/repo": ["./repo/src/index.js"]
+    }
+  }
+}

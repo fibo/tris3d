@@ -17,3 +17,12 @@ To try out multiplayer mode, launch server with
 npm run server
 ```
 
+## Progressive Web App
+
+Build the PWA with
+
+```shell
+npm run build
+```
+
+Generated files are in _pwa/out_ folder.
