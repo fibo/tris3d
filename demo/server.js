@@ -1,9 +1,11 @@
 import { exec } from 'node:child_process'
 import os from 'node:os'
 import { join } from 'node:path'
-import { ensureDir } from '@tris3d/repo'
+import { ensureDir, workspaceDir } from '@tris3d/repo'
 import { context } from 'esbuild'
-import { outDir, srcDir } from './src/package.js'
+
+const outDir = join(workspaceDir.demo, 'out')
+const srcDir = join(workspaceDir.demo, 'src')
 
 async function startServer({ port }) {
   await ensureDir(outDir)

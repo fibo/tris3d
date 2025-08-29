@@ -7,13 +7,14 @@
     "#src/*": "./src/*"
   },
   "scripts": {
-    "build": "node src/build.js",
+    "build": "node build.js",
     "test": "node --test"
   },
   "dependencies": {
     "@tris3d/canvas": "0.0.0"
   },
   "devDependencies": {
+    "@tris3d/design": "0.0.0",
     "@tris3d/repo": "0.0.0"
   }
 }

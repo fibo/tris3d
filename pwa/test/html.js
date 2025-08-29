@@ -1,5 +1,6 @@
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
+import { appName, appDescription, fontFamily, themeColor } from '@tris3d/design'
 import { indexHtml } from '#src/html.js'
 
 test('index.html', () => {
@@ -8,7 +9,13 @@ test('index.html', () => {
   // The maximum size of a TCP packet is 1500 bytes.
   // Each TCP packet uses 40 bytes in its header — 16 bytes for IP and an additional 24 bytes for TCP
   // That leaves 1460 bytes per TCP packet. 10 x 1460 = 14600 bytes or roughly 14kB!
-  const content = indexHtml()
+  const content = indexHtml({
+    appName,
+    appDescription,
+    fontFamily,
+    themeColor,
+    manifestJson: 'manifest.json',
+  })
   const { size } = new Blob([content])
 
   const indentation = ' '.repeat('AssertionError [ERR_ASSERTION]: '.length)

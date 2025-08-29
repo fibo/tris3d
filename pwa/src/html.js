@@ -1,20 +1,50 @@
-import { name, description } from '@tris3d/repo'
-
-export function indexHtml() {
-  return `<!doctype html>
+export function indexHtml({
+  appName,
+  appDescription,
+  fontFamily,
+  themeColor,
+  manifestPathname
+}) {
+  const content = `
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" href="data:image/x-icon;base64,AA" />
   <meta name="viewport" content="width=device-width">
-  <title>${name}</title>
-  <meta name="description" content="${description}" />
+  <meta name="theme-color" content="${themeColor}" />
+
+  <title>${appName}</title>
+  <meta name="description" content="${appDescription}" />
+
+  <link rel="manifest" href="${manifestPathname}" />
+
+  <style>
+    html {
+      font-family: ${fontFamily};
+    }
+    body {
+      background-color: ${themeColor};
+    }
+
+    noscript {
+      color: magenta;
+      text-align: center;
+    }
+    </style>
+  </style>
 </head>
 <body>
   <header>
-    <h1>tris3d</h1>
-    <p>${description}</p>
+    <h1>${appName}</h1>
+    <p>${appDescription}</p>
   </header>
+
+  <noscript>
+    <p>Opsss... your JavaScript looks disabled 😒</p>
+  </noscript>
 </body>
-</html>`
+</html>
+`
+
+  return content.replace(/\n\s+/g, '').trim()
 }

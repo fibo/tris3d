@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <g transform="translate(-6 -1)">
+    <path fill="#f9f9f9" d="m30 2-20 10 20 10 20-10z" />
+    <path fill="#ececec" d="m30 22 v25 l20-10 v-25z" />
+    <path fill="#cccccc" d="m30 22 v25 l-20-10 v-25z" />
+    <path fill="none" stroke="#4d4d4d" stroke-width="1.7" d="m30 2.375-20 10v25l20 10 20-10v-25l-20-10z" />
+  </g>
+</svg>
