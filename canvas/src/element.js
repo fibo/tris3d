@@ -1,14 +1,16 @@
-import { AmbientLight, BoxGeometry, Mesh, MeshBasicMaterial, Scene, PerspectiveCamera, WebGLRenderer } from 'three'
+import { AmbientLight, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, SphereGeometry, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { Tris3dBoard } from '@tris3d/game'
 
 class Tris3dCanvas extends HTMLElement {
   board = new Tris3dBoard()
+  group = new Group()
   scene = new Scene()
   ambientLight = new AmbientLight(0x404040)
 
   size = 500
-  shouldAnimate = true
+  gotControlsChange = true
+  shouldRotateGroup = true
 
   connectedCallback() {
     this.setStyle()
@@ -32,8 +34,16 @@ class Tris3dCanvas extends HTMLElement {
 
   mainLoop() {
     const next = () => {
-      if (this.shouldAnimate) {
-        this.shouldAnimate = false
+      let shoudRender = false
+      if (this.shouldRotateGroup) {
+        shoudRender = true
+        this.group.rotation.y += 0.005
+      }
+      if (this.gotControlsChange) {
+        shoudRender = true
+        this.gotControlsChange = false
+      }
+      if (shoudRender) {
         this.renderer.render(this.scene, this.camera)
       }
       requestAnimationFrame(next)
@@ -51,9 +61,10 @@ class Tris3dCanvas extends HTMLElement {
     const fov = 75
     const aspect = 1
     const near = 0.1
-    const far = 5
+    const far = 10
     const camera = this.camera = new PerspectiveCamera(fov, aspect, near, far)
-    camera.position.z = 2
+    camera.position.y = 4
+    camera.position.z = 6.5
   }
 
   setupControls() {
@@ -64,16 +75,28 @@ class Tris3dCanvas extends HTMLElement {
     controls.enableZoom = false
     controls.update()
     controls.addEventListener('change', () => {
+      this.shouldRotateGroup = false
+      this.gotControlsChange = true
       this.shouldAnimate = true
     })
   }
 
   setupGeometry() {
-    const { scene } = this
-    const geometry = new BoxGeometry(1, 1, 1)
-    const material = new MeshBasicMaterial({ color: 0x333333 })
-    const cube = new Mesh(geometry, material)
-    scene.add(cube)
+    const { group, scene } = this
+    const material = new MeshBasicMaterial({
+      color: 0x333333,
+      transparent: true,
+      opacity: 0.1,
+    })
+    for (let x = -2; x <= 2; x += 2)
+      for (let y = -2; y <= 2; y += 2)
+        for (let z = -2; z <= 2; z += 2) {
+          const geometry = new SphereGeometry(1)
+          const sphere = new Mesh(geometry, material)
+          sphere.position.set(x, y, z)
+          group.add(sphere)
+        }
+    scene.add(group)
   }
 
   setupLights() {
