@@ -1,0 +1,7 @@
+html {
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 17px;
+}
+body {
+  background-color: ${themeColor};
+}

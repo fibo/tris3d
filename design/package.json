@@ -4,5 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "types": "./src/index.d.ts",
-  "exports": "./src/index.js"
+  "exports": "./src/index.js",
+  "devDependencies": {
+    "@tris3d/repo": "0.0.0"
+  }
 }

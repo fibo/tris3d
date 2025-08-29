@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <link rel="icon" href="data:image/x-icon;base64,AA" />
   <meta name="viewport" content="width=device-width">
+  <style>${baseStyle}</style>
 </head>
 <body>
-  <h1>tris3d</h1>
+  <h1>${appName}</h1>
   <tris3d-canvas></tris3d-canvas>
 
   <form id="connect">
@@ -15,6 +16,6 @@
     <input type="submit" value="connect">
   </form>
 
-  <script type="module" src="./out/app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

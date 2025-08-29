@@ -1,11 +1,25 @@
-import { copyFile, writeFile } from 'node:fs/promises'
+import { copyFile, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { appName, appDescription, fontFamily, themeColor } from '@tris3d/design'
+import { appName, appDescription, baseStyle, themeColor } from '@tris3d/design'
 import { ensureDir, isMainModule, workspaceDir } from '@tris3d/repo'
-import { indexHtml, pageNotFoundHtml } from '#src/html.js'
 
 const outDir = join(workspaceDir.pwa, 'out')
+const srcDir = join(workspaceDir.pwa, 'src')
 const imagesDir = join(outDir, 'images')
+
+const manifestPathname = 'manifest.json'
+const indexHtmlFilename = 'index.html'
+const pageNotFoundFilename = '404.html'
+export const indexHtmlFilepath = join(outDir, indexHtmlFilename)
+export const pageNotFoundFilepath = join(outDir, pageNotFoundFilename)
+
+/** Pretty good minification. */
+function minified(content) {
+  return content
+    .replace(/\n\s+/g, '\n')
+    .replaceAll('\n', '')
+    .trim()
+}
 
 async function copyImages() {
   const designImagesDir = join(workspaceDir.design, 'images')
@@ -14,28 +28,33 @@ async function copyImages() {
   await copyFile(join(designImagesDir, 'logo-512.png'), join(imagesDir, 'logo-512.png'))
 }
 
-async function generateHtml({
-  manifestJson,
-}) {
-  await writeFile(
-    join(outDir, 'index.html'),
-    indexHtml({
-      appName,
-      appDescription,
-      fontFamily,
-      themeColor,
-      manifestJson,
-    }), 'utf-8')
+async function pageNotFoundHtml() {
+  const content = await readFile(join(srcDir, pageNotFoundFilename), 'utf8')
+  return minified(content
+    .replaceAll('${appName}', appName)
+    .replace('${baseStyle}', baseStyle)
+  )
+}
 
-  await writeFile(
-    join(outDir, '404.html'),
-    pageNotFoundHtml({
-      appName,
-    }), 'utf-8')
+async function indexHtml() {
+  const content = await readFile(join(srcDir, indexHtmlFilename), 'utf8')
+  return minified(content
+    .replaceAll('${appName}', appName)
+    .replaceAll('${appDescription}', appDescription)
+    .replaceAll('${themeColor}', themeColor)
+    .replace('${manifestPathname}', manifestPathname)
+    .replace('${baseStyle}', baseStyle)
+  )
+}
+
+export async function generateHtml() {
+  const indexContent = await indexHtml()
+  await writeFile(indexHtmlFilepath, indexContent, 'utf-8')
+  const pageNotFoundContent = await pageNotFoundHtml({ appName })
+  await writeFile(pageNotFoundFilepath, pageNotFoundContent, 'utf-8')
 }
 
 async function generateManifest() {
-  const manifestPathname = 'manifest.json'
   const manifestContent = JSON.stringify({
     name: appName,
     start_url: '.',
@@ -54,7 +73,6 @@ async function generateManifest() {
     ],
   })
   await writeFile(join(outDir, manifestPathname), manifestContent, 'utf-8')
-  return manifestPathname
 }
 
 export async function build() {
@@ -63,8 +81,8 @@ export async function build() {
 
   await copyImages()
 
-  const manifestPathname = await generateManifest()
-  await generateHtml({ manifestPathname })
+  await generateManifest()
+  await generateHtml()
 }
 
 if (isMainModule(import.meta.url)) {

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <meta name="theme-color" content="${themeColor}" />
+
+  <title>${appName}</title>
+  <meta name="description" content="${appDescription}" />
+
+  <link rel="manifest" href="${manifestPathname}" />
+
+  <style>${baseStyle}</style>
+
+  <style>
+    noscript {
+      color: magenta;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>${appName}</h1>
+    <p>${appDescription}</p>
+  </header>
+
+  <noscript>
+    <p>Opsss... your JavaScript looks disabled 😒</p>
+  </noscript>
+</body>
+</html>

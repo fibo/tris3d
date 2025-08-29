@@ -1,2 +1,3 @@
 export { appName, appDescription } from './brand.js'
-export { fontFamily, themeColor } from './theme.js'
+export { baseStyle } from './styles.js'
+export { themeColor } from './theme.js'

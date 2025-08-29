@@ -3,8 +3,10 @@ declare module '@tris3d/design' {
   export const appName: string
   export const appDescription: string
 
+  // styles.js
+  export const baseStyle: string
+
   // theme.js
-  export const fontFamily: string
   export const themeColor: string
 }
 

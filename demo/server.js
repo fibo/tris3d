@@ -1,14 +1,28 @@
 import { exec } from 'node:child_process'
+import { readFile, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import { join } from 'node:path'
+import { appName, baseStyle, themeColor } from '@tris3d/design'
 import { ensureDir, workspaceDir } from '@tris3d/repo'
 import { context } from 'esbuild'
 
-const outDir = join(workspaceDir.demo, 'out')
-const srcDir = join(workspaceDir.demo, 'src')
+const { demo: demoDir } = workspaceDir
+
+const outDir = join(demoDir, 'out')
+const srcDir = join(demoDir, 'src')
+
+async function generateHtml() {
+  let content = await readFile(join(srcDir, 'index.html'), 'utf8')
+  content = content
+    .replace('${appName}', appName)
+    .replace('${baseStyle}', baseStyle)
+    .replace('${themeColor}', themeColor)
+  await writeFile(join(outDir, 'index.html'), content, 'utf8')
+}
 
 async function startServer({ port }) {
   await ensureDir(outDir)
+  await generateHtml()
 
   const ctx = await context({
     entryPoints: [join(srcDir, 'app.js')],
@@ -21,7 +35,7 @@ async function startServer({ port }) {
   await ctx.watch()
 
   await ctx.serve({
-    servedir: join(demoDir),
+    servedir: join(outDir),
     port,
   })
 }
