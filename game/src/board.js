@@ -118,12 +118,46 @@ export class Tris3dBoard {
     'T', 'U', 'V'
   ]
 
+  static WINNING_LINES = [
+    // Lines parallel to the `x` axis.
+    ['A', 'B', 'C'], ['H', 'I', 'D'], ['G', 'F', 'E'],
+    ['J', 'K', 'L'], ['Q', '*', 'M'], ['P', 'O', 'N'],
+    ['R', 'S', 'T'], ['X', 'Z', 'U'], ['Y', 'W', 'V'],
+    // Lines parallel to the `y` axis.
+    ['A', 'H', 'G'], ['B', 'I', 'F'], ['C', 'D', 'E'],
+    ['J', 'Q', 'P'], ['K', '*', 'O'], ['L', 'M', 'N'],
+    ['R', 'X', 'Y'], ['S', 'Z', 'W'], ['T', 'U', 'V'],
+    // Lines parallel to the `z` axis.
+    ['A', 'J', 'R'], ['H', 'K', 'X'], ['G', 'L', 'Y'],
+    ['B', 'Q', 'S'], ['I', '*', 'Z'], ['F', 'M', 'W'],
+    ['C', 'P', 'T'], ['D', 'O', 'U'], ['E', 'N', 'V'],
+    // Diagonal lines on `z = k` plane.
+    ['A', 'I', 'E'], ['C', 'I', 'G'],
+    ['J', '*', 'N'], ['L', '*', 'O'],
+    ['R', 'Z', 'V'], ['T', 'Z', 'Y'],
+    // Diagonal lines on `y = k` plane.
+    ['A', 'K', 'Y'], ['G', '*', 'C'],
+    ['B', '*', 'W'], ['F', '*', 'D'],
+    ['R', '*', 'E'], ['T', '*', 'A'],
+    // Diagonal lines on `x = k` plane.
+    ['A', 'I', 'V'], ['C', 'M', 'R'],
+    ['H', '*', 'U'], ['F', '*', 'T'],
+    ['G', 'Q', 'E'], ['L', 'Z', 'C'],
+    // Cube diagonals.
+    ['A', '*', 'V'], ['C', '*', 'R'],
+    ['G', '*', 'T'], ['E', '*', 'Y'],
+  ]
+
   #moves = []
   #status = Tris3dBoard.IS_READONLY
 
-  get turnPlayer() {
-    if (this.#status !== Tris3dBoard.IS_PLAYING) return
-    return this.#moves.length % 3
+  constructor(moves = []) {
+    if (moves.length === 0) return
+    this.play()
+    for (const move of moves) {
+      const success = this.addMove(move)
+      if (!success) break
+    }
   }
 
   get gameIsOver() { return this.#status >= 2 }
@@ -134,9 +168,25 @@ export class Tris3dBoard {
     const numMoves = this.#moves.length
     // No player can win before the seventh move.
     if (numMoves < 7) return 0
+    const movesOfCurrentPlayer = []
+    for (let i = numMoves - 1; i >= 0; i -= 3) {
+      movesOfCurrentPlayer.push(this.#moves[i])
+    }
+    let count = 0
+    for (const line of Tris3dBoard.WINNING_LINES) {
+      if (line.every(position => movesOfCurrentPlayer.includes(position))) {
+        count++
+      }
+    }
+    return count
   }
 
   get status() { return this.#status }
+
+  get turnPlayer() {
+    if (this.#status !== Tris3dBoard.IS_PLAYING) return
+    return this.#moves.length % 3
+  }
 
   /**
    * @param {string} position
@@ -147,7 +197,7 @@ export class Tris3dBoard {
     if (this.#status !== Tris3dBoard.IS_PLAYING) return false
     // Check that given position is valid.
     const index = Tris3dBoard.POSITION.indexOf(position)
-    if (index === -1) return
+    if (index === -1) return false
     // Check that given position is not already taken.
     if (this.#moves.includes(position)) return false
     // Add the move and check if the game has ended.
