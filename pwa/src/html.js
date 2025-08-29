@@ -1,3 +1,8 @@
+/** Pretty good HTML minification */
+function minified(content) {
+  return content.replace(/\n\s+/g, '').trim()
+}
+
 export function indexHtml({
   appName,
   appDescription,
@@ -30,7 +35,6 @@ export function indexHtml({
       color: magenta;
       text-align: center;
     }
-    </style>
   </style>
 </head>
 <body>
@@ -43,8 +47,24 @@ export function indexHtml({
     <p>Opsss... your JavaScript looks disabled 😒</p>
   </noscript>
 </body>
-</html>
-`
+</html>`
+  return minified(content)
+}
 
-  return content.replace(/\n\s+/g, '').trim()
+export function pageNotFoundHtml({ appName }) {
+  const content = `
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/x-icon;base64,AA" />
+  <meta name="viewport" content="width=device-width">
+  <title>${appName} - Page not found</title>
+</head>
+<body>
+  <h1>${appName}</h1>
+  <p>Page not found</p>
+</body>
+</html>`
+  return minified(content)
 }

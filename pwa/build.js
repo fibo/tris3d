@@ -2,7 +2,7 @@ import { copyFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { appName, appDescription, fontFamily, themeColor } from '@tris3d/design'
 import { ensureDir, isMainModule, workspaceDir } from '@tris3d/repo'
-import { indexHtml } from '#src/html.js'
+import { indexHtml, pageNotFoundHtml } from '#src/html.js'
 
 const outDir = join(workspaceDir.pwa, 'out')
 const imagesDir = join(outDir, 'images')
@@ -25,6 +25,12 @@ async function generateHtml({
       fontFamily,
       themeColor,
       manifestJson,
+    }), 'utf-8')
+
+  await writeFile(
+    join(outDir, '404.html'),
+    pageNotFoundHtml({
+      appName,
     }), 'utf-8')
 }
 
