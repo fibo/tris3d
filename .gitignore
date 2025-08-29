@@ -1,2 +1,6 @@
 node_modules/
 out/
+
+# Use direnv to manage environment variables
+# https://direnv.net/
+.envrc
