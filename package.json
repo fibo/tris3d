@@ -25,5 +25,6 @@
     "@stylistic/eslint-plugin": "^5.2.3",
     "esbuild": "^0.25.9",
     "eslint": "^9.34.0"
-  }
+  },
+  "license": "MIT"
 }
