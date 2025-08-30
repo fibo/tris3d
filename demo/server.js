@@ -8,34 +8,39 @@ import { context } from 'esbuild'
 
 const { demo: demoDir } = workspaceDir
 
-const outDir = join(demoDir, 'out')
-const srcDir = join(demoDir, 'src')
+const outdir = join(demoDir, 'out')
+const src = filename => join(demoDir, 'src', filename)
 
-async function generateHtml() {
-  let content = await readFile(join(srcDir, 'index.html'), 'utf8')
+async function generateIndexHtml() {
+  let content = await readFile(src('index.html'), 'utf8')
   content = content
-    .replace('${appName}', appName)
+    .replaceAll('${appName}', appName)
     .replace('${baseStyle}', baseStyle)
-    .replace('${themeColor}', themeColor)
-  await writeFile(join(outDir, 'index.html'), content, 'utf8')
+    .replaceAll('${themeColor}', themeColor)
+  await writeFile(join(outdir, 'index.html'), content, 'utf8')
 }
 
 async function startServer({ port }) {
-  await ensureDir(outDir)
-  await generateHtml()
+  await ensureDir(outdir)
 
   const ctx = await context({
-    entryPoints: [join(srcDir, 'app.js')],
+    entryPoints: [src('app.js')],
     bundle: true,
-    inject: [join(srcDir, 'liveReload.js')],
+    inject: [src('liveReload.js')],
     minify: false,
-    outfile: join(outDir, 'app.js'),
+    outdir,
+    plugins: [{
+      name: 'html',
+      setup(build) {
+        build.onEnd(generateIndexHtml)
+      }
+    }],
   })
 
   await ctx.watch()
 
   await ctx.serve({
-    servedir: join(outDir),
+    servedir: join(outdir),
     port,
   })
 }

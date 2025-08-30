@@ -2,6 +2,10 @@ import { AmbientLight, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, Raycas
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { Tris3dBoard } from '@tris3d/game'
 
+/**
+ * @example
+ * <tris3d-canvas size="200" player="1" moves="ABC"></tris3d-canvas>
+ */
 class Tris3dCanvas extends HTMLElement {
   board = new Tris3dBoard()
   canvas = document.createElement('canvas')
@@ -12,12 +16,24 @@ class Tris3dCanvas extends HTMLElement {
   ray = new Raycaster()
 
   cells = []
+  size = 100
 
-  size = 500
   shouldRotateGroup = true
 
+  static observedAttributes = [
+    'player',
+    'moves',
+    'size',
+  ]
+
+  get isReadOnly() {
+    const { playerIndex, board } = this
+    if (playerIndex === undefined) return true
+    return board.turnPlayer !== playerIndex
+  }
+
   connectedCallback() {
-    this.setStyle()
+    this.style.display = 'inline-block'
     this.createRenderer()
     this.setupCamera()
     this.setupControls()
@@ -27,11 +43,46 @@ class Tris3dCanvas extends HTMLElement {
     this.mainLoop()
   }
 
+  attributeChangedCallback(name, _oldValue, newValue) {
+    if (name === 'moves') {
+      const { board } = this
+      if (typeof newValue !== 'string') return
+      if (board.status === Tris3dBoard.IS_READONLY) {
+        board.play()
+      }
+      const newMoves = newValue.split('')
+      for (let i = board.moves.length; i < newMoves.length; i++) {
+        if (board.gameIsOver) break
+        const move = newMoves[i]
+        const success = board.addMove(move)
+        if (!success) break
+      }
+    }
+
+    if (name === 'player') {
+      const index = parseInt(newValue, 10)
+      if (index >= 1 && index <= 3) {
+        this.playerIndex = index - 1
+      }
+    }
+
+    if (name === 'size') {
+      let size = parseInt(newValue, 10)
+      size = Math.min(Math.max(size, 100), 700)
+      this.size = size
+      this.style.width = `${size}px`
+      this.style.height = `${size}px`
+      this.renderer?.setSize(size, size)
+    }
+  }
+
   handleEvent(event) {
     if (event.type === 'pointerdown') {
       this.shouldRotateGroup = false
+      if (this.isReadOnly) return
       const cell = this.pickCell(event)
       if (cell) {
+        this.addMove('A')
         cell.material.transparent = false
       }
     }
@@ -45,6 +96,16 @@ class Tris3dCanvas extends HTMLElement {
   removeEventListeners() {
     const { canvas } = this
     canvas.removeEventListener('pointerdown', this)
+  }
+
+  addMove(position) {
+    const nextBoard = new Tris3dBoard(this.board.moves)
+    nextBoard.play()
+    const success = nextBoard.addMove(position)
+    if (success) {
+      const movesAttribute = this.getAttribute('moves') || ''
+      this.setAttribute('moves', movesAttribute + position)
+    }
   }
 
   createRenderer() {
@@ -83,12 +144,6 @@ class Tris3dCanvas extends HTMLElement {
     if (firstMatch) {
       return firstMatch.object
     }
-  }
-
-  setStyle() {
-    const { style } = this
-    style.display = 'inline-block'
-    style.border = '1px solid'
   }
 
   setupCamera() {

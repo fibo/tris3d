@@ -4,15 +4,17 @@
   <meta charset="UTF-8">
   <link rel="icon" href="data:image/x-icon;base64,AA" />
   <meta name="viewport" content="width=device-width">
+  <meta name="theme-color" content="${themeColor}" />
+  <title>${appName}</title>
   <style>${baseStyle}</style>
 </head>
 <body>
   <h1>${appName}</h1>
-  <tris3d-canvas></tris3d-canvas>
+  <tris3d-canvas size="400" player="1" moves=""></tris3d-canvas>
 
   <form id="connect">
-    <label for="url">Multiplayer server</label>
-    <input required name="url" type="text">
+    <label for="server-url">Multiplayer server</label>
+    <input required id="server-url" name="serverUrl" type="text">
     <input type="submit" value="connect">
   </form>
 
