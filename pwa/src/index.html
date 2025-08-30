@@ -28,5 +28,18 @@
   <noscript>
     <p>Opsss... your JavaScript looks disabled 😒</p>
   </noscript>
+
+  <button id="play">Play</button>
+
+  <script type="module">
+    addEventListener('load', async () => {
+      document.querySelector('button#play').onclick = async () => {
+        await import('./js/${initCanvas}');
+        const canvas = document.createElement('tris3d-canvas');
+        canvas.setAttribute('size', '400');
+        document.body.appendChild(canvas);
+      };
+    });
+  </script>
 </body>
 </html>

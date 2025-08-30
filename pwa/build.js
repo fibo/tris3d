@@ -1,11 +1,15 @@
-import { copyFile, readFile, writeFile } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
+import { createReadStream } from 'node:fs'
+import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { appName, appDescription, baseStyle, metaViewport, themeColor } from '@tris3d/design'
 import { ensureDir, isMainModule, workspaceDir } from '@tris3d/repo'
+import { build as esbuild } from 'esbuild'
 
-const outDir = join(workspaceDir.pwa, 'out')
 const srcDir = join(workspaceDir.pwa, 'src')
+const outDir = join(workspaceDir.pwa, 'out')
 const imagesDir = join(outDir, 'images')
+const jsDir = join(outDir, 'js')
 
 const manifestPathname = 'manifest.json'
 const indexHtmlFilename = 'index.html'
@@ -37,7 +41,7 @@ async function pageNotFoundHtml() {
   )
 }
 
-async function indexHtml() {
+async function indexHtml(js) {
   const content = await readFile(join(srcDir, indexHtmlFilename), 'utf8')
   return minified(content
     .replaceAll('${appName}', appName)
@@ -46,11 +50,40 @@ async function indexHtml() {
     .replace('${metaViewport}', metaViewport)
     .replace('${manifestPathname}', manifestPathname)
     .replace('${baseStyle}', baseStyle)
+    .replace('${initCanvas}', js.initCanvas)
   )
 }
 
+function computeChecksum(filepath) {
+  return new Promise((resolve, reject) => {
+    const hash = createHash('sha256')
+    const stream = createReadStream(filepath)
+    stream.on('data', data => hash.update(data))
+    stream.on('end', () => resolve(hash.digest('hex')))
+    stream.on('error', reject)
+  })
+}
+
+async function generateJs(filename) {
+  const outfile = join(outDir, filename)
+  await esbuild({
+    entryPoints: [join(srcDir, filename)],
+    bundle: true,
+    minify: true,
+    outfile,
+  })
+  const checksum = await computeChecksum(outfile)
+  const checksumFilename = `${filename.replace('.js', '')}-${checksum.slice(0, 8)}.js`
+  await rename(outfile, join(jsDir, checksumFilename))
+  return checksumFilename
+}
+
 export async function generateHtml() {
-  const indexContent = await indexHtml()
+  const initCanvas = await generateJs('initCanvas.js')
+  const js = {
+    initCanvas,
+  }
+  const indexContent = await indexHtml(js)
   await writeFile(indexHtmlFilepath, indexContent, 'utf-8')
   const pageNotFoundContent = await pageNotFoundHtml({ appName })
   await writeFile(pageNotFoundFilepath, pageNotFoundContent, 'utf-8')
@@ -80,6 +113,7 @@ async function generateManifest() {
 export async function build() {
   await ensureDir(outDir)
   await ensureDir(imagesDir)
+  await ensureDir(jsDir)
 
   await copyImages()
 
