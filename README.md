@@ -1,6 +1,6 @@
-# tris3d
+# Tris3D
 
-> Play Tic Tac Toe in 3D
+> Tic Tac Toe in 3D
 
 ## Launch locally
 

@@ -1,9 +1,9 @@
 {
-  "name": "tris3d",
+  "name": "Tris3D",
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "description": "Play Tic Tac Toe in 3D",
+  "description": "Tic Tac Toe in 3D",
   "scripts": {
     "build": "npm run build -w pwa",
     "demo": "npm start -w demo",
