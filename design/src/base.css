@@ -2,12 +2,33 @@ html {
   font-family: "Lucida Console", Monaco, monospace;
   font-size: 17px;
 }
-body {
-  margin: 0; padding: 0;
+* {
+  margin: 0;
   box-sizing: border-box;
+}
+*::selection {
+  background-color: black;
+  color: white;
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  min-height: 100svh;
+  padding: 1em;
   background-color: ${themeColor};
   color: black;
 }
-* {
-  box-sizing: inherit;
+input, button {
+  font: inherit;
+  outline-color: black;
+  background-color: white;
+  border-radius: 7px;
+}
+input:focus, button:focus {
+  background-color: black;
+  color: white;
+}
+tris3d-canvas {
+  border: 1px solid black;
+  border-radius: 11px;
 }
