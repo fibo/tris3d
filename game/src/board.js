@@ -1,166 +1,33 @@
+import { POSITIONS, WINNING_LINES } from './space.js'
+
+// Game status constants.
+const IS_PLAYING = 1
+const HAS_WINNER = 2
+const IS_TIE = 3
+
 export class Tris3dBoard {
-  // Game status constants.
-  static IS_READONLY = 0
-  static IS_PLAYING = 1
-  static IS_WAITING = 1.1
-  static HAS_WINNER = 2
-  static IS_TIE = 3
-
-  // Every board cell is associated with an uppercase latin letter
-  // or the asterisc for the center. To enumerate cells, start from the center,
-  // that is the '*' char. By convention the center of the cube has coordinates
-  // `(1, 1, 1). Move in diagonal and label the cell as 'A'.
-  // Any direction can be choosen, it will be then the 3d point with coordinates
-  // `(0, 0, 0)`. Then proceed clock-wise walking through the perimeter of the
-  // `z = -1` plane, and finally label the center of the plane. Done that,
-  // continue with the upper plane `z = 0` in the same way. Notice that
-  // this time the center is already taken. At the end do the same with
-  // the last plane `z = 1`.
-  //
-  // This is the result of the board cell labelling.
-  //
-  // ```
-  //            ______________________
-  //          /       /       /       /
-  //         /   T   /   U   /   V   /
-  //        /_______/______ /______ /
-  //       /       /       /       /
-  //      /   S   /   Z   /   W   /
-  //     /_______/______ /______ /
-  //    /       /       /       /
-  //   /   R   /   X   /   Y   /
-  //  /_______/______ /______ /
-  //            ______________________
-  //          /       /       /       /
-  //         /   L   /   M   /   N   /
-  //        /_______/______ /______ /
-  //       /       /       /       /
-  //      /   K   /   *   /   O   /
-  //     /_______/______ /______ /
-  //    /       /       /       /
-  //   /   J   /   Q   /   P   /
-  //  /_______/______ /______ /
-  //            ______________________
-  //          /       /       /       /
-  //         /   C   /   D   /   E   /
-  //        /_______/______ /______ /
-  //       /       /       /       /
-  //      /   B   /   I   /   F   /
-  //     /_______/______ /______ /
-  //    /       /       /       /
-  //   /   A   /   H   /   G   /
-  //  /_______/______ /______ /
-  //
-  //  z   y
-  //  ↑ ↗
-  //  o → x
-  //
-  // ```
-  //
-  // These are the corresponding coordinates in 3d space.
-  //
-  // ```
-  //            ______________________
-  //          /       /       /       /
-  //         / 0,2,2 / 1,2,2 / 2,2,2 /
-  //        /_______/______ /______ /
-  //       /       /       /       /
-  //      / 0,1,2 / 1,1,2 / 2,1,2 /
-  //     /_______/______ /______ /
-  //    /       /       /       /
-  //   / 0,0,2 / 1,0,2 / 2,0,2 /
-  //  /_______/______ /______ /
-  //            ______________________
-  //          /       /       /       /
-  //         / 0,2,1 / 1,2,1 / 2,2,1 /
-  //        /_______/______ /______ /
-  //       /       /       /       /
-  //      / 0,1,1 / 1,1,1 / 2,1,1 /
-  //     /_______/______ /______ /
-  //    /       /       /       /
-  //   / 0,0,1 / 1,0,1 / 2,0,1 /
-  //  /_______/______ /______ /
-  //            ______________________
-  //          /       /       /       /
-  //         / 0,2,0 / 1,2,0 / 2,2,0 /
-  //        /_______/______ /______ /
-  //       /       /       /       /
-  //      / 0,1,0 / 1,1,0 / 2,1,0 /
-  //     /_______/______ /______ /
-  //    /       /       /       /
-  //   / 0,0,0 / 1,0,0 / 2,0,0 /
-  //  /_______/______ /______ /
-  //
-  //  z   y
-  //  ↑ ↗
-  //  o → x
-  //
-  // ```
-  //
-  // The index in the `POSITION` array corresponds to the `x, y, z`
-  // coordinate in base 3, that is:
-  //
-  // ```
-  // x, y, z -> x * 9 + y * 3 + z
-  // ```
-  static POSITION = [
-    // First layer, `z = 0`.
-    'A', 'H', 'G',
-    'B', 'I', 'F',
-    'C', 'D', 'E',
-    // Second layer, `z = 1`.
-    'J', 'Q', 'P',
-    'K', '*', 'O',
-    'L', 'M', 'N',
-    // Third layer, `z = 2`.
-    'R', 'X', 'Y',
-    'S', 'Z', 'W',
-    'T', 'U', 'V'
-  ]
-
-  static WINNING_LINES = [
-    // Lines parallel to the `x` axis.
-    ['A', 'B', 'C'], ['H', 'I', 'D'], ['G', 'F', 'E'],
-    ['J', 'K', 'L'], ['Q', '*', 'M'], ['P', 'O', 'N'],
-    ['R', 'S', 'T'], ['X', 'Z', 'U'], ['Y', 'W', 'V'],
-    // Lines parallel to the `y` axis.
-    ['A', 'H', 'G'], ['B', 'I', 'F'], ['C', 'D', 'E'],
-    ['J', 'Q', 'P'], ['K', '*', 'O'], ['L', 'M', 'N'],
-    ['R', 'X', 'Y'], ['S', 'Z', 'W'], ['T', 'U', 'V'],
-    // Lines parallel to the `z` axis.
-    ['A', 'J', 'R'], ['H', 'K', 'X'], ['G', 'L', 'Y'],
-    ['B', 'Q', 'S'], ['I', '*', 'Z'], ['F', 'M', 'W'],
-    ['C', 'P', 'T'], ['D', 'O', 'U'], ['E', 'N', 'V'],
-    // Diagonal lines on `z = k` plane.
-    ['A', 'I', 'E'], ['C', 'I', 'G'],
-    ['J', '*', 'N'], ['L', '*', 'O'],
-    ['R', 'Z', 'V'], ['T', 'Z', 'Y'],
-    // Diagonal lines on `y = k` plane.
-    ['A', 'K', 'Y'], ['G', '*', 'C'],
-    ['B', '*', 'W'], ['F', '*', 'D'],
-    ['R', '*', 'E'], ['T', '*', 'A'],
-    // Diagonal lines on `x = k` plane.
-    ['A', 'I', 'V'], ['C', 'M', 'R'],
-    ['H', '*', 'U'], ['F', '*', 'T'],
-    ['G', 'Q', 'E'], ['L', 'Z', 'C'],
-    // Cube diagonals.
-    ['A', '*', 'V'], ['C', '*', 'R'],
-    ['G', '*', 'T'], ['E', '*', 'Y'],
-  ]
-
   #moves = []
-  #status = Tris3dBoard.IS_READONLY
+  #status = IS_PLAYING
 
   constructor(moves = []) {
     if (moves.length === 0) return
-    this.play()
     for (const move of moves) {
       const success = this.addMove(move)
       if (!success) break
     }
   }
 
-  get gameIsOver() { return this.#status >= 2 }
+  get gameIsOver() {
+    return this.#status > IS_PLAYING
+  }
+
+  get hasWinner() {
+    if (this.#status === HAS_WINNER) return true
+  }
+
+  get isTie() {
+    if (this.#status === IS_TIE) return true
+  }
 
   get moves() { return this.#moves.slice() }
 
@@ -173,7 +40,7 @@ export class Tris3dBoard {
       movesOfCurrentPlayer.push(this.#moves[i])
     }
     let count = 0
-    for (const line of Tris3dBoard.WINNING_LINES) {
+    for (const line of WINNING_LINES) {
       if (line.every(position => movesOfCurrentPlayer.includes(position))) {
         count++
       }
@@ -184,7 +51,7 @@ export class Tris3dBoard {
   get status() { return this.#status }
 
   get turnPlayer() {
-    if (this.#status !== Tris3dBoard.IS_PLAYING) return
+    if (this.#status !== IS_PLAYING) return
     return this.#moves.length % 3
   }
 
@@ -194,24 +61,19 @@ export class Tris3dBoard {
    */
   addMove(position) {
     // Do nothing if the game is not active.
-    if (this.#status !== Tris3dBoard.IS_PLAYING) return false
+    if (this.#status !== IS_PLAYING) return false
     // Check that given position is valid.
-    const index = Tris3dBoard.POSITION.indexOf(position)
+    const index = POSITIONS.indexOf(position)
     if (index === -1) return false
     // Check that given position is not already taken.
     if (this.#moves.includes(position)) return false
     // Add the move and check if the game has ended.
     this.#moves.push(position)
     if (this.numWinningLines > 0) {
-      this.#status = Tris3dBoard.HAS_WINNER
+      this.#status = HAS_WINNER
     } else if (this.#moves.length === 27) {
-      this.#status = Tris3dBoard.IS_TIE
+      this.#status = IS_TIE
     }
     return true
-  }
-
-  play() {
-    if (this.gameIsOver) return
-    this.#status = Tris3dBoard.IS_PLAYING
   }
 }

@@ -1,6 +1,7 @@
-import { AmbientLight, Group, Mesh, MeshBasicMaterial, PerspectiveCamera, Raycaster, Scene, SphereGeometry, Vector3, WebGLRenderer } from 'three'
+import { AmbientLight, Group, PerspectiveCamera, Raycaster, Scene, Vector3, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { Tris3dBoard } from '@tris3d/game'
+import { POSITIONS, Tris3dBoard } from '@tris3d/game'
+import { Cell } from './cell.js'
 
 /**
  * @example
@@ -10,13 +11,15 @@ class Tris3dCanvas extends HTMLElement {
   board = new Tris3dBoard()
   canvas = document.createElement('canvas')
 
-  group = new Group()
+  cellsGroup = new Group()
   scene = new Scene()
   ambientLight = new AmbientLight(0x404040)
   ray = new Raycaster()
 
-  cells = []
   size = 100
+
+  positionCellMap = new Map()
+  cellSphereUuidPositionMap = new Map()
 
   shouldRotateGroup = true
 
@@ -25,6 +28,16 @@ class Tris3dCanvas extends HTMLElement {
     'moves',
     'size',
   ]
+
+  get availableCellSpheres() {
+    const { board, positionCellMap } = this
+    const spheres = []
+    for (const [position, cell] of positionCellMap) {
+      if (board.moves.includes(position)) continue
+      spheres.push(cell.sphere)
+    }
+    return spheres
+  }
 
   get isReadOnly() {
     const { playerIndex, board } = this
@@ -47,15 +60,14 @@ class Tris3dCanvas extends HTMLElement {
     if (name === 'moves') {
       const { board } = this
       if (typeof newValue !== 'string') return
-      if (board.status === Tris3dBoard.IS_READONLY) {
-        board.play()
-      }
       const newMoves = newValue.split('')
       for (let i = board.moves.length; i < newMoves.length; i++) {
         if (board.gameIsOver) break
-        const move = newMoves[i]
-        const success = board.addMove(move)
+        const position = newMoves[i]
+        const success = board.addMove(position)
         if (!success) break
+        const cell = this.positionCellMap.get(position)
+        if (cell) cell.select()
       }
     }
 
@@ -82,8 +94,8 @@ class Tris3dCanvas extends HTMLElement {
       if (this.isReadOnly) return
       const cell = this.pickCell(event)
       if (cell) {
-        this.addMove('A')
-        cell.material.transparent = false
+        this.addMove(cell.position)
+        cell.select()
       }
     }
   }
@@ -100,11 +112,11 @@ class Tris3dCanvas extends HTMLElement {
 
   addMove(position) {
     const nextBoard = new Tris3dBoard(this.board.moves)
-    nextBoard.play()
     const success = nextBoard.addMove(position)
     if (success) {
       const movesAttribute = this.getAttribute('moves') || ''
       this.setAttribute('moves', movesAttribute + position)
+      this.dispatchEvent(new CustomEvent('move', { detail: { position } }))
     }
   }
 
@@ -121,7 +133,7 @@ class Tris3dCanvas extends HTMLElement {
     const next = () => {
       let shoudRender = true
       if (this.shouldRotateGroup) {
-        this.group.rotation.y += 0.005
+        this.cellsGroup.rotation.y += 0.005
       }
       if (shoudRender) {
         this.renderer.render(this.scene, this.camera)
@@ -132,17 +144,18 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   pickCell(event) {
-    const { canvas, camera, cells, ray } = this
-    const rect = canvas.getBoundingClientRect()
+    const { camera, ray } = this
+    const rect = this.canvas.getBoundingClientRect()
     const x = ((event.clientX - rect.left) / rect.width) * 2 - 1
     const y = -((event.clientY - rect.top) / rect.height) * 2 + 1
     const pointerVector = new Vector3(x, y, 1)
     pointerVector.unproject(camera)
     ray.set(camera.position, pointerVector.sub(camera.position).normalize())
-    const intersects = ray.intersectObjects(cells)
+    const intersects = ray.intersectObjects(this.availableCellSpheres)
     const firstMatch = intersects[0]
     if (firstMatch) {
-      return firstMatch.object
+      const position = this.cellSphereUuidPositionMap.get(firstMatch.object.uuid)
+      return this.positionCellMap.get(position)
     }
   }
 
@@ -153,7 +166,7 @@ class Tris3dCanvas extends HTMLElement {
     const far = 10
     const camera = this.camera = new PerspectiveCamera(fov, aspect, near, far)
     camera.position.y = 4
-    camera.position.z = 6.5
+    camera.position.z = 7
   }
 
   setupControls() {
@@ -169,22 +182,15 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   setupGeometry() {
-    const { group, scene } = this
-    for (let x = -2; x <= 2; x += 2)
-      for (let y = -2; y <= 2; y += 2)
-        for (let z = -2; z <= 2; z += 2) {
-          const geometry = new SphereGeometry(1)
-          const material = new MeshBasicMaterial({
-            color: 0x333333,
-            transparent: true,
-            opacity: 0.1,
-          })
-          const sphere = new Mesh(geometry, material)
-          sphere.position.set(x, y, z)
-          group.add(sphere)
-          this.cells.push(sphere)
-        }
-    scene.add(group)
+    const { cellsGroup, cellSphereUuidPositionMap, positionCellMap, scene } = this
+    for (let i = 0; i < POSITIONS.length; i++) {
+      const position = POSITIONS[i]
+      const cell = new Cell(position)
+      cellsGroup.add(cell.group)
+      positionCellMap.set(position, cell)
+      cellSphereUuidPositionMap.set(cell.sphere.uuid, position)
+    }
+    scene.add(cellsGroup)
   }
 
   setupLights() {
