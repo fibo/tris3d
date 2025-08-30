@@ -1,6 +1,6 @@
 import { copyFile, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { appName, appDescription, baseStyle, themeColor } from '@tris3d/design'
+import { appName, appDescription, baseStyle, metaViewport, themeColor } from '@tris3d/design'
 import { ensureDir, isMainModule, workspaceDir } from '@tris3d/repo'
 
 const outDir = join(workspaceDir.pwa, 'out')
@@ -32,6 +32,7 @@ async function pageNotFoundHtml() {
   const content = await readFile(join(srcDir, pageNotFoundFilename), 'utf8')
   return minified(content
     .replaceAll('${appName}', appName)
+    .replace('${metaViewport}', metaViewport)
     .replace('${baseStyle}', baseStyle)
   )
 }
@@ -42,6 +43,7 @@ async function indexHtml() {
     .replaceAll('${appName}', appName)
     .replaceAll('${appDescription}', appDescription)
     .replaceAll('${themeColor}', themeColor)
+    .replace('${metaViewport}', metaViewport)
     .replace('${manifestPathname}', manifestPathname)
     .replace('${baseStyle}', baseStyle)
   )
