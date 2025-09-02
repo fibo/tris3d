@@ -5,7 +5,7 @@ const IS_PLAYING = 1
 const HAS_WINNER = 2
 const IS_TIE = 3
 
-export class Tris3dBoard {
+export class GameBoard {
   #moves = []
   #status = IS_PLAYING
 

@@ -1,6 +1,6 @@
 import { AmbientLight, Group, PerspectiveCamera, Raycaster, Scene, Vector3, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { POSITIONS, Tris3dBoard } from '@tris3d/game'
+import { POSITIONS, GameBoard } from '@tris3d/game'
 import { Cell } from './cell.js'
 
 /**
@@ -8,7 +8,7 @@ import { Cell } from './cell.js'
  * <tris3d-canvas size="200" player="1" moves="ABC"></tris3d-canvas>
  */
 class Tris3dCanvas extends HTMLElement {
-  board = new Tris3dBoard()
+  board = new GameBoard()
   canvas = document.createElement('canvas')
 
   cellsGroup = new Group()
@@ -73,8 +73,8 @@ class Tris3dCanvas extends HTMLElement {
 
     if (name === 'player') {
       const index = parseInt(newValue, 10)
-      if (index >= 1 && index <= 3) {
-        this.playerIndex = index - 1
+      if (index >= 0 && index <= 2) {
+        this.playerIndex = index
       }
     }
 
@@ -111,7 +111,7 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   addMove(position) {
-    const nextBoard = new Tris3dBoard(this.board.moves)
+    const nextBoard = new GameBoard(this.board.moves)
     const success = nextBoard.addMove(position)
     if (success) {
       const movesAttribute = this.getAttribute('moves') || ''
@@ -163,7 +163,7 @@ class Tris3dCanvas extends HTMLElement {
     const fov = 75
     const aspect = 1
     const near = 0.1
-    const far = 10
+    const far = 17
     const camera = this.camera = new PerspectiveCamera(fov, aspect, near, far)
     camera.position.y = 4
     camera.position.z = 7

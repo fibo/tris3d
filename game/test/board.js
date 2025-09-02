@@ -1,9 +1,9 @@
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
-import { Tris3dBoard } from '@tris3d/game'
+import { GameBoard } from '@tris3d/game'
 
 test('new Board', () => {
-  const board = new Tris3dBoard()
+  const board = new GameBoard()
   assert.deepEqual(board.moves, [], 'is empty')
   assert.equal(board.gameIsOver, false, 'game is not over')
   assert.equal(board.hasWinner, undefined, 'hasWinner is not defined')
@@ -57,7 +57,7 @@ test('game play', () => {
     //   turnPlayer: undefined,
     // },
   ]) {
-    const board = new Tris3dBoard()
+    const board = new GameBoard()
     for (const move of moves) {
       assert.equal(board.addMove(move), true, 'add move')
     }
@@ -68,7 +68,7 @@ test('game play', () => {
 })
 
 test('invalid moves', () => {
-  const board = new Tris3dBoard()
+  const board = new GameBoard()
   assert.equal(board.addMove('-'), false, 'invalid position')
   assert.equal(board.addMove('A'), true, 'valid position')
   assert.equal(board.addMove('A'), false, 'position already taken')
@@ -84,13 +84,13 @@ test('invalid moves', () => {
 test('constructor with moves argument', () => {
   {
     const moves = ['A', 'B', 'C']
-    const board = new Tris3dBoard(moves)
+    const board = new GameBoard(moves)
     assert.deepEqual(board.moves, moves, 'moves')
   }
 
   {
     const moves = ['A', 'B', 'C', 'D', 'E', 'F', 'G', '*', 'I', 'H']
-    const board = new Tris3dBoard([...moves, 'V'])
+    const board = new GameBoard([...moves, 'V'])
     assert.deepEqual(board.moves, moves, 'moves')
     assert.equal(board.gameIsOver, true, 'game is over')
     assert.ok(board.hasWinner, 'has winner')

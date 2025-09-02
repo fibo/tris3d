@@ -1,20 +1,34 @@
 import '@tris3d/canvas'
-import { Tris3dBoard, POSITIONS } from '@tris3d/game'
+import { GameBoard, POSITIONS } from '@tris3d/game'
 
 const canvas = document.querySelector('tris3d-canvas')
-let board
+let socket
+const board = new GameBoard()
 
 function connect(event) {
   event.preventDefault()
   const URL = event.target.serverUrl.value
-  const socket = new WebSocket(URL)
+  socket = new WebSocket(URL)
   socket.onmessage = (event) => {
-    const message = JSON.parse(event.data)
-    console.log(message)
+    try {
+      const { type, data } = JSON.parse(event.data)
+      console.info('message', type, data)
+
+      if (type === 'INIT') {
+        const { sessionId } = data
+        socket.send(JSON.stringify({ type: 'JOIN_ROOM', data: { clientId: sessionId } }))
+      }
+    } catch (error) {
+      console.error(error)
+      return
+    }
   }
   socket.onopen = (event) => {
     console.log('open', event)
   }
+  setTimeout(() => {
+    socket.send(JSON.stringify({ type: 'join', name: 'Player' }))
+  }, 3000)
 }
 
 function getRandomMove() {
@@ -50,6 +64,9 @@ function nextMove(count) {
 function onmoveSinglePlayer(event) {
   const { position } = event.detail
   board.addMove(position)
+  if (socket) {
+    socket.send(JSON.stringify({ type: 'move', position }))
+  }
   if (board.gameIsOver) {
     finishGame()
   } else {
@@ -60,8 +77,7 @@ function onmoveSinglePlayer(event) {
 }
 
 function startSinglePlayerGame() {
-  board = new Tris3dBoard()
-  canvas.setAttribute('player', '1')
+  canvas.setAttribute('player', 0)
   canvas.setAttribute('moves', '')
   canvas.addEventListener('move', onmoveSinglePlayer)
 }
