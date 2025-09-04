@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "dependencies": {
-    "@tris3d/game": "0.0.0"
+    "@tris3d/game": "0.0.0",
+    "@tris3d/ui": "0.0.0"
   },
   "devDependencies": {
     "@tris3d/repo": "0.0.0"

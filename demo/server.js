@@ -2,7 +2,7 @@ import { exec } from 'node:child_process'
 import { readFile, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import { join } from 'node:path'
-import { appName, baseStyle, metaViewport, themeColor } from '@tris3d/design'
+import { appName, baseStyle, emptyFavicon, metaThemeColor, metaViewport } from '@tris3d/design'
 import { ensureDir, workspaceDir } from '@tris3d/repo'
 import { context } from 'esbuild'
 
@@ -16,7 +16,8 @@ async function generateIndexHtml() {
   content = content
     .replaceAll('${appName}', appName)
     .replace('${baseStyle}', baseStyle)
-    .replaceAll('${themeColor}', themeColor)
+    .replace('${emptyFavicon}', emptyFavicon)
+    .replace('${metaThemeColor}', metaThemeColor)
     .replace('${metaViewport}', metaViewport)
   await writeFile(join(outdir, 'index.html'), content, 'utf8')
 }

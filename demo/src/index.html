@@ -2,21 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" href="data:image/x-icon;base64,AA" />
+  ${emptyFavicon}
   ${metaViewport}
-  <meta name="theme-color" content="${themeColor}" />
+  ${metaThemeColor}
   <title>${appName}</title>
-  <style>${baseStyle}</style>
+  ${baseStyle}
 </head>
 <body>
   <h1>${appName}</h1>
-  <tris3d-canvas size="400"></tris3d-canvas>
-
-  <form id="connect">
-    <label for="server-url">Multiplayer server</label>
-    <input required id="server-url" name="serverUrl" type="text">
-    <button type="submit">connect</button>
-  </form>
 
   <script type="module" src="app.js"></script>
 </body>

@@ -1,7 +1,7 @@
-import '@tris3d/canvas'
+import '@tris3d/ui'
 import { GameBoard, POSITIONS } from '@tris3d/game'
 
-const canvas = document.querySelector('tris3d-canvas')
+let canvas
 let socket
 const board = new GameBoard()
 
@@ -83,10 +83,8 @@ function startSinglePlayerGame() {
 }
 
 addEventListener('load', () => {
-  // Pre-fill the connection form with local server URL.
-  document.querySelector('input#server-url').value = 'ws://localhost:3456'
-  // Handle connection form submission.
-  document.querySelector('form#connect').addEventListener('submit', connect)
-
-  startSinglePlayerGame()
+  const playground = document.createElement('tris3d-playground')
+  playground.setAttribute('debug', 'true')
+  playground.setAttribute('websocket', 'ws://localhost:3456')
+  document.body.appendChild(playground)
 })

@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   ${metaViewport}
-  <meta name="theme-color" content="${themeColor}" />
+  ${metaThemeColor}
 
   <title>${appName}</title>
   <meta name="description" content="${appDescription}" />
 
   <link rel="manifest" href="${manifestPathname}" />
 
-  <style>${baseStyle}</style>
+  ${baseStyle}
 
   <style>
     noscript {
@@ -29,15 +29,12 @@
     <p>Opsss... your JavaScript looks disabled 😒</p>
   </noscript>
 
-  <button id="play">Play</button>
+  <button id="play">play</button>
 
   <script type="module">
     addEventListener('load', async () => {
       document.querySelector('button#play').onclick = async () => {
-        await import('./js/${initCanvas}');
-        const canvas = document.createElement('tris3d-canvas');
-        canvas.setAttribute('size', '400');
-        document.body.appendChild(canvas);
+        await import('./js/${playJs}');
       };
     });
   </script>

@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { appName, appDescription, baseStyle, metaViewport, themeColor } from '@tris3d/design'
+import { appName, appDescription, baseStyle, metaThemeColor, metaViewport, themeColor } from '@tris3d/design'
 import { ensureDir, isMainModule, workspaceDir } from '@tris3d/repo'
 import { build as esbuild } from 'esbuild'
 
@@ -36,6 +36,7 @@ async function pageNotFoundHtml() {
   const content = await readFile(join(srcDir, pageNotFoundFilename), 'utf8')
   return minified(content
     .replaceAll('${appName}', appName)
+    .replace('${metaThemeColor}', metaThemeColor)
     .replace('${metaViewport}', metaViewport)
     .replace('${baseStyle}', baseStyle)
   )
@@ -46,11 +47,11 @@ async function indexHtml(js) {
   return minified(content
     .replaceAll('${appName}', appName)
     .replaceAll('${appDescription}', appDescription)
-    .replaceAll('${themeColor}', themeColor)
+    .replace('${baseStyle}', baseStyle)
+    .replace('${playJs}', js.play)
+    .replace('${metaThemeColor}', metaThemeColor)
     .replace('${metaViewport}', metaViewport)
     .replace('${manifestPathname}', manifestPathname)
-    .replace('${baseStyle}', baseStyle)
-    .replace('${initCanvas}', js.initCanvas)
   )
 }
 
@@ -79,9 +80,9 @@ async function generateJs(filename) {
 }
 
 export async function generateHtml() {
-  const initCanvas = await generateJs('initCanvas.js')
+  const play = await generateJs('play.js')
   const js = {
-    initCanvas,
+    play,
   }
   const indexContent = await indexHtml(js)
   await writeFile(indexHtmlFilepath, indexContent, 'utf-8')
@@ -94,6 +95,7 @@ async function generateManifest() {
     name: appName,
     start_url: '.',
     description: appDescription,
+    theme_color: themeColor,
     icons: [
       {
         src: 'images/logo-192.png',

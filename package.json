@@ -19,7 +19,8 @@
     "game",
     "pwa",
     "repo",
-    "server"
+    "server",
+    "ui"
   ],
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.2.3",

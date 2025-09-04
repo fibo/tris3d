@@ -3,11 +3,17 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { POSITIONS, GameBoard } from '@tris3d/game'
 import { Cell } from './cell.js'
 
+const radian = 2 * Math.PI / 360
+const angularSpeed = 17 * radian // radians per second
+
 /**
  * @example
  * <tris3d-canvas size="200" player="1" moves="ABC"></tris3d-canvas>
  */
 class Tris3dCanvas extends HTMLElement {
+  // Frames per second
+  FPS = 25
+
   board = new GameBoard()
   canvas = document.createElement('canvas')
 
@@ -22,8 +28,11 @@ class Tris3dCanvas extends HTMLElement {
   cellSphereUuidPositionMap = new Map()
 
   shouldRotateGroup = true
+  idleTimeoutId = 0
+  idleTimeout = 10_000
 
   static observedAttributes = [
+    'fps',
     'player',
     'moves',
     'size',
@@ -46,7 +55,7 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   connectedCallback() {
-    this.style.display = 'inline-block'
+    this.setStyle()
     this.createRenderer()
     this.setupCamera()
     this.setupControls()
@@ -71,6 +80,13 @@ class Tris3dCanvas extends HTMLElement {
       }
     }
 
+    if (name === 'fps') {
+      const fps = parseInt(newValue, 10)
+      if (fps >= 20 && fps <= 60) {
+        this.FPS = fps
+      }
+    }
+
     if (name === 'player') {
       const index = parseInt(newValue, 10)
       if (index >= 0 && index <= 2) {
@@ -90,7 +106,7 @@ class Tris3dCanvas extends HTMLElement {
 
   handleEvent(event) {
     if (event.type === 'pointerdown') {
-      this.shouldRotateGroup = false
+      this.gotUserInput()
       if (this.isReadOnly) return
       const cell = this.pickCell(event)
       if (cell) {
@@ -108,6 +124,14 @@ class Tris3dCanvas extends HTMLElement {
   removeEventListeners() {
     const { canvas } = this
     canvas.removeEventListener('pointerdown', this)
+  }
+
+  setStyle() {
+    this.style.display = 'inline-block'
+    this.style.borderStyle = 'solid'
+    this.style.borderWidth = 'var(--border-width)'
+    this.style.borderColor = 'var(--border-color)'
+    this.style.borderRadius = 'var(--border-radius-large)'
   }
 
   addMove(position) {
@@ -130,17 +154,29 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   mainLoop() {
+    let lastTime = document.timeline.currentTime
     const next = () => {
-      let shoudRender = true
-      if (this.shouldRotateGroup) {
-        this.cellsGroup.rotation.y += 0.005
-      }
+      const { FPS } = this
+      const deltaT = 1000 / FPS
+      const shoudRender = document.timeline.currentTime - lastTime > deltaT
       if (shoudRender) {
+        if (this.shouldRotateGroup) {
+          this.cellsGroup.rotation.y += angularSpeed / FPS
+        }
+        lastTime = document.timeline.currentTime
         this.renderer.render(this.scene, this.camera)
       }
       requestAnimationFrame(next)
     }
     next() // Oh yeah!
+  }
+
+  gotUserInput() {
+    this.shouldRotateGroup = false
+    clearTimeout(this.idleTimeoutId)
+    this.idleTimeoutId = setTimeout(() => {
+      this.shouldRotateGroup = true
+    }, this.idleTimeout)
   }
 
   pickCell(event) {
@@ -177,7 +213,7 @@ class Tris3dCanvas extends HTMLElement {
     controls.enableZoom = false
     controls.update()
     controls.addEventListener('change', () => {
-      this.shouldRotateGroup = false
+      this.gotUserInput()
     })
   }
 
@@ -199,4 +235,5 @@ class Tris3dCanvas extends HTMLElement {
   }
 }
 
-customElements.define('tris3d-canvas', Tris3dCanvas)
+const tagName = 'tris3d-canvas'
+customElements.get(tagName) || customElements.define(tagName, Tris3dCanvas)

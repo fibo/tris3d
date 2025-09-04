@@ -1,3 +1,9 @@
+:root {
+  --border-color: black;
+  --border-width: 1px;
+  --border-radius-small: 7px;
+  --border-radius-large: 11px;
+}
 html {
   font-family: "Lucida Console", Monaco, monospace;
   font-size: 17px;
@@ -21,16 +27,12 @@ body {
 input, button {
   font: inherit;
   border: 1px solid white;
-  outline-color: black;
+  outline-color: var(--border-color);
   background-color: white;
-  border-radius: 7px;
+  border-radius: var(--border-radius-small);
   padding-inline: 9px;
 }
 input:focus, button:focus {
   background-color: white;
   color: black;
-}
-tris3d-canvas {
-  border: 1px solid black;
-  border-radius: 11px;
 }

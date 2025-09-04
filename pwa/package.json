@@ -8,7 +8,7 @@
     "test": "node --test"
   },
   "dependencies": {
-    "@tris3d/canvas": "0.0.0"
+    "@tris3d/ui": "0.0.0"
   },
   "devDependencies": {
     "@tris3d/design": "0.0.0",
