@@ -1,25 +1,24 @@
 import '@tris3d/canvas'
-import { css } from './css.js'
+
 import { h } from './h.js'
+import { css } from './css.js'
 
 const tagName = 'tris3d-playground'
 
-css(`
-  ${tagName} {
+css(
+  `${tagName} {
     display: flex;
     flex-direction: column;
     gap: 1em;
-  }
-`)
+  }`
+)
 
 class Tris3dPlayground extends HTMLElement {
-  static observedAttributes = [
-    'playmode',
-  ]
-
   canvas = h('tris3d-canvas')
-  localInfo = h('local-info')
-  onlineInfo = h('online-info')
+  localinfo = h('local-info')
+  onlineinfo = h('online-info')
+  playerinfo = h('player-info')
+  playmodeswitch = h('playmode-switch')
 
   connectedCallback() {
     const { canvas } = this
@@ -29,21 +28,13 @@ class Tris3dPlayground extends HTMLElement {
 
     this.append(
       canvas,
-      this.localInfo,
-      this.onlineInfo,
+      this.playerinfo,
+      this.playmodeswitch,
+      this.localinfo,
+      this.onlineinfo,
     )
 
     window.addEventListener('resize', this)
-  }
-
-  attributeChangedCallback(name, _oldValue, newValue) {
-    if (name === 'playmode') {
-      if (newValue === 'local') {
-      }
-
-      if (newValue === 'online') {
-      }
-    }
   }
 
   handleEvent(event) {

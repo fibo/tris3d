@@ -1,4 +1,13 @@
+import { css } from './css.js'
 import { h } from './h.js'
+
+const tagName = 'local-players'
+
+css(
+  `${tagName} form {
+    display: none;
+  }`
+)
 
 class Localplayers extends HTMLElement {
   title = h('span', null, 'players')
@@ -10,5 +19,4 @@ class Localplayers extends HTMLElement {
   }
 }
 
-const tagName = 'local-players'
 customElements.get(tagName) || customElements.define(tagName, Localplayers)

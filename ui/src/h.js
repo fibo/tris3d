@@ -1,4 +1,4 @@
-export function h(tagName, attributes = null, ...children) {
+export function h(tagName, attributes = null, children = []) {
   // Create the element with the given tag name.
   const element = document.createElement(tagName)
 

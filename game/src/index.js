@@ -1,3 +1,4 @@
 export { GameBoard } from './board.js'
 export { GameRoom } from './room.js'
+export { peek, publish, subscribe } from './pubsub.js'
 export { POSITIONS, VECTOR_OF_POSITION } from './space.js'

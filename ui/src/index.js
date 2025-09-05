@@ -1,5 +1,7 @@
 import './localinfo.js'
 import './localplayers.js'
 import './onlineinfo.js'
+import './playerinfo.js'
 import './playground.js'
+import './playmodeswitch.js'
 import './roomlist.js'

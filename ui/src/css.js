@@ -1,11 +1,12 @@
-export function css(style) {
+export function css(...rules) {
   const sheet = new CSSStyleSheet()
-  sheet.insertRule(
-    // Minify statements.
-    style
-      .replace(/\n\s+/g, '')
-      .replace(/\n/g, '')
-      .trim()
-  )
+  for (const rule of rules)
+    sheet.insertRule(
+      // Minify statements.
+      rule
+        .replace(/\n\s+/g, '')
+        .replace(/\n/g, '')
+        .trim()
+    )
   document.adoptedStyleSheets.push(sheet)
 }

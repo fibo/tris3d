@@ -1,5 +1,7 @@
 import { h } from './h.js'
 
+const tagName = 'room-list'
+
 class Roomlist extends HTMLElement {
   title = h('span', null, 'rooms')
 
@@ -10,5 +12,4 @@ class Roomlist extends HTMLElement {
   }
 }
 
-const tagName = 'room-list'
 customElements.get(tagName) || customElements.define(tagName, Roomlist)

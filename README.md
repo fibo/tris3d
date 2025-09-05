@@ -26,3 +26,8 @@ npm run build
 ```
 
 Generated files are in _pwa/out_ folder.
+
+## Credits
+
+Many thanks to Mathias Lasser for code inspiration!
+
