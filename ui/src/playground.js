@@ -1,29 +1,52 @@
 import '@tris3d/canvas'
+import { css } from './css.js'
 import { h } from './h.js'
 
+const tagName = 'tris3d-playground'
+
+css(`
+  ${tagName} {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+  }
+`)
+
 class Tris3dPlayground extends HTMLElement {
+  static observedAttributes = [
+    'playmode',
+  ]
+
   canvas = h('tris3d-canvas')
-  multiplayer = h('multi-player')
+  localInfo = h('local-info')
+  onlineInfo = h('online-info')
 
   connectedCallback() {
-    this.setStyle()
-
-    const { canvas, multiplayer } = this
+    const { canvas } = this
 
     canvas.setAttribute('fps', 30)
     canvas.setAttribute('size', this.canvasSize)
-    this.appendChild(canvas)
 
-    this.appendChild(multiplayer)
+    this.append(
+      canvas,
+      this.localInfo,
+      this.onlineInfo,
+    )
 
-    multiplayer.connectButton.addEventListener('click', this)
     window.addEventListener('resize', this)
   }
 
-  handleEvent(event) {
-    if (event.type === 'click' && event.target === this.multiplayer.connectButton) {
-      this.connect()
+  attributeChangedCallback(name, _oldValue, newValue) {
+    if (name === 'playmode') {
+      if (newValue === 'local') {
+      }
+
+      if (newValue === 'online') {
+      }
     }
+  }
+
+  handleEvent(event) {
     if (event.type === 'resize') {
       this.canvas.setAttribute('size', this.canvasSize)
     }
@@ -37,12 +60,6 @@ class Tris3dPlayground extends HTMLElement {
       parentElement.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight),
       // max size
       500)
-  }
-
-  setStyle() {
-    this.style.display = 'flex'
-    this.style.flexDirection = 'column'
-    this.style.gap = '1em'
   }
 
   connect() {
@@ -64,5 +81,4 @@ class Tris3dPlayground extends HTMLElement {
   }
 }
 
-const tagName = 'tris3d-playground'
 customElements.get(tagName) || customElements.define(tagName, Tris3dPlayground)

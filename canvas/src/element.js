@@ -3,14 +3,42 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { POSITIONS, GameBoard } from '@tris3d/game'
 import { Cell } from './cell.js'
 
+const tagName = 'tris3d-canvas'
+
 const radian = 2 * Math.PI / 360
 const angularSpeed = 17 * radian // radians per second
+
+const sheet = new CSSStyleSheet()
+
+sheet.insertRule(`
+  ${tagName} {
+    display: inline-block;
+    border-style: solid;
+    border-width: var(--border-width);
+    border-color: var(--border-color);
+    border-radius: var(--border-radius-large);
+  }
+`
+// Minify statements.
+  .replace(/\n\s+/g, '')
+  .replace(/\n/g, '')
+  .trim()
+)
+
+document.adoptedStyleSheets.push(sheet)
 
 /**
  * @example
  * <tris3d-canvas size="200" player="1" moves="ABC"></tris3d-canvas>
  */
 class Tris3dCanvas extends HTMLElement {
+  static observedAttributes = [
+    'fps',
+    'player',
+    'moves',
+    'size',
+  ]
+
   // Frames per second
   FPS = 25
 
@@ -31,13 +59,6 @@ class Tris3dCanvas extends HTMLElement {
   idleTimeoutId = 0
   idleTimeout = 10_000
 
-  static observedAttributes = [
-    'fps',
-    'player',
-    'moves',
-    'size',
-  ]
-
   get availableCellSpheres() {
     const { board, positionCellMap } = this
     const spheres = []
@@ -55,7 +76,6 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   connectedCallback() {
-    this.setStyle()
     this.createRenderer()
     this.setupCamera()
     this.setupControls()
@@ -124,14 +144,6 @@ class Tris3dCanvas extends HTMLElement {
   removeEventListeners() {
     const { canvas } = this
     canvas.removeEventListener('pointerdown', this)
-  }
-
-  setStyle() {
-    this.style.display = 'inline-block'
-    this.style.borderStyle = 'solid'
-    this.style.borderWidth = 'var(--border-width)'
-    this.style.borderColor = 'var(--border-color)'
-    this.style.borderRadius = 'var(--border-radius-large)'
   }
 
   addMove(position) {
@@ -235,5 +247,4 @@ class Tris3dCanvas extends HTMLElement {
   }
 }
 
-const tagName = 'tris3d-canvas'
 customElements.get(tagName) || customElements.define(tagName, Tris3dCanvas)

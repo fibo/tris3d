@@ -1,2 +1,5 @@
-import './multiplayer.js'
+import './localinfo.js'
+import './localplayers.js'
+import './onlineinfo.js'
 import './playground.js'
+import './roomlist.js'
