@@ -1,7 +1,5 @@
 import { subscribe } from '@tris3d/game'
-
-import { css } from './css.js'
-import { h } from './h.js'
+import { css, define, h } from './utils.js'
 
 const tagName = 'online-info'
 
@@ -11,7 +9,7 @@ css(
   }`
 )
 
-class Onlineinfo extends HTMLElement {
+class Component extends HTMLElement {
   subscriptions = []
 
   roomList = h('room-list')
@@ -19,16 +17,7 @@ class Onlineinfo extends HTMLElement {
   connectedCallback() {
     this.setAttribute('hidden', 'true')
 
-    this.append(
-      this.roomList
-    )
-
     this.subscriptions.push(
-      subscribe('nickname', (nickname) => {
-        if (!nickname) return
-        console.log('TODO send nickname', nickname)
-      }),
-
       subscribe('playmode', (playmode) => {
         if (playmode === 'online') {
           this.removeAttribute('hidden')
@@ -37,6 +26,10 @@ class Onlineinfo extends HTMLElement {
         }
       }),
     )
+
+    this.append(
+      this.roomList
+    )
   }
 
   disconnectedCallback() {
@@ -44,4 +37,4 @@ class Onlineinfo extends HTMLElement {
   }
 }
 
-customElements.get(tagName) || customElements.define(tagName, Onlineinfo)
+define(tagName, Component)

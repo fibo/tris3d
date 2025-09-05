@@ -1,3 +1,20 @@
+export function css(...rules) {
+  const sheet = new CSSStyleSheet()
+  for (const rule of rules)
+    sheet.insertRule(
+      // Minify statements.
+      rule
+        .replace(/\n\s+/g, '')
+        .replace(/\n/g, '')
+        .trim()
+    )
+  document.adoptedStyleSheets.push(sheet)
+}
+
+export function define(tagName, elementClass) {
+  customElements.get(tagName) || customElements.define(tagName, elementClass)
+}
+
 export function h(tagName, attributes = null, children = []) {
   // Create the element with the given tag name.
   const element = document.createElement(tagName)
@@ -17,4 +34,11 @@ export function h(tagName, attributes = null, children = []) {
 
   // Return the created element.
   return element
+}
+
+export function field(key, label, select) {
+  return h('div', { class: 'field' }, [
+    h('label', { for: key }, label),
+    select
+  ])
 }

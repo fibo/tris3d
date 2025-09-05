@@ -1,7 +1,5 @@
 import '@tris3d/canvas'
-
-import { h } from './h.js'
-import { css } from './css.js'
+import { css, define, h } from './utils.js'
 
 const tagName = 'tris3d-playground'
 
@@ -9,11 +7,12 @@ css(
   `${tagName} {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: var(--gap);
+    margin-bottom: var(--gap);
   }`
 )
 
-class Tris3dPlayground extends HTMLElement {
+class Component extends HTMLElement {
   canvas = h('tris3d-canvas')
   localinfo = h('local-info')
   onlineinfo = h('online-info')
@@ -29,9 +28,9 @@ class Tris3dPlayground extends HTMLElement {
     this.append(
       canvas,
       this.playerinfo,
-      this.playmodeswitch,
       this.localinfo,
       this.onlineinfo,
+      this.playmodeswitch,
     )
 
     window.addEventListener('resize', this)
@@ -72,4 +71,4 @@ class Tris3dPlayground extends HTMLElement {
   }
 }
 
-customElements.get(tagName) || customElements.define(tagName, Tris3dPlayground)
+define(tagName, Component)

@@ -1,8 +1,7 @@
-import { h } from './h.js'
-
+import { define, h } from './utils.js'
 const tagName = 'room-list'
 
-class Roomlist extends HTMLElement {
+class Component extends HTMLElement {
   title = h('span', null, 'rooms')
 
   connectedCallback() {
@@ -12,4 +11,4 @@ class Roomlist extends HTMLElement {
   }
 }
 
-customElements.get(tagName) || customElements.define(tagName, Roomlist)
+define(tagName, Component)

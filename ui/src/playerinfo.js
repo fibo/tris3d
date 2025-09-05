@@ -1,21 +1,9 @@
 import { publish } from '@tris3d/game'
-
-import { css } from './css.js'
-import { h } from './h.js'
+import { define, h } from './utils.js'
 
 const tagName = 'player-info'
 
-css(
-  `${tagName} form {
-      display: flex;
-  }`,
-  `${tagName} form .field {
-    display: flex;
-    gap: 1em;
-  }`
-)
-
-class Playerinfo extends HTMLElement {
+class Component extends HTMLElement {
   subscriptions = []
 
   nicknameInput = h('input', {
@@ -66,4 +54,4 @@ class Playerinfo extends HTMLElement {
   }
 }
 
-customElements.get(tagName) || customElements.define(tagName, Playerinfo)
+define(tagName, Component)

@@ -3,19 +3,26 @@
   --border-width: 1px;
   --border-radius-small: 7px;
   --border-radius-large: 11px;
+  --gap: 1em;
+  --gap-small: 0.5em;
+  --text-padding: 2px 9px;
 }
+
 html {
   font-family: "Lucida Console", Monaco, monospace;
   font-size: 17px;
 }
+
 * {
   margin: 0;
   box-sizing: border-box;
 }
+
 *::selection {
   background-color: gainsboro;
   color: black;
 }
+
 body {
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
@@ -24,15 +31,36 @@ body {
   background-color: ${themeColor};
   color: black;
 }
-input, button {
+
+input, button, select {
   font: inherit;
   border: 1px solid white;
+  line-height: 1.5;
   outline-color: var(--border-color);
   background-color: white;
   border-radius: var(--border-radius-small);
-  padding-inline: 9px;
+  padding: var(--text-padding);
 }
+
 input:focus, button:focus {
   background-color: white;
   color: black;
+}
+
+select {
+  appearance: none;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-small);
+}
+
+label {
+  padding: var(--text-padding);
+}
+
+.field {
+  display: flex;
 }

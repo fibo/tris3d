@@ -1,7 +1,5 @@
 import { subscribe } from '@tris3d/game'
-
-import { css } from './css.js'
-import { h } from './h.js'
+import { css, define, h } from './utils.js'
 
 const tagName = 'local-info'
 
@@ -11,17 +9,13 @@ css(
   }`
 )
 
-class Localinfo extends HTMLElement {
+class Component extends HTMLElement {
   subscriptions = []
 
   players = h('local-players')
 
   connectedCallback() {
     this.setAttribute('hidden', 'true')
-
-    this.append(
-      this.players
-    )
 
     this.subscriptions.push(
       subscribe('playmode', (playmode) => {
@@ -32,6 +26,10 @@ class Localinfo extends HTMLElement {
         }
       })
     )
+
+    this.append(
+      this.players
+    )
   }
 
   disconnectedCallback() {
@@ -39,4 +37,4 @@ class Localinfo extends HTMLElement {
   }
 }
 
-customElements.get(tagName) || customElements.define(tagName, Localinfo)
+define(tagName, Component)

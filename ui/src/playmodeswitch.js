@@ -1,13 +1,14 @@
-import { publish } from '@tris3d/game'
-
-import { h } from './h.js'
+import { publish, subscribe } from '@tris3d/game'
+import { define, field, h } from './utils.js'
 
 const tagName = 'playmode-switch'
 
-class Playmodeswitch extends HTMLElement {
+class Component extends HTMLElement {
+  subscriptions = []
+
   select = h('select', { name: 'playmode' }, [
-    h('option', { value: 'local' }, 'local'),
-    h('option', { value: 'online' }, 'online'),
+    h('option', { value: 'local' }, 'training'),
+    h('option', { value: 'online', disabled: true }, 'online'),
   ])
 
   connectedCallback() {
@@ -17,11 +18,23 @@ class Playmodeswitch extends HTMLElement {
 
     this.setPlaymode('local')
 
-    this.append(select)
+    this.subscriptions.push(
+      subscribe('nickname', (nickname) => {
+        for (const option of this.select.options)
+          if (option.value === 'online') {
+            if (nickname) option.disabled = false
+            else option.disabled = true
+          }
+      }),
+    )
+
+    this.append(field('playmode', 'play mode', select))
   }
 
   disconnectedCallback() {
     this.form.removeEventListener('submit', this)
+
+    this.subscriptions.forEach(unsubscribe => unsubscribe())
   }
 
   handleEvent(event) {
@@ -35,4 +48,4 @@ class Playmodeswitch extends HTMLElement {
   }
 }
 
-customElements.get(tagName) || customElements.define(tagName, Playmodeswitch)
+define(tagName, Component)
