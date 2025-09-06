@@ -1,6 +1,6 @@
 // Actually it depends on @tris3d/canvas
 // but import is omitted.
-import { css, define, h, styles } from './utils.js'
+import { computeMaxWidth, css, define, h, styles } from './utils.js'
 
 const tagName = 'tris3d-playground'
 
@@ -17,18 +17,18 @@ class Component extends HTMLElement {
   canvas = h('tris3d-canvas')
   localinfo = h('local-info')
   onlineinfo = h('online-info')
-  playerinfo = h('player-info')
-  playmodeswitch = h('playmode-switch')
+
+  get maxWidth() {
+    return computeMaxWidth(this.parentElement)
+  }
 
   connectedCallback() {
     const { canvas } = this
 
     canvas.setAttribute('fps', 30)
-    canvas.setAttribute('size', this.canvasSize)
+    canvas.setAttribute('size', this.maxWidth)
 
     this.append(
-      this.playmodeswitch,
-      this.playerinfo,
       canvas,
       this.localinfo,
       this.onlineinfo,
@@ -39,18 +39,8 @@ class Component extends HTMLElement {
 
   handleEvent(event) {
     if (event.type === 'resize') {
-      this.canvas.setAttribute('size', this.canvasSize)
+      this.canvas.setAttribute('size', this.maxWidth)
     }
-  }
-
-  get canvasSize() {
-    const { parentElement } = this
-    const { paddingLeft, paddingRight } = getComputedStyle(parentElement)
-    return Math.min(
-    // The availableWidth is the width of parent excluding its padding.
-      parentElement.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight),
-      // max size
-      500)
   }
 
   connect() {

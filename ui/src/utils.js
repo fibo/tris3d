@@ -2,11 +2,33 @@ export function css(selector, rules) {
   return `${selector} {\n${Object.entries(rules).map(([key, value]) => `${key}: ${value};`).join('\n')}\n}`
 }
 
+export const cssRule = {
+  hidden: tagName => css(`${tagName}[hidden]`, {
+    display: 'none',
+  }),
+}
+
 export function styles(...rules) {
   const sheet = new CSSStyleSheet()
   for (const rule of rules)
     sheet.insertRule(rule)
   document.adoptedStyleSheets.push(sheet)
+}
+
+export function svg(tagName, attributes = null, children = []) {
+  // Create the element with the given tag name.
+  const element = document.createElementNS('http://www.w3.org/2000/svg', tagName)
+
+  // Create and append children.
+  element.append(...children)
+
+  // Set attributes on the element.
+  if (attributes)
+    for (const [key, value] of Object.entries(attributes))
+      element.setAttribute(key, value)
+
+  // Return the created element.
+  return element
 }
 
 export function define(tagName, elementClass) {
@@ -39,4 +61,13 @@ export function field(key, label, select) {
     h('label', { for: key }, label),
     select
   ])
+}
+
+export function computeMaxWidth(parentElement) {
+  const { paddingLeft, paddingRight } = getComputedStyle(parentElement)
+  return Math.min(
+    // The availableWidth is the width of parent excluding its padding.
+    parentElement.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight),
+    // max size
+    500)
 }

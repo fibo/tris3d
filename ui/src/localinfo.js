@@ -1,12 +1,10 @@
 import { subscribe } from '@tris3d/game'
-import { css, define, h, styles } from './utils.js'
+import { cssRule, define, h, styles } from './utils.js'
 
 const tagName = 'local-info'
 
 styles(
-  css(`${tagName}[hidden]`, [
-    'display: none',
-  ])
+  cssRule.hidden(tagName),
 )
 
 class Component extends HTMLElement {

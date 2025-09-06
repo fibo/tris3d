@@ -1,3 +1,4 @@
+import './clientsettings.js'
 import './localinfo.js'
 import './localplayers.js'
 import './onlineinfo.js'
