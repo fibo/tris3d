@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { basename, join } from 'node:path'
 import { appName, appDescription, baseStyle, metaThemeColor, metaViewport, themeColor } from '@tris3d/design'
 import { ensureDir, isMainModule, workspaceDir } from '@tris3d/repo'
 import { build as esbuild } from 'esbuild'
@@ -17,9 +17,17 @@ const pageNotFoundFilename = '404.html'
 export const indexHtmlFilepath = join(outDir, indexHtmlFilename)
 export const pageNotFoundFilepath = join(outDir, pageNotFoundFilename)
 
-/** Pretty good minification. */
-function minified(content) {
+function html(content, js = {}) {
   return content
+    .replaceAll('${appDescription}', appDescription)
+    .replaceAll('${appName}', appName)
+    .replace('${baseStyle}', baseStyle)
+    .replace('${manifestPathname}', manifestPathname)
+    .replace('${metaThemeColor}', metaThemeColor)
+    .replace('${metaViewport}', metaViewport)
+    .replace('${jsCanvas}', js.canvas)
+    .replace('${jsUi}', js.ui)
+  // Pretty good minification.
     .replace(/\n\s+/g, '\n')
     .replaceAll('\n', '')
     .trim()
@@ -34,25 +42,12 @@ async function copyImages() {
 
 async function pageNotFoundHtml() {
   const content = await readFile(join(srcDir, pageNotFoundFilename), 'utf8')
-  return minified(content
-    .replaceAll('${appName}', appName)
-    .replace('${metaThemeColor}', metaThemeColor)
-    .replace('${metaViewport}', metaViewport)
-    .replace('${baseStyle}', baseStyle)
-  )
+  return html(content)
 }
 
 async function indexHtml(js) {
   const content = await readFile(join(srcDir, indexHtmlFilename), 'utf8')
-  return minified(content
-    .replaceAll('${appName}', appName)
-    .replaceAll('${appDescription}', appDescription)
-    .replace('${baseStyle}', baseStyle)
-    .replace('${playJs}', js.play)
-    .replace('${metaThemeColor}', metaThemeColor)
-    .replace('${metaViewport}', metaViewport)
-    .replace('${manifestPathname}', manifestPathname)
-  )
+  return html(content, js)
 }
 
 function computeChecksum(filepath) {
@@ -80,9 +75,11 @@ async function generateJs(filename) {
 }
 
 export async function generateHtml() {
-  const play = await generateJs('play.js')
+  const canvas = await generateJs('canvas.js')
+  const ui = await generateJs('ui.js')
   const js = {
-    play,
+    canvas,
+    ui,
   }
   const indexContent = await indexHtml(js)
   await writeFile(indexHtmlFilepath, indexContent, 'utf-8')

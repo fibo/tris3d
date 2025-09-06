@@ -1,3 +1,4 @@
+import '@tris3d/canvas'
 import '@tris3d/ui'
 import { GameBoard, POSITIONS } from '@tris3d/game'
 

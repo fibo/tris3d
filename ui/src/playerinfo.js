@@ -1,4 +1,4 @@
-import { publish } from '@tris3d/game'
+import { publish, subscribe } from '@tris3d/game'
 import { define, h } from './utils.js'
 
 const tagName = 'player-info'
@@ -26,11 +26,22 @@ class Component extends HTMLElement {
     form.addEventListener('submit', this)
     nicknameInput.addEventListener('blur', this)
 
+    this.subscriptions.push(
+      subscribe('playing', (playing) => {
+        if (playing) {
+          this.nicknameInput.disabled = true
+        } else {
+          this.nicknameInput.disabled = false
+        }
+      }),
+    )
+
     this.append(form)
   }
 
   disconnectedCallback() {
     this.form.removeEventListener('submit', this)
+    this.subscriptions.forEach(unsubscribe => unsubscribe())
   }
 
   handleEvent(event) {
@@ -47,10 +58,8 @@ class Component extends HTMLElement {
 
   setNickname(value) {
     const nickname = value.trim()
-    if (nickname) {
-      localStorage.setItem('nickname', nickname)
-      publish('nickname', nickname)
-    }
+    localStorage.setItem('nickname', nickname)
+    publish('nickname', nickname)
   }
 }
 

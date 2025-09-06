@@ -22,8 +22,9 @@ class Component extends HTMLElement {
       subscribe('nickname', (nickname) => {
         for (const option of this.select.options)
           if (option.value === 'online') {
-            if (nickname) option.disabled = false
-            else option.disabled = true
+            // TODO
+            // if (nickname) option.disabled = false
+            // else option.disabled = true
           }
       }),
     )

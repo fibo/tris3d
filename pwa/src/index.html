@@ -13,9 +13,26 @@
   ${baseStyle}
 
   <style>
+    header {
+      display: flex;
+      flex-direction: column;
+      padding: 3em 2em;
+    }
+    .cta {
+      display: flex;
+      margin: 2em;
+    }
     noscript {
       color: magenta;
       text-align: center;
+    }
+    @media (max-width: 717px) {
+      header {
+        text-align: center;
+      }
+      .cta {
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -29,13 +46,21 @@
     <p>Opsss... your JavaScript looks disabled 😒</p>
   </noscript>
 
-  <button id="play">play</button>
+  <div class="cta">
+    <button id="play">play</button>
+  </div>
+
+  <footer>
+  </footer>
 
   <script type="module">
-    addEventListener('load', async () => {
-      document.querySelector('button#play').onclick = async () => {
-        await import('./js/${playJs}');
-      };
+    async function play() {
+      await import('./js/${jsCanvas}');
+      await import('./js/${jsUi}');
+    }
+
+    addEventListener('load', () => {
+      document.querySelector('#play').addEventListener('click', play);
     });
   </script>
 </body>

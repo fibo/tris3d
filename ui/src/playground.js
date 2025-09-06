@@ -1,4 +1,5 @@
-import '@tris3d/canvas'
+// Actually it depends on @tris3d/canvas
+// but import is omitted.
 import { css, define, h } from './utils.js'
 
 const tagName = 'tris3d-playground'
@@ -26,11 +27,11 @@ class Component extends HTMLElement {
     canvas.setAttribute('size', this.canvasSize)
 
     this.append(
-      canvas,
+      this.playmodeswitch,
       this.playerinfo,
+      canvas,
       this.localinfo,
       this.onlineinfo,
-      this.playmodeswitch,
     )
 
     window.addEventListener('resize', this)

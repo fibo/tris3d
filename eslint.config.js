@@ -2,7 +2,10 @@ import stylistic from '@stylistic/eslint-plugin'
 
 export default [
   {
-    ignores: ['node_modules/', '*/out/']
+    ignores: [
+      'node_modules/',
+      '*/out/',
+    ]
   },
   stylistic.configs.customize({
     braceStyle: '1tbs',
