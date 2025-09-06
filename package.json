@@ -7,6 +7,7 @@
   "scripts": {
     "build": "npm run build -w pwa",
     "demo": "npm start -w demo",
+    "deploy": "sh scripts/deploy.sh",
     "prepare": "node scripts/prepare.js",
     "server": "node server/app.js",
     "test": "npm run test --workspaces --if-present"
