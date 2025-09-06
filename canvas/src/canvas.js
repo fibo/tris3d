@@ -10,20 +10,13 @@ const angularSpeed = 17 * radian // radians per second
 
 const sheet = new CSSStyleSheet()
 
-sheet.insertRule(`
-  ${tagName} {
-    display: inline-block;
-    border-style: solid;
-    border-width: var(--border-width);
-    border-color: var(--border-color);
-    border-radius: var(--border-radius-large);
-  }
-`
-// Minify statements.
-  .replace(/\n\s+/g, '')
-  .replace(/\n/g, '')
-  .trim()
-)
+sheet.insertRule([tagName, '{',
+  'display: inline-block;',
+  'border-style: solid;',
+  'border-width: var(--border-width);',
+  'border-color: var(--border-color);',
+  'border-radius: var(--border-radius-large);',
+  '}'].join(''))
 
 document.adoptedStyleSheets.push(sheet)
 
@@ -56,6 +49,8 @@ class Tris3dCanvas extends HTMLElement {
   cellSphereUuidPositionMap = new Map()
 
   shouldRotateGroup = true
+  shouldResize = false
+
   idleTimeoutId = 0
   idleTimeout = 10_000
 
@@ -83,6 +78,11 @@ class Tris3dCanvas extends HTMLElement {
     this.setupLights()
     this.addEventListeners()
     this.mainLoop()
+  }
+
+  disconnectedCallback() {
+    this.removeEventListeners()
+    clearTimeout(this.idleTimeoutId)
   }
 
   attributeChangedCallback(name, _oldValue, newValue) {
@@ -120,7 +120,7 @@ class Tris3dCanvas extends HTMLElement {
       this.size = size
       this.style.width = `${size}px`
       this.style.height = `${size}px`
-      this.renderer?.setSize(size, size)
+      this.shouldResize = true
     }
   }
 
@@ -137,13 +137,11 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   addEventListeners() {
-    const { canvas } = this
-    canvas.addEventListener('pointerdown', this)
+    this.canvas.addEventListener('pointerdown', this)
   }
 
   removeEventListeners() {
-    const { canvas } = this
-    canvas.removeEventListener('pointerdown', this)
+    this.canvas.removeEventListener('pointerdown', this)
   }
 
   addMove(position) {
@@ -168,12 +166,17 @@ class Tris3dCanvas extends HTMLElement {
   mainLoop() {
     let lastTime = document.timeline.currentTime
     const next = () => {
-      const { FPS } = this
-      const deltaT = 1000 / FPS
-      const shoudRender = document.timeline.currentTime - lastTime > deltaT
-      if (shoudRender) {
+      if (
+        // Should we render a new frame?
+        // Yes, it deltaT time has elapsed since lastTime scene was rendered.
+        document.timeline.currentTime - lastTime > /* deltaT */ 1000 / this.FPS
+      ) {
         if (this.shouldRotateGroup) {
-          this.cellsGroup.rotation.y += angularSpeed / FPS
+          this.cellsGroup.rotation.y += angularSpeed / this.FPS
+        }
+        if (this.shouldResize) {
+          this.renderer.setSize(this.size, this.size)
+          this.shouldResize = false
         }
         lastTime = document.timeline.currentTime
         this.renderer.render(this.scene, this.camera)

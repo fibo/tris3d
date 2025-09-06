@@ -1,16 +1,16 @@
 // Actually it depends on @tris3d/canvas
 // but import is omitted.
-import { css, define, h } from './utils.js'
+import { css, define, h, styles } from './utils.js'
 
 const tagName = 'tris3d-playground'
 
-css(
-  `${tagName} {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap);
-    margin-bottom: var(--gap);
-  }`
+styles(
+  css(tagName, {
+    display: 'flex',
+    'flex-direction': 'column',
+    gap: 'var(--gap)',
+    'margin-bottom': 'var(--gap)',
+  })
 )
 
 class Component extends HTMLElement {

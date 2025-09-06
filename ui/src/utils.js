@@ -1,13 +1,11 @@
-export function css(...rules) {
+export function css(selector, rules) {
+  return `${selector} {\n${Object.entries(rules).map(([key, value]) => `${key}: ${value};`).join('\n')}\n}`
+}
+
+export function styles(...rules) {
   const sheet = new CSSStyleSheet()
   for (const rule of rules)
-    sheet.insertRule(
-      // Minify statements.
-      rule
-        .replace(/\n\s+/g, '')
-        .replace(/\n/g, '')
-        .trim()
-    )
+    sheet.insertRule(rule)
   document.adoptedStyleSheets.push(sheet)
 }
 
