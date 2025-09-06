@@ -28,7 +28,7 @@ body {
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
   min-height: 100svh;
-  padding: var(--gap);
+  padding: 0 var(--gap);
   background-color: ${themeColor};
   color: var(--text-color);
 }
@@ -61,8 +61,4 @@ form {
 
 label {
   padding: var(--text-padding);
-}
-
-.field {
-  display: flex;
 }

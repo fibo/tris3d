@@ -62,12 +62,3 @@ export function field(key, label, select) {
     select
   ])
 }
-
-export function computeMaxWidth(parentElement) {
-  const { paddingLeft, paddingRight } = getComputedStyle(parentElement)
-  return Math.min(
-    // The availableWidth is the width of parent excluding its padding.
-    parentElement.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight),
-    // max size
-    500)
-}

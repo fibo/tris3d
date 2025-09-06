@@ -8,9 +8,7 @@ styles(
     display: 'flex',
     'flex-direction': 'column',
     gap: 'var(--gap)',
-    'margin-block': 'var(--gap)',
     overflow: 'hidden',
-    'padding-bottom': 'var(--gap)',
   }),
 
   css(`${tagName}.closed`, {
