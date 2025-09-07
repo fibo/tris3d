@@ -1,4 +1,5 @@
 import { publish, subscribe } from '@tris3d/game'
+import { getStoredNickname, setStoredNickname } from './localstorage.js'
 import { cssRule, define, field, h, styles } from './utils.js'
 
 const tagName = 'player-info'
@@ -12,7 +13,7 @@ class Component extends HTMLElement {
 
   nicknameInput = h('input', {
     id: 'nickname', name: 'nickname', type: 'text',
-    value: localStorage.getItem('nickname') || '',
+    value: getStoredNickname(),
   })
 
   form = h('form', {}, [
@@ -64,7 +65,7 @@ class Component extends HTMLElement {
 
   setNickname(value) {
     const nickname = value.trim()
-    localStorage.setItem('nickname', nickname)
+    setStoredNickname(nickname)
     publish('nickname', nickname)
   }
 

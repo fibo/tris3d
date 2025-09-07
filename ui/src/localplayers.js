@@ -1,4 +1,5 @@
 import { publish, subscribe } from '@tris3d/game'
+import { getStoredLocalPlayers, setStoredLocalPlayers } from './localstorage.js'
 import { cssRule, define, field, getDefaultPlayerLabels, h, styles } from './utils.js'
 
 const tagName = 'local-players'
@@ -14,21 +15,6 @@ const option2 = selected => h('option', { value: 'stupid', ...selected }, 'AI �
 const option3 = selected => h('option', { value: 'smart', ...selected }, 'AI 🤓')
 const option4 = selected => h('option', { value: 'bastard', ...selected }, 'AI 😈')
 
-const localStorageKey = 'local players'
-
-const getInitialPlayers = () => {
-  const defaults = ['human', 'stupid', 'stupid']
-  const stored = localStorage.getItem(localStorageKey)
-  try {
-    const localplayers = JSON.parse(stored)
-    if (Array.isArray(localplayers) && localplayers.length === 3)
-      return localplayers
-    return defaults
-  } catch {
-    return defaults
-  }
-}
-
 const defaultPlayerLabels = getDefaultPlayerLabels()
 
 const indexOf = {
@@ -37,7 +23,7 @@ const indexOf = {
   player3: 2,
 }
 
-const initialPlayers = getInitialPlayers()
+const initialPlayers = getStoredLocalPlayers()
 
 const select = (id) => {
   const index = indexOf[id]
@@ -122,7 +108,7 @@ class Component extends HTMLElement {
       }
       // Store choices.
       this.localPlayers = this.select.map(item => item.value)
-      localStorage.setItem(localStorageKey, JSON.stringify(this.localPlayers))
+      setStoredLocalPlayers(this.localPlayers)
       // Publish player names.
       publish('player-names', this.playerNames)
     }
