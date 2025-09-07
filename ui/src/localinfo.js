@@ -4,7 +4,7 @@ import { css, cssRule, define, h, styles } from './utils.js'
 const tagName = 'local-info'
 
 styles(
-  cssRule.hidden(tagName),
+  cssRule.hidable(tagName),
   css(tagName, {
     display: 'flex',
     'flex-direction': 'column',
@@ -21,7 +21,7 @@ class Component extends HTMLElement {
   action = h('button')
 
   connectedCallback() {
-    this.setAttribute('hidden', 'true')
+    this.hide()
 
     this.subscriptions.push(
       subscribe('playing', (playing) => {
@@ -29,11 +29,9 @@ class Component extends HTMLElement {
       }),
 
       subscribe('playmode', (playmode) => {
-        if (playmode === 'local')
-          this.removeAttribute('hidden')
-        else
-          this.setAttribute('hidden', 'true')
-      })
+        if (playmode === 'local') this.show()
+        else this.hide()
+      }),
     )
 
     this.action.addEventListener('click', this)
@@ -58,6 +56,9 @@ class Component extends HTMLElement {
       }
     }
   }
+
+  show() { this.removeAttribute('hidden') }
+  hide() { this.setAttribute('hidden', 'true') }
 }
 
 define(tagName, Component)

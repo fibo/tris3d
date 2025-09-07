@@ -1,12 +1,16 @@
 import { publish, subscribe } from '@tris3d/game'
-import { define, field, h } from './utils.js'
+import { cssRule, define, field, h, styles } from './utils.js'
 
 const tagName = 'playmode-switch'
+
+styles(
+  cssRule.hidable(tagName),
+)
 
 class Component extends HTMLElement {
   subscriptions = []
 
-  select = h('select', { name: 'playmode' }, [
+  select = h('select', { id: 'playmode', name: 'playmode' }, [
     h('option', { value: 'local' }, 'training'),
     h('option', { value: 'online', disabled: true }, 'online'),
   ])
@@ -16,20 +20,32 @@ class Component extends HTMLElement {
 
     select.addEventListener('change', this)
 
-    this.setPlaymode('local')
+    publish('playmode', 'local')
 
     this.subscriptions.push(
+      subscribe('editing-client-settings', (editing) => {
+        if (editing) this.show()
+        else this.hide()
+      }),
+
       subscribe('nickname', (nickname) => {
         for (const option of this.select.options)
           if (option.value === 'online') {
-            // TODO
-            // if (nickname) option.disabled = false
-            // else option.disabled = true
+            if (nickname) option.disabled = false
+            else option.disabled = true
           }
+      }),
+
+      subscribe('playing', (playing) => {
+        if (playing) {
+          this.select.disabled = true
+        } else {
+          this.select.disabled = false
+        }
       }),
     )
 
-    this.append(field('playmode', 'play mode', select))
+    this.append(field('play mode', select))
   }
 
   disconnectedCallback() {
@@ -40,13 +56,13 @@ class Component extends HTMLElement {
 
   handleEvent(event) {
     if (event.type === 'change') {
-      this.setPlaymode(event.target.value)
+      const playmode = event.target.value
+      publish('playmode', playmode)
     }
   }
 
-  setPlaymode(value) {
-    publish('playmode', value)
-  }
+  show() { this.removeAttribute('hidden') }
+  hide() { this.setAttribute('hidden', 'true') }
 }
 
 define(tagName, Component)

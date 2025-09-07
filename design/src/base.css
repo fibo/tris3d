@@ -1,10 +1,11 @@
 :root {
+  --theme-color: ${themeColor};
   --border-color: black;
   --border-width: 1px;
   --border-radius-small: 7px;
   --border-radius-large: 11px;
   --gap: 1em;
-  --gap-small: 0.5em;
+  --gap-small: 0.4em;
   --text-color: black;
   --text-padding: 2px 9px;
 }
@@ -29,7 +30,7 @@ body {
   line-height: 1.5;
   min-height: 100svh;
   padding: 0 var(--gap);
-  background-color: ${themeColor};
+  background-color: var(--theme-color);
   color: var(--text-color);
 }
 
@@ -44,9 +45,15 @@ input, button, select {
   color: var(--text-color);
 }
 
-input:focus, button:focus {
+input:focus, button:focus, select:focus {
   background-color: white;
   color: black;
+  outline-color: var(--border-color);
+}
+
+input:disabled, button:disabled, select:disabled {
+  background-color: var(--theme-color);
+  border-color: var(--theme-color);
 }
 
 select {
@@ -61,4 +68,7 @@ form {
 
 label {
   padding: var(--text-padding);
+}
+label:after {
+  content: ":";
 }

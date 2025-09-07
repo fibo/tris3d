@@ -4,7 +4,7 @@ import { cssRule, define, h, styles } from './utils.js'
 const tagName = 'online-info'
 
 styles(
-  cssRule.hidden(tagName),
+  cssRule.hidable(tagName),
 )
 
 class Component extends HTMLElement {
@@ -13,7 +13,7 @@ class Component extends HTMLElement {
   roomList = h('room-list')
 
   connectedCallback() {
-    this.setAttribute('hidden', 'true')
+    this.hide()
 
     this.subscriptions.push(
       subscribe('playmode', (playmode) => {
@@ -33,6 +33,9 @@ class Component extends HTMLElement {
   disconnectedCallback() {
     this.subscriptions.forEach(unsubscribe => unsubscribe())
   }
+
+  show() { this.removeAttribute('hidden') }
+  hide() { this.setAttribute('hidden', 'true') }
 }
 
 define(tagName, Component)

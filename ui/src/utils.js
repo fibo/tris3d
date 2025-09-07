@@ -3,7 +3,7 @@ export function css(selector, rules) {
 }
 
 export const cssRule = {
-  hidden: tagName => css(`${tagName}[hidden]`, {
+  hidable: tagName => css(`${tagName}[hidden]`, {
     display: 'none',
   }),
 }
@@ -56,9 +56,9 @@ export function h(tagName, attributes = null, children = []) {
   return element
 }
 
-export function field(key, label, select) {
+export function field(label, element) {
   return h('div', { class: 'field' }, [
-    h('label', { for: key }, label),
-    select
+    h('label', { for: element.id }, label),
+    element
   ])
 }

@@ -1,7 +1,11 @@
 import { publish, subscribe } from '@tris3d/game'
-import { define, h } from './utils.js'
+import { cssRule, define, field, h, styles } from './utils.js'
 
 const tagName = 'player-info'
+
+styles(
+  cssRule.hidable(tagName),
+)
 
 class Component extends HTMLElement {
   subscriptions = []
@@ -12,10 +16,7 @@ class Component extends HTMLElement {
   })
 
   form = h('form', {}, [
-    h('div', { class: 'field' }, [
-      h('label', { for: 'nickname' }, 'nickname'),
-      this.nicknameInput
-    ])
+    field('nick name', this.nicknameInput)
   ])
 
   connectedCallback() {
@@ -27,6 +28,11 @@ class Component extends HTMLElement {
     nicknameInput.addEventListener('blur', this)
 
     this.subscriptions.push(
+      subscribe('editing-client-settings', (editing) => {
+        if (editing) this.show()
+        else this.hide()
+      }),
+
       subscribe('playing', (playing) => {
         if (playing) {
           this.nicknameInput.disabled = true
@@ -61,6 +67,9 @@ class Component extends HTMLElement {
     localStorage.setItem('nickname', nickname)
     publish('nickname', nickname)
   }
+
+  show() { this.removeAttribute('hidden') }
+  hide() { this.setAttribute('hidden', 'true') }
 }
 
 define(tagName, Component)

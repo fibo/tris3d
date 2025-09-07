@@ -27,14 +27,15 @@ const indexOf = {
   player3: 2,
 }
 
-const select = (key) => {
-  const players = getInitialPlayers()
-  const index = indexOf[key]
-  const stored = players[index]
+const initialPlayers = getInitialPlayers()
+
+const select = (id) => {
+  const index = indexOf[id]
+  const stored = initialPlayers[index]
   const selected = { selected: 'true' }
-  return h('select', { id: key, name: key }, [
-    option1(stored === 'human' ? selected : key === 'player1' ? selected : { }),
-    option2(stored === 'stupid' ? selected : key !== 'player1' ? selected : { }),
+  return h('select', { id, name: id }, [
+    option1(stored === 'human' ? selected : id === 'player1' ? selected : { }),
+    option2(stored === 'stupid' ? selected : id !== 'player1' ? selected : { }),
     option3(stored === 'smart' ? selected : { }),
     option4(stored === 'bastard' ? selected : { }),
   ])
@@ -43,7 +44,7 @@ const select = (key) => {
 class Component extends HTMLElement {
   subscriptions = []
 
-  players = getInitialPlayers()
+  players = initialPlayers
 
   select = [
     select('player1'),
@@ -52,9 +53,9 @@ class Component extends HTMLElement {
   ]
 
   form = h('form', {}, [
-    field('player1', 'player 1', this.select[0]),
-    field('player2', 'player 2', this.select[1]),
-    field('player3', 'player 3', this.select[2]),
+    field('player 1', this.select[0]),
+    field('player 2', this.select[1]),
+    field('player 3', this.select[2]),
   ])
 
   connectedCallback() {
