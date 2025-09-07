@@ -19,6 +19,20 @@ npm run server
 
 ## Progressive Web App
 
+### Environment
+
+To build and deploy the following environment variables are needed
+
+- `BUCKET`
+- `WEB_SOCKET_URL`
+
+For instance, these are the default values for [tris3d.inversive.net](https://tris3d.inversive.net):
+
+```shell
+export BUCKET=tris3d.inversive.net
+export WEB_SOCKET_URL=ws://tris3d.inversive.net:3456
+```
+
 ### Build
 
 Build the PWA with
@@ -33,7 +47,7 @@ You can preview the PWA with any static file server, for example launch `npx htt
 
 ### Deploy
 
-To deploy the PWA you need AWS CLI.
+To deploy the PWA you need AWS CLI and the environment variable properly set.
 
 Deploy the PWA with
 

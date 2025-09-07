@@ -86,6 +86,6 @@ function startSinglePlayerGame() {
 addEventListener('load', () => {
   const playground = document.createElement('tris3d-playground')
   playground.setAttribute('debug', 'true')
-  playground.setAttribute('websocket', 'ws://localhost:3456')
+  playground.setAttribute('websocket', WEBSOCKET_URL)
   document.body.appendChild(playground)
 })

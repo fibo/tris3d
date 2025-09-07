@@ -28,6 +28,9 @@ async function startServer({ port }) {
   const ctx = await context({
     entryPoints: [src('app.js')],
     bundle: true,
+    define: {
+      WEBSOCKET_URL: JSON.stringify('ws://localhost:3456'),
+    },
     inject: [src('liveReload.js')],
     minify: false,
     outdir,

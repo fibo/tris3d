@@ -6,6 +6,20 @@ import { appName, appDescription, baseStyle, metaThemeColor, metaViewport, theme
 import { ensureDir, isMainModule, workspaceDir } from '@tris3d/repo'
 import { build as esbuild } from 'esbuild'
 
+// If script is called as
+//
+//     npm run build -- all
+//
+// then build all, including images, manifest, etc.
+// Otherwise, only build index.html and JS bundles.
+const BUILD_ALL = process.argv[2] === 'all'
+
+const WEBSOCKET_URL = process.env.WEBSOCKET_URL
+if (!WEBSOCKET_URL) {
+  console.error('Missing WEBSOCKET_URL environment variable')
+  process.exit(1)
+}
+
 const srcDir = join(workspaceDir.pwa, 'src')
 const outDir = join(workspaceDir.pwa, 'out')
 const imagesDir = join(outDir, 'images')
@@ -34,6 +48,7 @@ function html(content, js = {}) {
 }
 
 async function copyImages() {
+  await ensureDir(imagesDir)
   const designImagesDir = join(workspaceDir.design, 'images')
   await copyFile(join(designImagesDir, 'favicon.ico'), join(outDir, 'favicon.ico'))
   await copyFile(join(designImagesDir, 'logo-192.png'), join(imagesDir, 'logo-192.png'))
@@ -63,6 +78,9 @@ function computeChecksum(filepath) {
 async function generateJs(filename) {
   const outfile = join(outDir, filename)
   await esbuild({
+    define: {
+      WEBSOCKET_URL: JSON.stringify(WEBSOCKET_URL),
+    },
     entryPoints: [join(srcDir, filename)],
     bundle: true,
     minify: true,
@@ -75,6 +93,7 @@ async function generateJs(filename) {
 }
 
 export async function generateHtml() {
+  await ensureDir(jsDir)
   const canvas = await generateJs('canvas.js')
   const ui = await generateJs('ui.js')
   const js = {
@@ -83,8 +102,10 @@ export async function generateHtml() {
   }
   const indexContent = await indexHtml(js)
   await writeFile(indexHtmlFilepath, indexContent, 'utf-8')
-  const pageNotFoundContent = await pageNotFoundHtml({ appName })
-  await writeFile(pageNotFoundFilepath, pageNotFoundContent, 'utf-8')
+  if (BUILD_ALL) {
+    const pageNotFoundContent = await pageNotFoundHtml({ appName })
+    await writeFile(pageNotFoundFilepath, pageNotFoundContent, 'utf-8')
+  }
 }
 
 async function generateManifest() {
@@ -111,12 +132,12 @@ async function generateManifest() {
 
 export async function build() {
   await ensureDir(outDir)
-  await ensureDir(imagesDir)
-  await ensureDir(jsDir)
 
-  await copyImages()
+  if (BUILD_ALL) {
+    await copyImages()
+    await generateManifest()
+  }
 
-  await generateManifest()
   await generateHtml()
 }
 
