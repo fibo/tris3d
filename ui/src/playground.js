@@ -1,5 +1,6 @@
 // Actually it depends on @tris3d/canvas
 // but import is omitted.
+import { publish, subscribe } from '@tris3d/game'
 import { css, define, h, styles } from './utils.js'
 
 const tagName = 'tris3d-playground'
@@ -15,6 +16,10 @@ styles(
 )
 
 class Component extends HTMLElement {
+  static observedAttributes = ['debug']
+
+  subscriptions = []
+
   clientsettings = h('client-settings')
   canvas = h('tris3d-canvas')
   localinfo = h('local-info')
@@ -37,6 +42,25 @@ class Component extends HTMLElement {
 
     this.resize()
 
+    this.subscriptions.push(
+      subscribe('playing', (playing) => {
+        if (playing) {
+          publish('current-player-index', 0)
+          canvas.setAttribute('moves', '')
+          canvas.addEventListener('move', this)
+        } else {
+          publish('current-player-index', undefined)
+          canvas.removeAttribute('moves')
+          canvas.removeEventListener('move', this)
+        }
+      }),
+
+      subscribe('local-player-index', (index) => {
+        if (typeof index === 'number') canvas.setAttribute('player', index)
+        if (index === undefined) canvas.removeAttribute('player')
+      })
+    )
+
     this.append(
       this.clientsettings,
       canvas,
@@ -47,7 +71,24 @@ class Component extends HTMLElement {
     window.addEventListener('resize', this)
   }
 
+  disconnectedCallback() {
+    this.subscriptions.forEach(unsubscribe => unsubscribe())
+    window.removeEventListener('resize', this)
+  }
+
+  attributeChangedCallback(name, _oldValue, newValue) {
+    if (name === 'debug') {
+      const debug = newValue !== null
+      this.debug = debug
+      publish('debug', debug)
+    }
+  }
+
   handleEvent(event) {
+    if (event.type === 'move') {
+      const { position } = event.detail
+      publish('move', position)
+    }
     if (event.type === 'resize') {
       this.resize()
     }
@@ -60,20 +101,19 @@ class Component extends HTMLElement {
   }
 
   connect() {
-    const debug = this.getAttribute('debug')
     const url = this.getAttribute('websocket')
     if (!url) return
     const socket = new WebSocket(url)
     socket.onmessage = (event) => {
       try {
         const { type, data } = JSON.parse(event.data)
-        if (debug) console.info('message', type, data)
+        if (this.debug) console.info('message', type, data)
       } catch (error) {
         console.error(error)
       }
     }
     socket.onopen = (event) => {
-      if (debug) console.info('open', event)
+      if (this.debug) console.info('open', event)
     }
   }
 }

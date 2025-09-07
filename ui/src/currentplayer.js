@@ -1,10 +1,14 @@
 import { subscribe } from '@tris3d/game'
-import { cssRule, define, field, getDefaultPlayerLabels, h, styles } from './utils.js'
+import { css, cssRule, define, field, getDefaultPlayerLabels, h, styles } from './utils.js'
 
 const tagName = 'current-player'
+const yourTurnMessage = 'It\'s your turn!'
 
 styles(
   cssRule.hidable(tagName),
+  css(`${tagName} .message`, {
+    padding: 'var(--text-padding)',
+  })
 )
 
 class Component extends HTMLElement {
@@ -14,6 +18,7 @@ class Component extends HTMLElement {
   playerNames = getDefaultPlayerLabels()
 
   playername = h('output', { id: 'playername', type: 'text' })
+  message = h('span', { class: 'message' })
 
   connectedCallback() {
     this.hide()
@@ -24,14 +29,30 @@ class Component extends HTMLElement {
         else this.hide()
       }),
 
+      subscribe('current-player-index', (index) => {
+        this.currentPlayerIndex = index
+        if (typeof index === 'number' && index === this.localPlayerIndex) {
+          this.message.textContent = yourTurnMessage
+        } else {
+          this.message.textContent = ''
+        }
+      }),
+
+      subscribe('local-player-index', (index) => {
+        this.localPlayerIndex = index
+      }),
+
       subscribe('player-names', (names) => {
         if (names) this.playerNames = names
-        this.playername.textContent = this.playerNames[this.currentPlayerIndex]
+        const index = this.currentPlayerIndex
+        if (!index) return
+        this.playername.textContent = this.playerNames[index]
       }),
     )
 
     this.append(
       field('current player', this.playername),
+      this.message
     )
   }
 

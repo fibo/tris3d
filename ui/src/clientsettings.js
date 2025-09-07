@@ -62,7 +62,6 @@ class Component extends HTMLElement {
     )
 
     top.addEventListener('click', this)
-    window.addEventListener('click', this)
   }
 
   disconnectedCallback() {
@@ -74,10 +73,12 @@ class Component extends HTMLElement {
     if (event.type === 'click') {
       if (event.currentTarget === this.top) {
         publish('editing-client-settings', editing => !editing)
+        window.addEventListener('click', this)
       }
       // Outside click.
       if (event.target !== this && !this.contains(event.target)) {
         publish('editing-client-settings', false)
+        window.removeEventListener('click', this)
       }
     }
   }

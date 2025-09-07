@@ -1,7 +1,8 @@
 const state = new Map()
 const subscribersByKey = new Map()
 
-function update(key, value) {
+function update(key, value, debug) {
+  if (debug) console.info('update', key, value)
   // Update state.
   state.set(key, value)
   // Notify subscribers.
@@ -26,13 +27,13 @@ export function publish(key, arg) {
     const currentValue = state.get(key)
     try {
       const newValue = arg(currentValue)
-      update(key, newValue)
+      update(key, newValue, state.get('debug'))
     } catch (error) {
       console.error(error)
     }
   } else {
     // ...otherwise, arg is the new value.
-    update(key, arg)
+    update(key, arg, state.get('debug'))
   }
 }
 

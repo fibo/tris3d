@@ -109,8 +109,9 @@ class Component extends HTMLElement {
       // Store choices.
       this.localPlayers = this.select.map(item => item.value)
       setStoredLocalPlayers(this.localPlayers)
-      // Publish player names.
+      // Publish players info.
       publish('player-names', this.playerNames)
+      publish('local-player-index', this.localPlayers.indexOf('human'))
     }
   }
 
