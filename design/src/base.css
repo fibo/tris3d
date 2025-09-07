@@ -1,13 +1,14 @@
 :root {
   --theme-color: ${themeColor};
-  --border-color: black;
   --border-width: 1px;
   --border-radius-small: 7px;
   --border-radius-large: 11px;
   --gap: 1em;
   --gap-small: 0.4em;
-  --text-color: black;
+  --color-black: black;
   --text-padding: 2px 9px;
+  --text-color: var(--color-black);
+  --border-color: var(--color-black);
 }
 
 html {
@@ -43,6 +44,7 @@ input, button, select {
   border-radius: var(--border-radius-small);
   padding: var(--text-padding);
   color: var(--text-color);
+  accent-color: var(--color-black);
 }
 
 input:focus, button:focus, select:focus {

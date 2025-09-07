@@ -1,16 +1,24 @@
-import { subscribe } from '@tris3d/game'
-import { define, field, h } from './utils.js'
+import { publish, subscribe } from '@tris3d/game'
+import { cssRule, define, field, getDefaultPlayerLabels, h, styles } from './utils.js'
 
 const tagName = 'local-players'
 
-const option1 = selected => h('option', { value: 'human', ...selected }, 'human')
+styles(
+  cssRule.hidable(tagName),
+)
+
+const humanLabel = 'human'
+
+const option1 = selected => h('option', { value: 'human', ...selected }, humanLabel)
 const option2 = selected => h('option', { value: 'stupid', ...selected }, 'AI 🤖')
 const option3 = selected => h('option', { value: 'smart', ...selected }, 'AI 🤓')
 const option4 = selected => h('option', { value: 'bastard', ...selected }, 'AI 😈')
 
+const localStorageKey = 'local players'
+
 const getInitialPlayers = () => {
   const defaults = ['human', 'stupid', 'stupid']
-  const stored = localStorage.getItem('localplayers')
+  const stored = localStorage.getItem(localStorageKey)
   try {
     const localplayers = JSON.parse(stored)
     if (Array.isArray(localplayers) && localplayers.length === 3)
@@ -20,6 +28,8 @@ const getInitialPlayers = () => {
     return defaults
   }
 }
+
+const defaultPlayerLabels = getDefaultPlayerLabels()
 
 const indexOf = {
   player1: 0,
@@ -44,7 +54,7 @@ const select = (id) => {
 class Component extends HTMLElement {
   subscriptions = []
 
-  players = initialPlayers
+  localPlayers = initialPlayers
 
   select = [
     select('player1'),
@@ -52,11 +62,20 @@ class Component extends HTMLElement {
     select('player3')
   ]
 
-  form = h('form', {}, [
-    field('player 1', this.select[0]),
-    field('player 2', this.select[1]),
-    field('player 3', this.select[2]),
-  ])
+  form = h('form', {}, defaultPlayerLabels.map(
+    (label, index) => field(label, this.select[index])
+  ))
+
+  get playerNames() {
+    return this.select.map(
+      (item, index) => {
+        const playerName = item.options[item.selectedIndex].textContent
+        // If local player has no nickname, use player label.
+        if (playerName === humanLabel) return defaultPlayerLabels[index]
+        return playerName
+      }
+    )
+  }
 
   connectedCallback() {
     this.select.forEach(item => item.addEventListener('change', this))
@@ -64,24 +83,18 @@ class Component extends HTMLElement {
     this.subscriptions.push(
       subscribe('nickname', (nickname) => {
         this.select.forEach((item) => {
-          for (const option of item.options) {
+          for (const option of item.options)
             if (option.value === 'human') {
-              if (nickname) {
-                option.textContent = nickname
-              } else {
-                option.textContent = 'human'
-              }
+              if (nickname) option.textContent = nickname
+              else option.textContent = humanLabel
             }
-          }
         })
+        publish('player-names', this.playerNames)
       }),
 
       subscribe('playing', (playing) => {
-        if (playing) {
-          this.select.forEach(item => item.disabled = true)
-        } else {
-          this.select.forEach(item => item.disabled = false)
-        }
+        if (playing) this.hide()
+        else this.show()
       }),
     )
 
@@ -99,20 +112,24 @@ class Component extends HTMLElement {
       const key = event.target.id
       const index = indexOf[key]
       const nextChoice = event.target.value
-      const previousChoice = this.players[index]
+      const previousChoice = this.localPlayers[index]
       // There must be no more than one human player.
       if (nextChoice === 'human') {
-        const previousHumanIndex = this.players.indexOf('human')
+        const previousHumanIndex = this.localPlayers.indexOf('human')
         if (previousHumanIndex !== -1) {
           this.select[previousHumanIndex].value = previousChoice
         }
       }
       // Store choices.
-      const players = this.select.map(item => item.value)
-      this.players = players
-      localStorage.setItem('localplayers', JSON.stringify(players))
+      this.localPlayers = this.select.map(item => item.value)
+      localStorage.setItem(localStorageKey, JSON.stringify(this.localPlayers))
+      // Publish player names.
+      publish('player-names', this.playerNames)
     }
   }
+
+  show() { this.removeAttribute('hidden') }
+  hide() { this.setAttribute('hidden', 'true') }
 }
 
 define(tagName, Component)

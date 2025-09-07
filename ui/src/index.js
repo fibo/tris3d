@@ -1,4 +1,5 @@
 import './clientsettings.js'
+import './currentplayer.js'
 import './localinfo.js'
 import './localplayers.js'
 import './onlineinfo.js'

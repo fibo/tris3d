@@ -17,11 +17,8 @@ class Component extends HTMLElement {
 
     this.subscriptions.push(
       subscribe('playmode', (playmode) => {
-        if (playmode === 'online') {
-          this.removeAttribute('hidden')
-        } else {
-          this.setAttribute('hidden', 'true')
-        }
+        if (playmode === 'online') this.show()
+        else this.hide()
       }),
     )
 

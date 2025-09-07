@@ -10,13 +10,14 @@ styles(
     'flex-direction': 'column',
     gap: 'var(--gap)',
     'flex-grow': '1',
-    'justify-content': 'end',
+    'justify-content': 'space-between',
   }),
 )
 
 class Component extends HTMLElement {
   subscriptions = []
 
+  currentplayer = h('current-player')
   players = h('local-players')
   action = h('button')
 
@@ -37,6 +38,7 @@ class Component extends HTMLElement {
     this.action.addEventListener('click', this)
 
     this.append(
+      this.currentplayer,
       this.players,
       this.action,
     )
