@@ -1,6 +1,6 @@
 // Actually it depends on @tris3d/canvas
 // but import is omitted.
-import { publish, subscribe } from '@tris3d/game'
+import { peek, publish, subscribe } from '@tris3d/game'
 import { css, define, h, styles } from '../utils.js'
 
 const tagName = 'game-playground'
@@ -43,22 +43,29 @@ class Component extends HTMLElement {
     this.resize()
 
     this.subscriptions.push(
+      subscribe('moves', (moves) => {
+        if (moves)
+          canvas.setAttribute('moves', moves.join(''))
+        else
+          canvas.removeAttribute('moves')
+      }),
+
       subscribe('playing', (playing) => {
         if (playing) {
-          publish('current-player-index', 0)
+          const playmode = peek('playmode')
+          if (playmode === 'local') {
+            const players = peek('local-players')
+            const player = players.indexOf('human')
+            canvas.setAttribute('player', player)
+          }
           canvas.setAttribute('moves', '')
           canvas.addEventListener('move', this)
         } else {
-          publish('current-player-index', undefined)
           canvas.removeAttribute('moves')
+          canvas.removeAttribute('player')
           canvas.removeEventListener('move', this)
         }
       }),
-
-      subscribe('local-player-index', (index) => {
-        if (typeof index === 'number') canvas.setAttribute('player', index)
-        if (index === undefined) canvas.removeAttribute('player')
-      })
     )
 
     this.append(
@@ -87,7 +94,10 @@ class Component extends HTMLElement {
   handleEvent(event) {
     if (event.type === 'move') {
       const { position } = event.detail
-      publish('move', position)
+      publish('moves', (moves) => {
+        if (moves === undefined) return
+        return [...moves, position]
+      })
     }
     if (event.type === 'resize') {
       this.resize()

@@ -1,10 +1,8 @@
-import { subscribe } from '@tris3d/game'
-import { css, cssRule, define, field, getDefaultPlayerLabels, h, styles } from '../utils.js'
+import { peek, subscribe } from '@tris3d/game'
+import { currentPlayerLabel, yourTurnMessage } from '../i18n.js'
+import { css, cssRule, define, field, h, styles } from '../utils.js'
 
 const tagName = 'current-player'
-
-const yourTurnMessage = 'It\'s your turn!'
-const currentPlayerLabel = 'Current player'
 
 styles(
   cssRule.hidable(tagName),
@@ -15,9 +13,6 @@ styles(
 
 class Component extends HTMLElement {
   subscriptions = []
-  currentPlayerIndex = 0
-
-  players = getDefaultPlayerLabels()
 
   player = h('output', { id: 'current-player', type: 'text' })
   message = h('span', { class: 'message' })
@@ -31,19 +26,26 @@ class Component extends HTMLElement {
         else this.hide()
       }),
 
-      subscribe('current-player-index', (index) => {
-        this.currentPlayerIndex = index
-        this.updateContent()
-      }),
+      subscribe('moves', (moves) => {
+        const { player, message } = this
+        if (!moves) return
 
-      subscribe('local-player-index', (index) => {
-        this.localPlayerIndex = index
-        this.updateContent()
-      }),
+        const players = peek('player-names')
+        const currentPlayerIndex = moves.length % 3
+        const localPlayerIndex = peek('local-player-index')
 
-      subscribe('player-names', (players) => {
-        if (players) this.players = players
-        this.updateContent()
+        // player name
+        if (typeof currentPlayerIndex === 'number' && players[currentPlayerIndex])
+          player.textContent = players[currentPlayerIndex]
+        else
+          player.textContent = ''
+
+        // message
+        if ((typeof currentPlayerIndex === 'number' && typeof localPlayerIndex === 'number')
+          && (localPlayerIndex === currentPlayerIndex))
+          message.textContent = yourTurnMessage
+        else
+          message.textContent = ''
       }),
     )
 
@@ -55,29 +57,6 @@ class Component extends HTMLElement {
 
   disconnectedCallback() {
     this.subscriptions.forEach(unsubscribe => unsubscribe())
-  }
-
-  updateContent() {
-    this.updatePlayerName()
-    this.updateMessage()
-  }
-
-  updateMessage() {
-    const { currentPlayerIndex, localPlayerIndex, message } = this
-    if (
-      (typeof currentPlayerIndex === 'number' && typeof localPlayerIndex === 'number')
-      && (localPlayerIndex === currentPlayerIndex)
-    ) message.textContent = yourTurnMessage
-    else message.textContent = ''
-  }
-
-  updatePlayerName() {
-    const { player, players, currentPlayerIndex: index } = this
-    if (typeof index === 'number' && players[index]) {
-      player.textContent = players[index]
-    } else {
-      player.textContent = ''
-    }
   }
 
   show() { this.removeAttribute('hidden') }

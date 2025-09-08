@@ -1,3 +1,5 @@
+import {baseCss} from "@tris3d/design";
+
 declare module '@tris3d/game' {
   export class GameBoard {}
 
@@ -6,7 +8,11 @@ declare module '@tris3d/game' {
   }
 
   // AI.js
-  export function stupid(moves: string[]): string;
+  export const AI = {
+    stupid: (moves: string[]) => string;
+    smart: (moves: string[]) => string;
+    bastard: (moves: string[]) => string;
+  }
 
   // pubsub.js
   export function peek(key: string): unknown;

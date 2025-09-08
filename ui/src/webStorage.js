@@ -1,17 +1,22 @@
+import { subscribe } from '@tris3d/game'
+
 // Local Storage is read only on page load.
+// It is written only by subscribers in this file.
 
-const storedNickname = localStorage.getItem('nickname') || ''
 export function getStoredNickname() {
-  return storedNickname
+  return localStorage.getItem('nickname') || ''
 }
-export function setStoredNickname(nickname) {
+subscribe('nickname', (nickname) => {
+  if (!nickname) return
   localStorage.setItem('nickname', nickname)
-}
+})
 
-const storedLocalPlayers = localStorage.getItem('local players') ?? JSON.stringify(['human', 'stupid', 'stupid'])
 export function getStoredLocalPlayers() {
+  const storedLocalPlayers = localStorage.getItem('local-players') ?? JSON.stringify(['human', 'stupid', 'stupid'])
   return JSON.parse(storedLocalPlayers)
 }
-export function setStoredLocalPlayers(localPlayers) {
-  localStorage.setItem('local players', JSON.stringify(localPlayers))
-}
+subscribe('local-players', (localPlayers) => {
+  if (!Array.isArray(localPlayers)) return
+  if (localPlayers.length !== 3) return
+  localStorage.setItem('local-players', JSON.stringify(localPlayers))
+})

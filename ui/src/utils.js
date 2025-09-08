@@ -62,5 +62,3 @@ export function field(label, element) {
     element
   ])
 }
-
-export const getDefaultPlayerLabels = () => ['player 1', 'player 2', 'player 3']

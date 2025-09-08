@@ -38,11 +38,10 @@ class Component extends HTMLElement {
       }),
 
       subscribe('playing', (playing) => {
-        if (playing) {
+        if (playing)
           this.select.disabled = true
-        } else {
+        else
           this.select.disabled = false
-        }
       }),
     )
 

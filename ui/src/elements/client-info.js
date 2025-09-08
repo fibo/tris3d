@@ -1,8 +1,8 @@
 import { publish, subscribe } from '@tris3d/game'
-import { getStoredNickname, setStoredNickname } from '../webStorage.js'
+import { getStoredNickname } from '../webStorage.js'
 import { cssRule, define, field, h, styles } from '../utils.js'
 
-const tagName = 'player-info'
+const tagName = 'client-info'
 
 styles(
   cssRule.hidable(tagName),
@@ -65,7 +65,6 @@ class Component extends HTMLElement {
 
   setNickname(value) {
     const nickname = value.trim()
-    setStoredNickname(nickname)
     publish('nickname', nickname)
   }
 

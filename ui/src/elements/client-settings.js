@@ -30,8 +30,8 @@ styles(
 class Component extends HTMLElement {
   subscriptions = []
 
-  playerinfo = h('player-info')
-  playmodeswitch = h('playmode-switch')
+  clientInfo = h('client-info')
+  playmodeSwitch = h('playmode-switch')
   top = h('div', { class: 'top' }, [
     svg('svg', { viewBox: `0 0 ${iconHeight} ${iconHeight}`, width: iconHeight, height: iconHeight },
       [0, 1, 2].map((i) => {
@@ -57,8 +57,8 @@ class Component extends HTMLElement {
 
     this.append(
       top,
-      this.playmodeswitch,
-      this.playerinfo,
+      this.playmodeSwitch,
+      this.clientInfo,
     )
 
     top.addEventListener('click', this)

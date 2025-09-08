@@ -1,6 +1,7 @@
-import { publish, subscribe } from '@tris3d/game'
-import { getStoredLocalPlayers, setStoredLocalPlayers } from '../webStorage.js'
-import { cssRule, define, field, getDefaultPlayerLabels, h, styles } from '../utils.js'
+import { peek, publish, subscribe } from '@tris3d/game'
+import { getDefaultPlayerLabels, aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel } from '../i18n.js'
+import { getStoredLocalPlayers } from '../webStorage.js'
+import { cssRule, define, field, h, styles } from '../utils.js'
 
 const tagName = 'local-players'
 
@@ -8,12 +9,10 @@ styles(
   cssRule.hidable(tagName),
 )
 
-const humanLabel = 'human'
-
 const option1 = selected => h('option', { value: 'human', ...selected }, humanLabel)
-const option2 = selected => h('option', { value: 'stupid', ...selected }, 'AI 🤖')
-const option3 = selected => h('option', { value: 'smart', ...selected }, 'AI 🤓')
-const option4 = selected => h('option', { value: 'bastard', ...selected }, 'AI 😈')
+const option2 = selected => h('option', { value: 'stupid', ...selected }, aiStupidLabel)
+const option3 = selected => h('option', { value: 'smart', ...selected }, aiSmartLabel)
+const option4 = selected => h('option', { value: 'bastard', ...selected }, aiBastardLabel)
 
 const defaultPlayerLabels = getDefaultPlayerLabels()
 
@@ -40,8 +39,6 @@ const select = (id) => {
 class Component extends HTMLElement {
   subscriptions = []
 
-  localPlayers = initialPlayers
-
   select = [
     select('player1'),
     select('player2'),
@@ -51,17 +48,6 @@ class Component extends HTMLElement {
   form = h('form', {}, defaultPlayerLabels.map(
     (label, index) => field(label, this.select[index])
   ))
-
-  get playerNames() {
-    return this.select.map(
-      (item, index) => {
-        const playerName = item.options[item.selectedIndex].textContent
-        // If local player has no nickname, use player label.
-        if (playerName === humanLabel) return defaultPlayerLabels[index]
-        return playerName
-      }
-    )
-  }
 
   connectedCallback() {
     this.select.forEach(item => item.addEventListener('change', this))
@@ -75,7 +61,7 @@ class Component extends HTMLElement {
               else option.textContent = humanLabel
             }
         })
-        this.publish()
+        this.publishInfo()
       }),
 
       subscribe('playing', (playing) => {
@@ -98,26 +84,32 @@ class Component extends HTMLElement {
       const key = event.target.id
       const index = indexOf[key]
       const nextChoice = event.target.value
-      const previousChoice = this.localPlayers[index]
+      const localPlayers = peek('local-players')
+      const previousChoice = localPlayers[index]
       // There must be no more than one human player.
       if (nextChoice === 'human') {
-        const previousHumanIndex = this.localPlayers.indexOf('human')
+        const previousHumanIndex = localPlayers.indexOf('human')
         if (previousHumanIndex !== -1) {
           this.select[previousHumanIndex].value = previousChoice
         }
       }
-      // Store choices.
-      this.localPlayers = this.select.map(item => item.value)
-      setStoredLocalPlayers(this.localPlayers)
-      // Publish info.
-      this.publish()
+      this.publishInfo()
     }
   }
 
-  publish() {
-    publish('player-names', this.playerNames)
-    const localPlayerIndex = this.localPlayers.indexOf('human')
-    publish('local-player-index', localPlayerIndex === -1 ? undefined : localPlayerIndex)
+  publishInfo() {
+    const localPlayers = this.select.map(item => item.value)
+    publish('local-players', localPlayers)
+
+    const playerNames = this.select.map(
+      (item, index) => {
+        const playerName = item.options[item.selectedIndex].textContent
+        // If local player has no nickname, use player label.
+        if (playerName === humanLabel) return defaultPlayerLabels[index]
+        return playerName
+      }
+    )
+    publish('player-names', playerNames)
   }
 
   show() { this.removeAttribute('hidden') }

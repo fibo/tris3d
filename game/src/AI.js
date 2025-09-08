@@ -2,11 +2,11 @@ import { POSITIONS } from './space.js'
 
 const CORNERS = ['A', 'C', 'E', 'G', 'R', 'T', 'V', 'X']
 
-export function stupid(moves) {
+function stupid(moves) {
   if (moves.length === POSITIONS.length) return '' // No moves left.
 
   // Get center if available...
-  if (moves.includes('*')) {
+  if (!moves.includes('*')) {
     // ... not every time.
     if (Math.random() < 0.71) return '*'
   }
@@ -24,4 +24,10 @@ export function stupid(moves) {
   const availableMoves = POSITIONS.filter(position => !moves.includes(position))
   const randomIndex = Math.floor(Math.random() * availableMoves.length)
   return availableMoves[randomIndex]
+}
+
+export const AI = {
+  stupid,
+  bastard: stupid,
+  smart: stupid,
 }

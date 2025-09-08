@@ -50,12 +50,8 @@ class Component extends HTMLElement {
   }
 
   handleEvent(event) {
-    if (event.type === 'click') {
-      if (event.target === this.action) {
-        publish('playing', (playing) => {
-          return !playing
-        })
-      }
+    if (event.type === 'click' && event.target === this.action) {
+      publish('playing', playing => !playing)
     }
   }
 
