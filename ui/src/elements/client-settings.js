@@ -1,5 +1,5 @@
 import { publish, subscribe } from '@tris3d/game'
-import { css, define, h, styles, svg } from './utils.js'
+import { css, define, h, styles, svg } from '../utils.js'
 
 const tagName = 'client-settings'
 const iconHeight = 24

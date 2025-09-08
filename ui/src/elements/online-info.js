@@ -1,5 +1,5 @@
 import { subscribe } from '@tris3d/game'
-import { cssRule, define, h, styles } from './utils.js'
+import { cssRule, define, h, styles } from '../utils.js'
 
 const tagName = 'online-info'
 

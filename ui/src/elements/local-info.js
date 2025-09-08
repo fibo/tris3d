@@ -1,5 +1,5 @@
 import { publish, subscribe } from '@tris3d/game'
-import { css, cssRule, define, h, styles } from './utils.js'
+import { css, cssRule, define, h, styles } from '../utils.js'
 
 const tagName = 'local-info'
 

@@ -1,5 +1,5 @@
 import { publish, subscribe } from '@tris3d/game'
-import { cssRule, define, field, h, styles } from './utils.js'
+import { cssRule, define, field, h, styles } from '../utils.js'
 
 const tagName = 'playmode-switch'
 
@@ -31,8 +31,9 @@ class Component extends HTMLElement {
       subscribe('nickname', (nickname) => {
         for (const option of this.select.options)
           if (option.value === 'online') {
-            if (nickname) option.disabled = false
-            else option.disabled = true
+            // TODO
+            // if (nickname) option.disabled = false
+            // else option.disabled = true
           }
       }),
 

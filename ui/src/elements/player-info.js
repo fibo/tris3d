@@ -1,6 +1,6 @@
 import { publish, subscribe } from '@tris3d/game'
-import { getStoredNickname, setStoredNickname } from './localstorage.js'
-import { cssRule, define, field, h, styles } from './utils.js'
+import { getStoredNickname, setStoredNickname } from '../webStorage.js'
+import { cssRule, define, field, h, styles } from '../utils.js'
 
 const tagName = 'player-info'
 

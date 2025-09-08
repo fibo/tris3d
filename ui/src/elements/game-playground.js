@@ -1,9 +1,9 @@
 // Actually it depends on @tris3d/canvas
 // but import is omitted.
 import { publish, subscribe } from '@tris3d/game'
-import { css, define, h, styles } from './utils.js'
+import { css, define, h, styles } from '../utils.js'
 
-const tagName = 'tris3d-playground'
+const tagName = 'game-playground'
 
 styles(
   css(tagName, {

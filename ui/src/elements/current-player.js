@@ -1,5 +1,5 @@
 import { subscribe } from '@tris3d/game'
-import { css, cssRule, define, field, getDefaultPlayerLabels, h, styles } from './utils.js'
+import { css, cssRule, define, field, getDefaultPlayerLabels, h, styles } from '../utils.js'
 
 const tagName = 'current-player'
 const yourTurnMessage = 'It\'s your turn!'

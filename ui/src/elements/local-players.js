@@ -1,6 +1,6 @@
 import { publish, subscribe } from '@tris3d/game'
-import { getStoredLocalPlayers, setStoredLocalPlayers } from './localstorage.js'
-import { cssRule, define, field, getDefaultPlayerLabels, h, styles } from './utils.js'
+import { getStoredLocalPlayers, setStoredLocalPlayers } from '../webStorage.js'
+import { cssRule, define, field, getDefaultPlayerLabels, h, styles } from '../utils.js'
 
 const tagName = 'local-players'
 

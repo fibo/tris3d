@@ -1,4 +1,5 @@
-import { define, h } from './utils.js'
+import { define, h } from '../utils.js'
+
 const tagName = 'room-list'
 
 class Component extends HTMLElement {
