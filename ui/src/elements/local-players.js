@@ -75,7 +75,7 @@ class Component extends HTMLElement {
               else option.textContent = humanLabel
             }
         })
-        publish('player-names', this.playerNames)
+        this.publish()
       }),
 
       subscribe('playing', (playing) => {
@@ -109,10 +109,15 @@ class Component extends HTMLElement {
       // Store choices.
       this.localPlayers = this.select.map(item => item.value)
       setStoredLocalPlayers(this.localPlayers)
-      // Publish players info.
-      publish('player-names', this.playerNames)
-      publish('local-player-index', this.localPlayers.indexOf('human'))
+      // Publish info.
+      this.publish()
     }
+  }
+
+  publish() {
+    publish('player-names', this.playerNames)
+    const localPlayerIndex = this.localPlayers.indexOf('human')
+    publish('local-player-index', localPlayerIndex === -1 ? undefined : localPlayerIndex)
   }
 
   show() { this.removeAttribute('hidden') }

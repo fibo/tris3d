@@ -1,3 +1,4 @@
+export { stupid } from './AI.js'
 export { GameBoard } from './board.js'
 export { GameRoom } from './room.js'
 export { peek, publish, subscribe } from './pubsub.js'

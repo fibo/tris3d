@@ -5,6 +5,9 @@ declare module '@tris3d/game' {
     constructor(id: string);
   }
 
+  // AI.js
+  export function stupid(moves: string[]): string;
+
   // pubsub.js
   export function peek(key: string): unknown;
   export function publish(key: string, arg: unknown): void;
