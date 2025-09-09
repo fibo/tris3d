@@ -1,7 +1,11 @@
 import {baseCss} from "@tris3d/design";
 
 declare module '@tris3d/game' {
-  export class GameBoard {}
+  export class GameBoard {
+    readonly gameIsOver: boolean;
+    readonly hasWinner: boolean;
+    readonly isTie: boolean;
+  }
 
   export class GameRoom {
     constructor(id: string);
@@ -9,9 +13,9 @@ declare module '@tris3d/game' {
 
   // AI.js
   export const AI = {
-    stupid: (moves: string[]) => string;
-    smart: (moves: string[]) => string;
-    bastard: (moves: string[]) => string;
+    stupid: (moves: string[]) => string,
+    smart: (moves: string[]) => string,
+    bastard: (moves: string[], targetPlayerIndex: number) => string,
   }
 
   // pubsub.js

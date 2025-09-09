@@ -1,5 +1,6 @@
 import { publish, subscribe } from '@tris3d/game'
-import { css, define, h, styles, svg } from '../utils.js'
+import { css, cssRule, define, domComponent, h, styles, svg, show, hide } from '../utils.js'
+import { cannotEditWhilePlayingLabel } from '../i18n.js'
 
 const tagName = 'client-settings'
 const iconHeight = 24
@@ -24,11 +25,15 @@ styles(
 
   css(`${tagName} .top svg`, {
     fill: 'var(--text-color)',
-  })
+  }),
+
+  cssRule.message(tagName)
 )
 
 class Component extends HTMLElement {
   subscriptions = []
+
+  cannotEdit = domComponent.message(cannotEditWhilePlayingLabel)
 
   clientInfo = h('client-info')
   playmodeSwitch = h('playmode-switch')
@@ -48,10 +53,13 @@ class Component extends HTMLElement {
 
     this.subscriptions.push(
       subscribe('editing-client-settings', (editing) => {
-        if (editing)
-          this.classList.remove('closed')
-        else
-          this.classList.add('closed')
+        if (editing) this.classList.remove('closed')
+        else this.classList.add('closed')
+      }),
+
+      subscribe('playing', (playing) => {
+        if (playing) show(this.cannotEdit)
+        else hide(this.cannotEdit)
       }),
     )
 
@@ -59,6 +67,7 @@ class Component extends HTMLElement {
       top,
       this.playmodeSwitch,
       this.clientInfo,
+      this.cannotEdit,
     )
 
     top.addEventListener('click', this)

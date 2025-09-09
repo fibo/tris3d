@@ -1,5 +1,6 @@
 import { publish, subscribe } from '@tris3d/game'
-import { css, cssRule, define, h, styles } from '../utils.js'
+import { css, cssRule, define, h, styles, show, hide } from '../utils.js'
+import { endGameLabel, quitLabel, startLabel } from '../i18n.js'
 
 const tagName = 'local-info'
 
@@ -19,19 +20,25 @@ class Component extends HTMLElement {
 
   currentplayer = h('current-player')
   players = h('local-players')
+  results = h('local-results')
   action = h('button')
 
   connectedCallback() {
-    this.hide()
+    hide(this)
 
     this.subscriptions.push(
+      subscribe('game-over', (gameIsOver) => {
+        if (gameIsOver)
+          this.action.textContent = endGameLabel
+      }),
+
       subscribe('playing', (playing) => {
-        this.action.textContent = playing ? 'quit' : 'start'
+        this.action.textContent = playing ? quitLabel : startLabel
       }),
 
       subscribe('playmode', (playmode) => {
-        if (playmode === 'local') this.show()
-        else this.hide()
+        if (playmode === 'local') show(this)
+        else hide(this)
       }),
     )
 
@@ -40,6 +47,7 @@ class Component extends HTMLElement {
     this.append(
       this.currentplayer,
       this.players,
+      this.results,
       this.action,
     )
   }
@@ -54,9 +62,6 @@ class Component extends HTMLElement {
       publish('playing', playing => !playing)
     }
   }
-
-  show() { this.removeAttribute('hidden') }
-  hide() { this.setAttribute('hidden', 'true') }
 }
 
 define(tagName, Component)

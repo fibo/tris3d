@@ -8,6 +8,12 @@ const tagName = 'tris3d-canvas'
 const radian = 2 * Math.PI / 360
 const angularSpeed = 17 * radian // radians per second
 
+const playerColors = [
+  0xff0000, // Player 0: Red
+  0x00ff00, // Player 1: Green
+  0x0000ff, // Player 2: Blue
+]
+
 const sheet = new CSSStyleSheet()
 
 sheet.insertRule([tagName, '{',
@@ -87,16 +93,23 @@ class Tris3dCanvas extends HTMLElement {
 
   attributeChangedCallback(name, _oldValue, newValue) {
     if (name === 'moves') {
-      const { board } = this
-      if (typeof newValue !== 'string') return
-      const newMoves = newValue.split('')
-      for (let i = board.moves.length; i < newMoves.length; i++) {
-        if (board.gameIsOver) break
-        const position = newMoves[i]
-        const success = board.addMove(position)
-        if (!success) break
-        const cell = this.positionCellMap.get(position)
-        if (cell) cell.select()
+      if (newValue === null) {
+        this.board = new GameBoard()
+        for (const cell of this.positionCellMap.values()) {
+          cell.deselect()
+        }
+      } else {
+        const { board } = this
+        const newMoves = newValue.split('')
+        for (let i = board.moves.length; i < newMoves.length; i++) {
+          if (board.gameIsOver) break
+          const position = newMoves[i]
+          const success = board.addMove(position)
+          if (!success) break
+          const cell = this.positionCellMap.get(position)
+          const color = playerColors[i % 3]
+          if (cell) cell.select(color)
+        }
       }
     }
 
@@ -108,9 +121,12 @@ class Tris3dCanvas extends HTMLElement {
     }
 
     if (name === 'player') {
-      const index = parseInt(newValue, 10)
-      if (index >= 0 && index <= 2) {
-        this.playerIndex = index
+      if (newValue === null)
+        this.playerIndex = undefined
+      else {
+        const index = parseInt(newValue, 10)
+        if (index >= 0 && index <= 2)
+          this.playerIndex = index
       }
     }
 

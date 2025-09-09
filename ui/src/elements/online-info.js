@@ -1,5 +1,5 @@
 import { subscribe } from '@tris3d/game'
-import { cssRule, define, h, styles } from '../utils.js'
+import { cssRule, define, h, styles, hide, show } from '../utils.js'
 
 const tagName = 'online-info'
 
@@ -13,12 +13,12 @@ class Component extends HTMLElement {
   roomList = h('room-list')
 
   connectedCallback() {
-    this.hide()
+    hide(this)
 
     this.subscriptions.push(
       subscribe('playmode', (playmode) => {
-        if (playmode === 'online') this.show()
-        else this.hide()
+        if (playmode === 'online') show(this)
+        else hide(this)
       }),
     )
 
@@ -30,9 +30,6 @@ class Component extends HTMLElement {
   disconnectedCallback() {
     this.subscriptions.forEach(unsubscribe => unsubscribe())
   }
-
-  show() { this.removeAttribute('hidden') }
-  hide() { this.setAttribute('hidden', 'true') }
 }
 
 define(tagName, Component)

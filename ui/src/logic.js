@@ -1,4 +1,4 @@
-import { peek, publish, subscribe, AI } from '@tris3d/game'
+import { GameBoard, peek, publish, subscribe, AI } from '@tris3d/game'
 import { getStoredLocalPlayers } from './webStorage.js'
 
 publish('local-players', getStoredLocalPlayers())
@@ -8,25 +8,37 @@ subscribe('moves', (moves) => {
   const playmode = peek('playmode')
   const playing = peek('playing')
 
+  const board = new GameBoard(moves)
+  if (board.gameIsOver) {
+    publish('game-over', true)
+    if (board.hasWinner) {
+      publish('winner-score', board.numWinningLines)
+    }
+  }
+
   if (playing && playmode === 'local') {
-    const currentPlayerIndex = moves.length % 3
     const localPlayers = peek('local-players')
-    const currentPlayer = localPlayers[currentPlayerIndex]
+    const currentPlayer = localPlayers[board.turnPlayer]
 
     if (currentPlayer !== 'human') {
       setTimeout(() => {
         const playing = peek('playing')
         if (!playing) return
         const moves = peek('moves')
+        const board = new GameBoard(moves)
+        if (board.gameIsOver) return
         const nextMove = AI[currentPlayer](moves)
         if (!nextMove) return
         publish('moves', [...moves, nextMove])
-      }, 1000)
+      }, 1000 + Math.random() * 2000)
     }
   }
 })
 
 subscribe('playing', (playing) => {
+  publish('game-over', undefined)
+  publish('winner-score', undefined)
+
   if (playing) {
     const playmode = peek('playmode')
     if (playmode === 'local') {

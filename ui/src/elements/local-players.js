@@ -1,7 +1,7 @@
 import { peek, publish, subscribe } from '@tris3d/game'
-import { getDefaultPlayerLabels, aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel } from '../i18n.js'
+import { getDefaultPlayerLabels, aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, playersSetupLabel } from '../i18n.js'
 import { getStoredLocalPlayers } from '../webStorage.js'
-import { cssRule, define, field, h, styles } from '../utils.js'
+import { cssRule, define, domComponent, h, styles } from '../utils.js'
 
 const tagName = 'local-players'
 
@@ -12,7 +12,7 @@ styles(
 const option1 = selected => h('option', { value: 'human', ...selected }, humanLabel)
 const option2 = selected => h('option', { value: 'stupid', ...selected }, aiStupidLabel)
 const option3 = selected => h('option', { value: 'smart', ...selected }, aiSmartLabel)
-const option4 = selected => h('option', { value: 'bastard', ...selected }, aiBastardLabel)
+const option4 = selected => h('option', { value: 'bastard', disabled: true, ...selected }, aiBastardLabel)
 
 const defaultPlayerLabels = getDefaultPlayerLabels()
 
@@ -39,6 +39,8 @@ const select = (id) => {
 class Component extends HTMLElement {
   subscriptions = []
 
+  title = domComponent.title(playersSetupLabel)
+
   select = [
     select('player1'),
     select('player2'),
@@ -46,7 +48,7 @@ class Component extends HTMLElement {
   ]
 
   form = h('form', {}, defaultPlayerLabels.map(
-    (label, index) => field(label, this.select[index])
+    (label, index) => domComponent.field(label, this.select[index])
   ))
 
   connectedCallback() {

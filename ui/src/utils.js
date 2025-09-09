@@ -6,6 +6,12 @@ export const cssRule = {
   hidable: tagName => css(`${tagName}[hidden]`, {
     display: 'none',
   }),
+  message: tagName => css(`${tagName} .message`, {
+    padding: 'var(--text-padding)',
+  }),
+  title: tagName => css(`${tagName} .title`, {
+    padding: 'var(--text-padding)',
+  }),
 }
 
 export function styles(...rules) {
@@ -56,9 +62,19 @@ export function h(tagName, attributes = null, children = []) {
   return element
 }
 
-export function field(label, element) {
-  return h('div', { class: 'field' }, [
-    h('label', { for: element.id }, label),
+export const domComponent = {
+  field: (label, element) => h('div', { class: 'field' }, [
+    h('label', { for: element.id }, [label]),
     element
-  ])
+  ]),
+  message: (text = '') => h('div', { class: 'message' }, [text]),
+  title: text => h('div', { class: 'title' }, [text]),
+}
+
+export function show(element) {
+  element.removeAttribute('hidden')
+}
+
+export function hide(element) {
+  element.setAttribute('hidden', 'true')
 }

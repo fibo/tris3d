@@ -18,7 +18,7 @@ export class GameBoard {
   }
 
   get gameIsOver() {
-    return this.#status > IS_PLAYING
+    return this.#status !== IS_PLAYING
   }
 
   get hasWinner() {
@@ -47,8 +47,6 @@ export class GameBoard {
     }
     return count
   }
-
-  get status() { return this.#status }
 
   get turnPlayer() {
     if (this.#status !== IS_PLAYING) return

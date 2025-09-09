@@ -1,6 +1,7 @@
 import { publish, subscribe } from '@tris3d/game'
 import { getStoredNickname } from '../webStorage.js'
-import { cssRule, define, field, h, styles } from '../utils.js'
+import { cssRule, define, domComponent, h, styles, hide, show } from '../utils.js'
+import { nicknameLabel } from '../i18n.js'
 
 const tagName = 'client-info'
 
@@ -17,7 +18,7 @@ class Component extends HTMLElement {
   })
 
   form = h('form', {}, [
-    field('nick name', this.nicknameInput)
+    domComponent.field(nicknameLabel, this.nicknameInput)
   ])
 
   connectedCallback() {
@@ -30,16 +31,13 @@ class Component extends HTMLElement {
 
     this.subscriptions.push(
       subscribe('editing-client-settings', (editing) => {
-        if (editing) this.show()
-        else this.hide()
+        if (editing) show(this)
+        else hide(this)
       }),
 
       subscribe('playing', (playing) => {
-        if (playing) {
-          this.nicknameInput.disabled = true
-        } else {
-          this.nicknameInput.disabled = false
-        }
+        if (playing) this.nicknameInput.disabled = true
+        else this.nicknameInput.disabled = false
       }),
     )
 
@@ -67,9 +65,6 @@ class Component extends HTMLElement {
     const nickname = value.trim()
     publish('nickname', nickname)
   }
-
-  show() { this.removeAttribute('hidden') }
-  hide() { this.setAttribute('hidden', 'true') }
 }
 
 define(tagName, Component)

@@ -1,5 +1,6 @@
 import { publish, subscribe } from '@tris3d/game'
-import { cssRule, define, field, h, styles } from '../utils.js'
+import { cssRule, define, domComponent, h, styles, show, hide } from '../utils.js'
+import { playModeLabel } from '../i18n.js'
 
 const tagName = 'playmode-switch'
 
@@ -24,8 +25,8 @@ class Component extends HTMLElement {
 
     this.subscriptions.push(
       subscribe('editing-client-settings', (editing) => {
-        if (editing) this.show()
-        else this.hide()
+        if (editing) show(this)
+        else hide(this)
       }),
 
       subscribe('nickname', (nickname) => {
@@ -45,7 +46,7 @@ class Component extends HTMLElement {
       }),
     )
 
-    this.append(field('play mode', select))
+    this.append(domComponent.field(playModeLabel, select))
   }
 
   disconnectedCallback() {
@@ -60,9 +61,6 @@ class Component extends HTMLElement {
       publish('playmode', playmode)
     }
   }
-
-  show() { this.removeAttribute('hidden') }
-  hide() { this.setAttribute('hidden', 'true') }
 }
 
 define(tagName, Component)

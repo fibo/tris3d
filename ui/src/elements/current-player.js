@@ -1,29 +1,31 @@
 import { peek, subscribe } from '@tris3d/game'
 import { currentPlayerLabel, yourTurnMessage } from '../i18n.js'
-import { css, cssRule, define, field, h, styles } from '../utils.js'
+import { cssRule, define, domComponent, h, styles, show, hide } from '../utils.js'
 
 const tagName = 'current-player'
 
 styles(
   cssRule.hidable(tagName),
-  css(`${tagName} .message`, {
-    padding: 'var(--text-padding)',
-  })
+  cssRule.message(tagName),
 )
 
 class Component extends HTMLElement {
   subscriptions = []
 
   player = h('output', { id: 'current-player', type: 'text' })
-  message = h('span', { class: 'message' })
+  message = domComponent.message()
 
   connectedCallback() {
-    this.hide()
+    hide(this)
 
     this.subscriptions.push(
+      subscribe('game-over', (gameIsOver) => {
+        if (gameIsOver) hide(this)
+      }),
+
       subscribe('playing', (playing) => {
-        if (playing) this.show()
-        else this.hide()
+        if (playing) show(this)
+        else hide(this)
       }),
 
       subscribe('moves', (moves) => {
@@ -50,7 +52,7 @@ class Component extends HTMLElement {
     )
 
     this.append(
-      field(currentPlayerLabel, this.player),
+      domComponent.field(currentPlayerLabel, this.player),
       this.message
     )
   }
@@ -58,9 +60,6 @@ class Component extends HTMLElement {
   disconnectedCallback() {
     this.subscriptions.forEach(unsubscribe => unsubscribe())
   }
-
-  show() { this.removeAttribute('hidden') }
-  hide() { this.setAttribute('hidden', 'true') }
 }
 
 define(tagName, Component)
