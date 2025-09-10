@@ -1,0 +1,14 @@
+{
+  "name": "@tris3d/three",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": "./index.js",
+  "types": "./index.d.ts",
+  "dependencies": {
+    "three": "^0.179.1"
+  },
+  "devDependencies": {
+    "@types/three": "^0.179.0"
+  }
+}

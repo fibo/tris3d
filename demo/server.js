@@ -31,6 +31,7 @@ async function startServer({ port }) {
     define: {
       WEBSOCKET_URL: JSON.stringify('ws://localhost:3456'),
     },
+    format: 'esm',
     inject: [src('liveReload.js')],
     minify: false,
     outdir,

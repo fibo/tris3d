@@ -1,5 +1,4 @@
-import { AmbientLight, Group, PerspectiveCamera, Raycaster, Scene, Vector3, WebGLRenderer } from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { AmbientLight, Group, PerspectiveCamera, OrbitControls, Raycaster, Scene, Vector3, WebGLRenderer } from '@tris3d/three'
 import { POSITIONS, GameBoard } from '@tris3d/game'
 import { Cell } from './cell.js'
 

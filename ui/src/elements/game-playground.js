@@ -14,7 +14,7 @@ styles(
     'min-height': '100vh',
     'padding-block': 'var(--gap)',
   }),
-  css(canvasTagName, {
+  css(`${tagName} > ${canvasTagName}`, {
     display: 'inline-block',
     'border-style': 'solid',
     'border-width': 'var(--border-width)',

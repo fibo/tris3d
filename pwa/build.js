@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { basename, extname, join } from 'node:path'
 import { appName, appDescription, baseStyle, metaThemeColor, metaViewport, themeColor } from '@tris3d/design'
 import { ensureDir, isMainModule, workspaceDir } from '@tris3d/repo'
 import { build as esbuild } from 'esbuild'
@@ -23,7 +23,7 @@ const pageNotFoundFilename = '404.html'
 export const indexHtmlFilepath = join(outDir, indexHtmlFilename)
 export const pageNotFoundFilepath = join(outDir, pageNotFoundFilename)
 
-function html(content, js = {}) {
+function html(content, { js = {}, importMap = {} } = {}) {
   return content
     .replaceAll('${appDescription}', appDescription)
     .replaceAll('${appName}', appName)
@@ -31,6 +31,7 @@ function html(content, js = {}) {
     .replace('${manifestPathname}', manifestPathname)
     .replace('${metaThemeColor}', metaThemeColor)
     .replace('${metaViewport}', metaViewport)
+    .replace('${importMap}', importMap)
     .replace('${jsCanvas}', js.canvas)
     .replace('${jsUi}', js.ui)
     // Pretty good minification.
@@ -52,9 +53,9 @@ async function pageNotFoundHtml() {
   return html(content)
 }
 
-async function indexHtml(js) {
+async function indexHtml({ js, importMap }) {
   const content = await readFile(join(srcDir, indexHtmlFilename), 'utf8')
-  return html(content, js)
+  return html(content, { js, importMap })
 }
 
 function computeChecksum(filepath) {
@@ -67,33 +68,45 @@ function computeChecksum(filepath) {
   })
 }
 
-async function generateJs(filename) {
-  const outfile = join(outDir, filename)
+async function generateJs(entryPoint, { external = [], filename } = {}) {
+  const outfile = join(outDir, filename ?? basename(entryPoint))
   await esbuild({
+    bundle: true,
     define: {
       WEBSOCKET_URL: JSON.stringify(WEBSOCKET_URL),
     },
-    entryPoints: [join(srcDir, filename)],
-    external: ['@tris3d/three'],
-    bundle: true,
+    entryPoints: [entryPoint],
+    external,
+    format: 'esm',
+    legalComments: 'none',
     minify: true,
     outfile,
   })
   const checksum = await computeChecksum(outfile)
-  const checksumFilename = `${filename.replace('.js', '')}-${checksum.slice(0, 8)}.js`
+  const extension = extname(outfile)
+  const checksumFilename = `${basename(outfile, extension)}-${checksum.slice(0, 8)}${extension}`
   await rename(outfile, join(jsDir, checksumFilename))
   return checksumFilename
 }
 
 export async function generateHtml() {
   await ensureDir(jsDir)
-  const canvas = await generateJs('canvas.js')
-  const ui = await generateJs('ui.js')
-  const js = {
-    canvas,
-    ui,
+
+  // Bundle @tris3d/three, add it to import map and mark it as external.
+  const threeJs = await generateJs(join(workspaceDir.three, 'index.js'), { filename: 'three.js' })
+  const importMap = {
+    imports: {
+      '@tris3d/three': `./js/${threeJs}`,
+    },
   }
-  const indexContent = await indexHtml(js)
+
+  const canvas = await generateJs(join(srcDir, 'canvas.js'), { external: ['@tris3d/three'] })
+  const ui = await generateJs(join(srcDir, 'ui.js'))
+
+  const indexContent = await indexHtml({
+    js: { canvas, ui },
+    importMap: JSON.stringify(importMap),
+  })
   await writeFile(indexHtmlFilepath, indexContent, 'utf-8')
 
   const pageNotFoundContent = await pageNotFoundHtml({ appName })

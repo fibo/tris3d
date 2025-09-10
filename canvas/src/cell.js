@@ -1,5 +1,5 @@
 import { VECTOR_OF_POSITION } from '@tris3d/game'
-import { BoxGeometry, Group, Mesh, MeshBasicMaterial, SphereGeometry } from 'three'
+import { BoxGeometry, Group, Mesh, MeshBasicMaterial, SphereGeometry } from '@tris3d/three'
 
 const neutralColor = 0x333333
 
