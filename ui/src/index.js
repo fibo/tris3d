@@ -1,3 +1,3 @@
 import './webStorage.js'
 import './logic.js'
-import './elements.js'
+import './elements/index.js'

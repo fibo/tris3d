@@ -5,11 +5,12 @@
   "private": true,
   "description": "Tic Tac Toe in 3D",
   "scripts": {
-    "build": "npm run build -w pwa",
-    "demo": "npm start -w demo",
+    "build": "node pwa/build.js",
+    "demo": "node demo/server.js",
     "deploy": "sh scripts/deploy.sh",
     "prepare": "node scripts/prepare.js",
     "server": "node server/app.js",
+    "showcase": "node ui/server.js",
     "test": "npm run test --workspaces --if-present"
   },
   "author": "Gianluca Casati (https://fibo.github.io/)",

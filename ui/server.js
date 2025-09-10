@@ -4,13 +4,12 @@ import { appName, baseStyle, emptyFavicon, metaThemeColor, metaViewport } from '
 import { ensureDir, openBrowser, workspaceDir } from '@tris3d/repo'
 import { context } from 'esbuild'
 
-const { demo: demoDir } = workspaceDir
+const { ui: uiDir } = workspaceDir
 
-const outdir = join(demoDir, 'out')
-const src = filename => join(demoDir, 'src', filename)
+const outdir = join(uiDir, 'out')
 
-async function generateIndexHtml() {
-  let content = await readFile(src('index.html'), 'utf8')
+async function generateHtml() {
+  let content = await readFile(join(uiDir, 'showcase', 'index.html'), 'utf8')
   content = content
     .replaceAll('${appName}', appName)
     .replace('${baseStyle}', baseStyle)
@@ -24,11 +23,8 @@ async function startServer({ port }) {
   await ensureDir(outdir)
 
   const ctx = await context({
-    entryPoints: [src('app.js')],
+    entryPoints: [join(uiDir, 'showcase', 'elements.js')],
     bundle: true,
-    define: {
-      WEBSOCKET_URL: JSON.stringify('ws://localhost:3456'),
-    },
     format: 'esm',
     inject: [join(workspaceDir.repo, 'src', 'liveReload.js')],
     minify: false,
@@ -36,7 +32,7 @@ async function startServer({ port }) {
     plugins: [{
       name: 'html',
       setup(build) {
-        build.onEnd(generateIndexHtml)
+        build.onEnd(generateHtml)
       }
     }],
   })
@@ -49,7 +45,7 @@ async function startServer({ port }) {
   })
 }
 
-const port = 3000
+const port = 4000
 
 await startServer({ port })
 

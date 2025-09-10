@@ -1,5 +1,3 @@
-import {baseCss} from "@tris3d/design";
-
 declare module '@tris3d/game' {
   export class GameBoard {
     readonly gameIsOver: boolean;
