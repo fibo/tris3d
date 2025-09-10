@@ -1,7 +1,5 @@
 import { GameBoard, peek, publish, subscribe, AI } from '@tris3d/game'
-import { getStoredLocalPlayers } from './webStorage.js'
-
-publish('local-players', getStoredLocalPlayers())
+import { humanLabel } from './i18n.js'
 
 subscribe('moves', (moves) => {
   if (!moves) return
@@ -33,6 +31,16 @@ subscribe('moves', (moves) => {
       }, 1000 + Math.random() * 2000)
     }
   }
+})
+
+subscribe('local-players', (localPlayers) => {
+  const nickname = peek('nickname')
+  const playerNames = localPlayers.map((player) => {
+    if (player === 'human')
+      return nickname || humanLabel
+    return player
+  })
+  publish('player-names', playerNames)
 })
 
 subscribe('playing', (playing) => {

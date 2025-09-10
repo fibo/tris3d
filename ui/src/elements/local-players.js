@@ -1,6 +1,5 @@
 import { peek, publish, subscribe } from '@tris3d/game'
-import { getDefaultPlayerLabels, aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, playersSetupLabel } from '../i18n.js'
-import { getStoredLocalPlayers } from '../webStorage.js'
+import { aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, playersSetupLabel, player1Label, player2Label, player3Label } from '../i18n.js'
 import { cssRule, define, domComponent, h, styles } from '../utils.js'
 
 const tagName = 'local-players'
@@ -11,10 +10,10 @@ styles(
 
 const option1 = selected => h('option', { value: 'human', ...selected }, humanLabel)
 const option2 = selected => h('option', { value: 'stupid', ...selected }, aiStupidLabel)
-const option3 = selected => h('option', { value: 'smart', ...selected }, aiSmartLabel)
-const option4 = selected => h('option', { value: 'bastard', disabled: true, ...selected }, aiBastardLabel)
+const option3 = () => h('option', { value: 'smart' }, aiSmartLabel)
+const option4 = () => h('option', { value: 'bastard', disabled: true }, aiBastardLabel)
 
-const defaultPlayerLabels = getDefaultPlayerLabels()
+const playerLabels = [player1Label, player2Label, player3Label]
 
 const indexOf = {
   player1: 0,
@@ -22,17 +21,13 @@ const indexOf = {
   player3: 2,
 }
 
-const initialPlayers = getStoredLocalPlayers()
-
 const select = (id) => {
-  const index = indexOf[id]
-  const stored = initialPlayers[index]
   const selected = { selected: 'true' }
   return h('select', { id, name: id }, [
-    option1(stored === 'human' ? selected : id === 'player1' ? selected : { }),
-    option2(stored === 'stupid' ? selected : id !== 'player1' ? selected : { }),
-    option3(stored === 'smart' ? selected : { }),
-    option4(stored === 'bastard' ? selected : { }),
+    option1(id === 'player1' ? selected : { }),
+    option2(id !== 'player1' ? selected : { }),
+    option3('smart'),
+    option4('bastard'),
   ])
 }
 
@@ -47,7 +42,7 @@ class Component extends HTMLElement {
     select('player3')
   ]
 
-  form = h('form', {}, defaultPlayerLabels.map(
+  form = h('form', {}, playerLabels.map(
     (label, index) => domComponent.field(label, this.select[index])
   ))
 
@@ -57,13 +52,23 @@ class Component extends HTMLElement {
     this.subscriptions.push(
       subscribe('nickname', (nickname) => {
         this.select.forEach((item) => {
-          for (const option of item.options)
-            if (option.value === 'human') {
-              if (nickname) option.textContent = nickname
-              else option.textContent = humanLabel
-            }
+          for (const option of item.options) {
+            if (option.value !== 'human')
+              continue
+            if (nickname) option.textContent = nickname
+            else option.textContent = humanLabel
+          }
         })
-        this.publishInfo()
+      }),
+
+      subscribe('local-players', (localPlayers) => {
+        this.select.forEach((item, index) => {
+          const player = localPlayers[index]
+          for (const option of item.options) {
+            if (option.value === player) option.selected = true
+            else option.selected = false
+          }
+        })
       }),
 
       subscribe('playing', (playing) => {
@@ -72,7 +77,10 @@ class Component extends HTMLElement {
       }),
     )
 
-    this.append(this.form)
+    this.append(
+      this.title,
+      this.form,
+    )
   }
 
   disconnectedCallback() {
@@ -86,32 +94,18 @@ class Component extends HTMLElement {
       const key = event.target.id
       const index = indexOf[key]
       const nextChoice = event.target.value
-      const localPlayers = peek('local-players')
-      const previousChoice = localPlayers[index]
+      const previousLocalPlayers = peek('local-players')
+      const previousChoice = previousLocalPlayers[index]
       // There must be no more than one human player.
       if (nextChoice === 'human') {
-        const previousHumanIndex = localPlayers.indexOf('human')
+        const previousHumanIndex = previousLocalPlayers.indexOf('human')
         if (previousHumanIndex !== -1) {
           this.select[previousHumanIndex].value = previousChoice
         }
       }
-      this.publishInfo()
+      const localPlayers = this.select.map(item => item.value)
+      publish('local-players', localPlayers)
     }
-  }
-
-  publishInfo() {
-    const localPlayers = this.select.map(item => item.value)
-    publish('local-players', localPlayers)
-
-    const playerNames = this.select.map(
-      (item, index) => {
-        const playerName = item.options[item.selectedIndex].textContent
-        // If local player has no nickname, use player label.
-        if (playerName === humanLabel) return defaultPlayerLabels[index]
-        return playerName
-      }
-    )
-    publish('player-names', playerNames)
   }
 
   show() { this.removeAttribute('hidden') }

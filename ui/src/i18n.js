@@ -1,4 +1,6 @@
-export const getDefaultPlayerLabels = () => ['player 1', 'player 2', 'player 3']
+export const player1Label = 'player 1'
+export const player2Label = 'player 2'
+export const player3Label = 'player 3'
 
 export const yourTurnMessage = 'it\'s your turn!'
 

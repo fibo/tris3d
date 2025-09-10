@@ -1,5 +1,11 @@
 export function css(selector, rules) {
-  return `${selector} {\n${Object.entries(rules).map(([key, value]) => `${key}: ${value};`).join('\n')}\n}`
+  return [
+    `${selector} {`,
+    ...(Object.entries(rules).map(
+      ([key, value]) => `${key}: ${value};`
+    )),
+    '}'
+  ].join('\n')
 }
 
 export const cssRule = {
