@@ -25,7 +25,7 @@ function checkInterpolation(content) {
 }
 
 describe('HTML', async () => {
-  await generateHtml()
+  await generateHtml({ buildAll: true })
 
   test('Index', async () => {
     const content = await readFile(indexHtmlFilepath, 'utf8')

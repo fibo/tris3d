@@ -92,7 +92,7 @@ async function generateJs(filename) {
   return checksumFilename
 }
 
-export async function generateHtml() {
+export async function generateHtml({ buildAll }) {
   await ensureDir(jsDir)
   const canvas = await generateJs('canvas.js')
   const ui = await generateJs('ui.js')
@@ -102,7 +102,7 @@ export async function generateHtml() {
   }
   const indexContent = await indexHtml(js)
   await writeFile(indexHtmlFilepath, indexContent, 'utf-8')
-  if (BUILD_ALL) {
+  if (buildAll) {
     const pageNotFoundContent = await pageNotFoundHtml({ appName })
     await writeFile(pageNotFoundFilepath, pageNotFoundContent, 'utf-8')
   }
@@ -138,7 +138,7 @@ export async function build() {
     await generateManifest()
   }
 
-  await generateHtml()
+  await generateHtml({ buildAll: BUILD_ALL })
 }
 
 if (isMainModule(import.meta.url)) {
