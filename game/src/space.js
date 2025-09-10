@@ -95,6 +95,7 @@
 // ```
 // x, y, z -> x * 9 + y * 3 + z
 // ```
+//
 export const POSITIONS = [
   // First layer, `z = 0`.
   'A', 'H', 'G',
@@ -110,34 +111,58 @@ export const POSITIONS = [
   'T', 'U', 'V'
 ]
 
+// All possible winning lines.
+//
+// These are the positions in compact form.
+//
+//          ------------
+//         T    U    V
+//      S    Z    W
+//   R    Y    X
+// -------------
+//         ------------
+//        L    M     N
+//      K    *    O
+//   J    Q    P
+// -------------
+//          ------------
+//         C    D    E
+//      B    I    F
+//   A    H    G
+// -------------
+//
+//  z   y
+//  ↑ ↗
+//  o → x
+//
 export const WINNING_LINES = [
   // Lines parallel to the `x` axis.
-  ['A', 'B', 'C'], ['H', 'I', 'D'], ['G', 'F', 'E'],
-  ['J', 'K', 'L'], ['Q', '*', 'M'], ['P', 'O', 'N'],
-  ['R', 'S', 'T'], ['X', 'Z', 'U'], ['Y', 'W', 'V'],
-  // Lines parallel to the `y` axis.
   ['A', 'H', 'G'], ['B', 'I', 'F'], ['C', 'D', 'E'],
   ['J', 'Q', 'P'], ['K', '*', 'O'], ['L', 'M', 'N'],
-  ['R', 'X', 'Y'], ['S', 'Z', 'W'], ['T', 'U', 'V'],
+  ['R', 'Y', 'X'], ['S', 'Z', 'W'], ['T', 'U', 'V'],
+  // Lines parallel to the `y` axis.
+  ['A', 'B', 'C'], ['H', 'I', 'D'], ['G', 'F', 'E'],
+  ['J', 'K', 'L'], ['Q', '*', 'M'], ['P', 'O', 'N'],
+  ['R', 'S', 'T'], ['Y', 'Z', 'U'], ['X', 'W', 'V'],
   // Lines parallel to the `z` axis.
-  ['A', 'J', 'R'], ['H', 'K', 'X'], ['G', 'L', 'Y'],
-  ['B', 'Q', 'S'], ['I', '*', 'Z'], ['F', 'M', 'W'],
-  ['C', 'P', 'T'], ['D', 'O', 'U'], ['E', 'N', 'V'],
+  ['A', 'J', 'R'], ['H', 'Q', 'Y'], ['G', 'P', 'X'],
+  ['B', 'K', 'S'], ['I', '*', 'Z'], ['F', 'O', 'W'],
+  ['C', 'L', 'T'], ['D', 'M', 'U'], ['E', 'N', 'V'],
+  // Diagonal lines on `x = k` plane.
+  ['A', 'Q', 'X'], ['G', 'Q', 'R'],
+  ['B', '*', 'W'], ['F', '*', 'S'],
+  ['C', 'M', 'V'], ['E', 'M', 'T'],
+  // Diagonal lines on `y = k` plane.
+  ['A', 'K', 'T'], ['C', 'K', 'R'],
+  ['H', '*', 'U'], ['D', '*', 'Y'],
+  ['G', 'O', 'V'], ['E', 'O', 'X'],
   // Diagonal lines on `z = k` plane.
   ['A', 'I', 'E'], ['C', 'I', 'G'],
-  ['J', '*', 'N'], ['L', '*', 'O'],
-  ['R', 'Z', 'V'], ['T', 'Z', 'Y'],
-  // Diagonal lines on `y = k` plane.
-  ['A', 'K', 'Y'], ['G', '*', 'C'],
-  ['B', '*', 'W'], ['F', '*', 'D'],
-  ['R', '*', 'E'], ['T', '*', 'A'],
-  // Diagonal lines on `x = k` plane.
-  ['A', 'I', 'V'], ['C', 'M', 'R'],
-  ['H', '*', 'U'], ['F', '*', 'T'],
-  ['G', 'Q', 'E'], ['L', 'Z', 'C'],
+  ['J', '*', 'N'], ['L', '*', 'P'],
+  ['R', 'Z', 'V'], ['X', 'Z', 'T'],
   // Cube diagonals.
-  ['A', '*', 'V'], ['C', '*', 'R'],
-  ['G', '*', 'T'], ['E', '*', 'Y'],
+  ['A', '*', 'V'], ['C', '*', 'X'],
+  ['G', '*', 'T'], ['E', '*', 'R'],
 ]
 
 export const VECTOR_OF_POSITION = {

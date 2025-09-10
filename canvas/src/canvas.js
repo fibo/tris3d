@@ -14,18 +14,6 @@ const playerColors = [
   0x0000ff, // Player 2: Blue
 ]
 
-const sheet = new CSSStyleSheet()
-
-sheet.insertRule([tagName, '{',
-  'display: inline-block;',
-  'border-style: solid;',
-  'border-width: var(--border-width);',
-  'border-color: var(--border-color);',
-  'border-radius: var(--border-radius-large);',
-  '}'].join(''))
-
-document.adoptedStyleSheets.push(sheet)
-
 /**
  * @example
  * <tris3d-canvas size="200" player="1" moves="ABC"></tris3d-canvas>
@@ -91,14 +79,14 @@ class Tris3dCanvas extends HTMLElement {
     clearTimeout(this.idleTimeoutId)
   }
 
-  attributeChangedCallback(name, _oldValue, newValue) {
+  attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'moves') {
-      if (newValue === null) {
-        this.board = new GameBoard()
-        for (const cell of this.positionCellMap.values()) {
-          cell.deselect()
-        }
-      } else {
+      if (newValue === null)
+        this.resetMoves()
+      else {
+        if (newValue === oldValue) return
+        if (!newValue.includes(oldValue))
+          this.resetMoves()
         const { board } = this
         const newMoves = newValue.split('')
         for (let i = board.moves.length; i < newMoves.length; i++) {
@@ -224,6 +212,12 @@ class Tris3dCanvas extends HTMLElement {
       const position = this.cellSphereUuidPositionMap.get(firstMatch.object.uuid)
       return this.positionCellMap.get(position)
     }
+  }
+
+  resetMoves() {
+    this.board = new GameBoard()
+    for (const cell of this.positionCellMap.values())
+      cell.deselect()
   }
 
   setupCamera() {

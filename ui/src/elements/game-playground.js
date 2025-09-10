@@ -4,6 +4,7 @@ import { peek, publish, subscribe } from '@tris3d/game'
 import { css, define, h, styles } from '../utils.js'
 
 const tagName = 'game-playground'
+const canvasTagName = 'tris3d-canvas'
 
 styles(
   css(tagName, {
@@ -12,7 +13,14 @@ styles(
     gap: 'var(--gap)',
     'min-height': '100vh',
     'padding-block': 'var(--gap)',
-  })
+  }),
+  css(canvasTagName, {
+    display: 'inline-block',
+    'border-style': 'solid',
+    'border-width': 'var(--border-width)',
+    'border-color': 'var(--border-color)',
+    'border-radius': 'var(--border-radius-large)',
+  }),
 )
 
 class Component extends HTMLElement {
@@ -21,7 +29,7 @@ class Component extends HTMLElement {
   subscriptions = []
 
   clientsettings = h('client-settings')
-  canvas = h('tris3d-canvas')
+  canvas = h(canvasTagName)
   localinfo = h('local-info')
   onlineinfo = h('online-info')
 
