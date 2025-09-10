@@ -1,18 +1,10 @@
 import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
-import { basename, join } from 'node:path'
+import { join } from 'node:path'
 import { appName, appDescription, baseStyle, metaThemeColor, metaViewport, themeColor } from '@tris3d/design'
 import { ensureDir, isMainModule, workspaceDir } from '@tris3d/repo'
 import { build as esbuild } from 'esbuild'
-
-// If script is called as
-//
-//     npm run build -- all
-//
-// then build all, including images, manifest, etc.
-// Otherwise, only build index.html and JS bundles.
-const BUILD_ALL = process.argv[2] === 'all'
 
 const WEBSOCKET_URL = process.env.WEBSOCKET_URL
 if (!WEBSOCKET_URL) {
@@ -41,7 +33,7 @@ function html(content, js = {}) {
     .replace('${metaViewport}', metaViewport)
     .replace('${jsCanvas}', js.canvas)
     .replace('${jsUi}', js.ui)
-  // Pretty good minification.
+    // Pretty good minification.
     .replace(/\n\s+/g, '\n')
     .replaceAll('\n', '')
     .trim()
@@ -82,6 +74,7 @@ async function generateJs(filename) {
       WEBSOCKET_URL: JSON.stringify(WEBSOCKET_URL),
     },
     entryPoints: [join(srcDir, filename)],
+    external: ['@tris3d/three'],
     bundle: true,
     minify: true,
     outfile,
@@ -92,7 +85,7 @@ async function generateJs(filename) {
   return checksumFilename
 }
 
-export async function generateHtml({ buildAll }) {
+export async function generateHtml() {
   await ensureDir(jsDir)
   const canvas = await generateJs('canvas.js')
   const ui = await generateJs('ui.js')
@@ -102,10 +95,9 @@ export async function generateHtml({ buildAll }) {
   }
   const indexContent = await indexHtml(js)
   await writeFile(indexHtmlFilepath, indexContent, 'utf-8')
-  if (buildAll) {
-    const pageNotFoundContent = await pageNotFoundHtml({ appName })
-    await writeFile(pageNotFoundFilepath, pageNotFoundContent, 'utf-8')
-  }
+
+  const pageNotFoundContent = await pageNotFoundHtml({ appName })
+  await writeFile(pageNotFoundFilepath, pageNotFoundContent, 'utf-8')
 }
 
 async function generateManifest() {
@@ -133,12 +125,10 @@ async function generateManifest() {
 export async function build() {
   await ensureDir(outDir)
 
-  if (BUILD_ALL) {
-    await copyImages()
-    await generateManifest()
-  }
+  await copyImages()
+  await generateManifest()
 
-  await generateHtml({ buildAll: BUILD_ALL })
+  await generateHtml()
 }
 
 if (isMainModule(import.meta.url)) {

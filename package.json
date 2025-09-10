@@ -21,6 +21,7 @@
     "pwa",
     "repo",
     "server",
+    "three",
     "ui"
   ],
   "devDependencies": {
