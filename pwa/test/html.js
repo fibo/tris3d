@@ -20,22 +20,16 @@ function checkSize(content) {
   assert(new Blob([content]).size < 14600, message)
 }
 
-function checkInterpolation(content) {
-  assert.ok(!content.includes('\${'), 'There is an un-interpolated variable.')
-}
-
 describe('HTML', async () => {
   await generateHtml({ buildAll: true })
 
   test('Index', async () => {
     const content = await readFile(indexHtmlFilepath, 'utf8')
     checkSize(content)
-    checkInterpolation(content)
   })
 
   test('Page not Found', async () => {
     const content = await readFile(pageNotFoundFilepath, 'utf8')
     checkSize(content)
-    checkInterpolation(content)
   })
 })

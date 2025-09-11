@@ -1,5 +1,5 @@
 :root {
-  --theme-color: ${themeColor};
+  --theme-color: {themeColor};
   --color-mono-0: black;
   --color-mono-9: white;
   --border-width: 1px;

@@ -12,11 +12,11 @@ const src = filename => join(demoDir, 'src', filename)
 async function generateIndexHtml() {
   let content = await readFile(src('index.html'), 'utf8')
   content = content
-    .replaceAll('${appName}', appName)
-    .replace('${baseStyle}', baseStyle)
-    .replace('${emptyFavicon}', emptyFavicon)
-    .replace('${metaThemeColor}', metaThemeColor)
-    .replace('${metaViewport}', metaViewport)
+    .replaceAll('{appName}', appName)
+    .replace('{baseStyle}', baseStyle)
+    .replace('{emptyFavicon}', emptyFavicon)
+    .replace('{metaThemeColor}', metaThemeColor)
+    .replace('{metaViewport}', metaViewport)
   await writeFile(join(outdir, 'index.html'), content, 'utf8')
 }
 

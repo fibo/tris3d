@@ -10,7 +10,7 @@
     "deploy": "sh scripts/deploy.sh",
     "prepare": "node scripts/prepare.js",
     "server": "node server/app.js",
-    "showcase": "node ui/server.js",
+    "showcase": "node ui/showcase/server.js",
     "test": "npm run test --workspaces --if-present"
   },
   "author": "Gianluca Casati (https://fibo.github.io/)",

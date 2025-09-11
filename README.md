@@ -17,6 +17,14 @@ To try out multiplayer mode, launch server with
 npm run server
 ```
 
+## Showcase
+
+Take a look to the pages of the app with
+
+```shell
+npm run showcase
+```
+
 ## Progressive Web App
 
 ### Environment

@@ -13,5 +13,5 @@ const srcDir = join(workspaceDir.design, 'src')
 const baseCssContent = await readFile(join(srcDir, 'base.css'), 'utf8')
 
 export const baseCss = minified(baseCssContent
-  .replace('${themeColor}', themeColor)
+  .replace('{themeColor}', themeColor)
 )

@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  ${metaViewport}
-  ${metaThemeColor}
+  {metaViewport}
+  {metaThemeColor}
 
-  <title>${appName}</title>
+  <title>{appName}</title>
   <meta name="description" content="${appDescription}" />
 
   <link rel="manifest" href="${manifestPathname}" />
 
-  ${baseStyle}
+  {baseStyle}
 
   <style>
     header {
@@ -36,12 +36,12 @@
     }
   </style>
 
-  <script type="importmap">${importMap}</script>
+  <script type="importmap">{importMap}</script>
 </head>
 <body>
   <header>
-    <h1>${appName}</h1>
-    <p>${appDescription}</p>
+    <h1>{appName}</h1>
+    <p>{appDescription}</p>
   </header>
 
   <noscript>
@@ -57,8 +57,8 @@
 
   <script type="module">
     async function play() {
-      await import('./js/${jsCanvas}');
-      await import('./js/${jsUi}');
+      await import('./js/{jsCanvas}');
+      await import('./js/{jsUi}');
     }
 
     addEventListener('load', () => {
