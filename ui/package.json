@@ -8,6 +8,6 @@
     "@tris3d/game": "^0.0.0"
   },
   "devDependencies": {
-    "infinite-paper": "^0.1.1"
+    "design-canvas": "0.1.0"
   }
 }

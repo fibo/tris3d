@@ -1,4 +1,4 @@
-import 'infinite-paper'
+import 'design-canvas'
 
 import '../src/elements/index.js'
 
