@@ -1,6 +1,8 @@
 node_modules/
 out/
 
+.DS_Store
+
 # Can use direnv to manage environment variables
 # https://direnv.net/
 .envrc
