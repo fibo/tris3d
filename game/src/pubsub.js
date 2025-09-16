@@ -45,13 +45,14 @@ export function subscribe(key, callback) {
   } else {
     subscribersByKey.set(key, new Set([callback]))
   }
-  // Send snapshot of current state.
-  try {
-    callback(state.get(key))
-  } catch (error) {
-    console.error(error)
-  }
-
+  // Send snapshot of current state, if defined.
+  const value = state.get(key)
+  if (value !== undefined)
+    try {
+      callback(value)
+    } catch (error) {
+      console.error(error)
+    }
   // Return unsubscribe function.
   return function unsubscribe() {
     const subscribers = subscribersByKey.get(key)

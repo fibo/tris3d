@@ -8,27 +8,10 @@ styles(
   cssRule.hidable(tagName),
 )
 
-const option1 = selected => h('option', { value: 'human', ...selected }, humanLabel)
-const option2 = selected => h('option', { value: 'stupid', ...selected }, aiStupidLabel)
-const option3 = () => h('option', { value: 'smart' }, aiSmartLabel)
-const option4 = () => h('option', { value: 'bastard', disabled: true }, aiBastardLabel)
-
-const playerLabels = [player1Label, player2Label, player3Label]
-
-const indexOf = {
+const players = {
   player1: 0,
   player2: 1,
   player3: 2,
-}
-
-const select = (id) => {
-  const selected = { selected: 'true' }
-  return h('select', { id, name: id }, [
-    option1(id === 'player1' ? selected : { }),
-    option2(id !== 'player1' ? selected : { }),
-    option3('smart'),
-    option4('bastard'),
-  ])
 }
 
 class Component extends HTMLElement {
@@ -36,15 +19,19 @@ class Component extends HTMLElement {
 
   title = domComponent.title(playersSetupLabel)
 
-  select = [
-    select('player1'),
-    select('player2'),
-    select('player3')
-  ]
+  select = Object.keys(players).map(
+    player => h('select', { id: player }, [
+      h('option', { value: 'human' }, humanLabel),
+      h('option', { value: 'stupid' }, aiStupidLabel),
+      h('option', { value: 'smart' }, aiSmartLabel),
+      h('option', { value: 'bastard', disabled: true }, aiBastardLabel)
+    ])
+  )
 
-  form = h('form', {}, playerLabels.map(
-    (label, index) => domComponent.field(label, this.select[index])
-  ))
+  form = h('form', {},
+    [player1Label, player2Label, player3Label].map(
+      (label, index) => domComponent.field(label, this.select[index])
+    ))
 
   connectedCallback() {
     this.select.forEach(item => item.addEventListener('change', this))
@@ -92,7 +79,7 @@ class Component extends HTMLElement {
   handleEvent(event) {
     if (event.type === 'change') {
       const key = event.target.id
-      const index = indexOf[key]
+      const index = players[key]
       const nextChoice = event.target.value
       const previousLocalPlayers = peek('local-players')
       const previousChoice = previousLocalPlayers[index]

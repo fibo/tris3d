@@ -1,6 +1,10 @@
 import { GameBoard, peek, publish, subscribe, AI } from '@tris3d/game'
 import { humanLabel } from './i18n.js'
 
+const localPlayers = peek('local-players')
+if (!localPlayers)
+  publish('local-players', ['human', 'stupid', 'stupid'])
+
 subscribe('moves', (moves) => {
   if (!moves) return
   const playmode = peek('playmode')
@@ -44,8 +48,8 @@ subscribe('local-players', (localPlayers) => {
 })
 
 subscribe('playing', (playing) => {
-  publish('game-over', undefined)
-  publish('winner-score', undefined)
+  publish('game-over', null)
+  publish('winner-score', null)
 
   if (playing) {
     const playmode = peek('playmode')
@@ -56,6 +60,6 @@ subscribe('playing', (playing) => {
     }
     publish('moves', [])
   } else {
-    publish('moves', undefined)
+    publish('moves', null)
   }
 })
