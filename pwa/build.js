@@ -3,7 +3,7 @@ import { createReadStream } from 'node:fs'
 import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
 import { basename, extname, join } from 'node:path'
 import { appName, appDescription, baseStyle, metaThemeColor, metaViewport, themeColor } from '@tris3d/design'
-import { ensureDir, isMainModule, workspaceDir } from '@tris3d/repo'
+import { resetDir, isMainModule, workspaceDir } from '@tris3d/repo'
 import { build as esbuild } from 'esbuild'
 
 const WEBSOCKET_URL = process.env.WEBSOCKET_URL
@@ -50,7 +50,7 @@ function html(content, { js = {}, importMap = {} } = {}) {
 }
 
 async function copyImages() {
-  await ensureDir(imagesDir)
+  await resetDir(imagesDir)
   const designImagesDir = join(workspaceDir.design, 'images')
   await copyFile(join(designImagesDir, 'favicon.ico'), join(outDir, 'favicon.ico'))
   await copyFile(join(designImagesDir, 'logo-192.png'), join(imagesDir, 'logo-192.png'))
@@ -89,7 +89,7 @@ async function generateJs(entryPoint, { external = [], filename } = {}) {
 }
 
 export async function generateHtml() {
-  await ensureDir(jsDir)
+  await resetDir(jsDir)
 
   // Bundle @tris3d/three, add it to import map and mark it as external.
   const threeJs = await generateJs(join(workspaceDir.three, 'index.js'), { filename: 'three.js' })
@@ -140,7 +140,7 @@ async function generateManifest() {
 }
 
 export async function build() {
-  await ensureDir(outDir)
+  await resetDir(outDir)
 
   await copyImages()
   await generateManifest()

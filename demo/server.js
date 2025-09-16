@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { appName, baseStyle, emptyFavicon, metaThemeColor, metaViewport } from '@tris3d/design'
-import { ensureDir, openBrowser, workspaceDir } from '@tris3d/repo'
+import { resetDir, openBrowser, workspaceDir } from '@tris3d/repo'
 import { context } from 'esbuild'
 
 const { demo: demoDir } = workspaceDir
@@ -21,7 +21,7 @@ async function generateIndexHtml() {
 }
 
 async function startServer({ port }) {
-  await ensureDir(outdir)
+  await resetDir(outdir)
 
   const ctx = await context({
     entryPoints: [src('app.js')],
