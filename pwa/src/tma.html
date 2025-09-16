@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  {metaViewport}
+  {metaThemeColor}
+
+  <title>{appName}</title>
+
+  {baseStyle}
+
+  <style>
+    header {
+      display: flex;
+      flex-direction: column;
+      padding: 3em 2em;
+    }
+  </style>
+
+  <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+
+  <script type="importmap">{importMap}</script>
+</head>
+<body>
+  <header>
+    <h1>{appName}</h1>
+    <p>{appDescription}</p>
+  </header>
+
+  <script type="module">
+    addEventListener('load', async () => {
+      await import('./js/{jsCanvas}');
+      await import('./js/{jsUi}');
+      window.Telegram.WebApp.disableVerticalSwipes();
+    });
+  </script>
+</body>
+</html>

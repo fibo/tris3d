@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert'
 import { readFile } from 'node:fs/promises'
 import { describe, test } from 'node:test'
-import { generateHtml, indexHtmlFilepath, pageNotFoundFilepath } from '../build.js'
+import { generateHtml, htmlFilepath } from '../build.js'
 
 // TCP slow start is an algorithm used by servers to find out how many packets it can send at a time.
 // Most web servers TCP slow start algorithm starts by sending 10 TCP packets.
@@ -24,12 +24,17 @@ describe('HTML', async () => {
   await generateHtml({ buildAll: true })
 
   test('Index', async () => {
-    const content = await readFile(indexHtmlFilepath, 'utf8')
+    const content = await readFile(htmlFilepath.index, 'utf8')
+    checkSize(content)
+  })
+
+  test('Telegram Mini App', async () => {
+    const content = await readFile(htmlFilepath.telegramMiniApp, 'utf8')
     checkSize(content)
   })
 
   test('Page not Found', async () => {
-    const content = await readFile(pageNotFoundFilepath, 'utf8')
+    const content = await readFile(htmlFilepath.pageNotFound, 'utf8')
     checkSize(content)
   })
 })

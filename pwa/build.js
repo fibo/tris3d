@@ -18,10 +18,19 @@ const imagesDir = join(outDir, 'images')
 const jsDir = join(outDir, 'js')
 
 const manifestPathname = 'manifest.json'
-const indexHtmlFilename = 'index.html'
-const pageNotFoundFilename = '404.html'
-export const indexHtmlFilepath = join(outDir, indexHtmlFilename)
-export const pageNotFoundFilepath = join(outDir, pageNotFoundFilename)
+
+const htmlFilename = {
+  index: 'index.html',
+  pageNotFound: '404.html',
+  telegramMiniApp: 'tma.html',
+}
+
+export const htmlFilepath = Object.entries(htmlFilename).reduce(
+  (filepaths, [key, filename]) => ({
+    [key]: join(outDir, filename),
+    ...filepaths,
+  }),
+  {})
 
 function html(content, { js = {}, importMap = {} } = {}) {
   return content
@@ -46,16 +55,6 @@ async function copyImages() {
   await copyFile(join(designImagesDir, 'favicon.ico'), join(outDir, 'favicon.ico'))
   await copyFile(join(designImagesDir, 'logo-192.png'), join(imagesDir, 'logo-192.png'))
   await copyFile(join(designImagesDir, 'logo-512.png'), join(imagesDir, 'logo-512.png'))
-}
-
-async function pageNotFoundHtml() {
-  const content = await readFile(join(srcDir, pageNotFoundFilename), 'utf8')
-  return html(content)
-}
-
-async function indexHtml({ js, importMap }) {
-  const content = await readFile(join(srcDir, indexHtmlFilename), 'utf8')
-  return html(content, { js, importMap })
 }
 
 function computeChecksum(filepath) {
@@ -94,23 +93,28 @@ export async function generateHtml() {
 
   // Bundle @tris3d/three, add it to import map and mark it as external.
   const threeJs = await generateJs(join(workspaceDir.three, 'index.js'), { filename: 'three.js' })
-  const importMap = {
+  const importMap = JSON.stringify({
     imports: {
       '@tris3d/three': `./js/${threeJs}`,
     },
-  }
+  })
 
   const canvas = await generateJs(join(srcDir, 'canvas.js'), { external: ['@tris3d/three'] })
   const ui = await generateJs(join(srcDir, 'ui.js'))
 
-  const indexContent = await indexHtml({
-    js: { canvas, ui },
-    importMap: JSON.stringify(importMap),
-  })
-  await writeFile(indexHtmlFilepath, indexContent, 'utf-8')
+  const js = {
+    canvas,
+    ui,
+  }
 
-  const pageNotFoundContent = await pageNotFoundHtml({ appName })
-  await writeFile(pageNotFoundFilepath, pageNotFoundContent, 'utf-8')
+  for (const [key, filename] of Object.entries(htmlFilename)) {
+    const content = await readFile(join(srcDir, filename), 'utf8')
+    await writeFile(
+      htmlFilepath[key],
+      html(content, { js, importMap }),
+      'utf-8'
+    )
+  }
 }
 
 async function generateManifest() {
