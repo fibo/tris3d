@@ -24,25 +24,8 @@ class Component extends HTMLElement {
     publish('playmode', 'local')
 
     this.subscriptions.push(
-      subscribe('editing-client-settings', (editing) => {
-        if (editing) show(this)
-        else hide(this)
-      }),
-
-      subscribe('nickname', (nickname) => {
-        for (const option of this.select.options)
-          if (option.value === 'online') {
-            // TODO
-            // if (nickname) option.disabled = false
-            // else option.disabled = true
-          }
-      }),
-
       subscribe('playing', (playing) => {
-        if (playing)
-          this.select.disabled = true
-        else
-          this.select.disabled = false
+        this.select.disabled = !!playing
       }),
     )
 

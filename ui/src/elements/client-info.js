@@ -11,7 +11,7 @@ styles(
 class Component extends HTMLElement {
   subscriptions = []
 
-  nickname = h('input', { type: 'text', maxlength: 256 })
+  nickname = h('input', { id: 'nickname', type: 'text', maxlength: 256 })
 
   form = h('form', {}, [
     domComponent.field(nicknameLabel, this.nickname)
@@ -24,19 +24,13 @@ class Component extends HTMLElement {
     nickname.addEventListener('blur', this)
 
     this.subscriptions.push(
-      subscribe('editing-client-settings', (editing) => {
-        if (editing) show(this)
-        else hide(this)
-      }),
-
       subscribe('nickname', (value) => {
         if (value)
           nickname.value = value
       }),
 
       subscribe('playing', (playing) => {
-        if (playing) this.nickname.disabled = true
-        else this.nickname.disabled = false
+        this.nickname.disabled = !!playing
       }),
     )
 

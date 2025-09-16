@@ -1,6 +1,7 @@
 import 'design-canvas'
 
-// Do not import webStorage.js
+// Do not import webStorage.js here,
+// cause it would override some state.
 import '../src/logic.js'
 import '../src/elements/index.js'
 

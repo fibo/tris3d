@@ -10,18 +10,16 @@ styles(
     display: 'flex',
     'flex-direction': 'column',
     gap: 'var(--gap)',
-    'flex-grow': '1',
-    'justify-content': 'space-between',
   }),
 )
 
 class Component extends HTMLElement {
   subscriptions = []
 
+  action = h('button')
   currentplayer = h('current-player')
   players = h('local-players')
   results = h('local-results')
-  action = h('button')
 
   connectedCallback() {
     hide(this)
@@ -45,10 +43,10 @@ class Component extends HTMLElement {
     this.action.addEventListener('click', this)
 
     this.append(
+      this.action,
       this.currentplayer,
       this.players,
       this.results,
-      this.action,
     )
   }
 

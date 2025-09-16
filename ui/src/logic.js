@@ -1,6 +1,10 @@
 import { GameBoard, peek, publish, subscribe, AI } from '@tris3d/game'
 import { humanLabel } from './i18n.js'
 
+publish('playing', false)
+
+publish('playmode', 'local')
+
 const localPlayers = peek('local-players')
 if (!localPlayers)
   publish('local-players', ['human', 'stupid', 'stupid'])

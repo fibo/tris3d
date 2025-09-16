@@ -1,5 +1,5 @@
 import { peek, publish, subscribe } from '@tris3d/game'
-import { aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, playersSetupLabel, player1Label, player2Label, player3Label } from '../i18n.js'
+import { aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, player1Label, player2Label, player3Label } from '../i18n.js'
 import { cssRule, define, domComponent, h, styles } from '../utils.js'
 
 const tagName = 'local-players'
@@ -16,8 +16,6 @@ const players = {
 
 class Component extends HTMLElement {
   subscriptions = []
-
-  title = domComponent.title(playersSetupLabel)
 
   select = Object.keys(players).map(
     player => h('select', { id: player }, [
@@ -65,7 +63,6 @@ class Component extends HTMLElement {
     )
 
     this.append(
-      this.title,
       this.form,
     )
   }

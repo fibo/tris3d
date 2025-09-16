@@ -1,5 +1,4 @@
 import './client-info.js'
-import './client-settings.js'
 import './current-player.js'
 import './game-playground.js'
 import './local-info.js'

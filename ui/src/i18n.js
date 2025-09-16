@@ -24,7 +24,3 @@ export const nicknameLabel = 'nick name'
 export const playModeLabel = 'play mode'
 
 export const roomsLabel = 'rooms'
-
-export const playersSetupLabel = 'players setup'
-
-export const cannotEditWhilePlayingLabel = 'cannot edit settings while playing'

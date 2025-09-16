@@ -28,10 +28,13 @@ class Component extends HTMLElement {
 
   subscriptions = []
 
-  clientsettings = h('client-settings')
   canvas = h(canvasTagName)
+  clientInfo = h('client-info')
+  playmodeSwitch = h('playmode-switch')
   localinfo = h('local-info')
   onlineinfo = h('online-info')
+
+  canvasSheet = new CSSStyleSheet()
 
   get width() {
     const { parentElement } = this
@@ -47,6 +50,8 @@ class Component extends HTMLElement {
     const { canvas } = this
 
     canvas.setAttribute('fps', 30)
+
+    document.adoptedStyleSheets.push(this.canvasSheet)
 
     this.resize()
 
@@ -77,8 +82,9 @@ class Component extends HTMLElement {
     )
 
     this.append(
-      this.clientsettings,
       canvas,
+      this.clientInfo,
+      this.playmodeSwitch,
       this.localinfo,
       this.onlineinfo,
     )
@@ -87,6 +93,7 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
+    document.adoptedStyleSheets = document.adoptedStyleSheets.filter(sheet => sheet !== this.canvasSheet)
     this.subscriptions.forEach(unsubscribe => unsubscribe())
     window.removeEventListener('resize', this)
   }
@@ -114,7 +121,12 @@ class Component extends HTMLElement {
 
   resize() {
     const width = this.width
-    this.style.width = `${width}px`
+    this.canvasSheet.replace(`
+      ${canvasTagName} {
+        width: ${width}px;
+        height: ${width}px;
+      }
+    `)
     this.canvas.setAttribute('size', width)
   }
 
