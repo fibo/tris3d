@@ -1,6 +1,6 @@
 import { peek, publish, subscribe } from '@tris3d/game'
 import { aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, player1Label, player2Label, player3Label } from '../i18n.js'
-import { cssRule, define, domComponent, h, styles } from '../utils.js'
+import { cssRule, define, domComponent, h, styles, show, hide } from '../utils.js'
 
 const tagName = 'local-players'
 
@@ -57,8 +57,8 @@ class Component extends HTMLElement {
       }),
 
       subscribe('playing', (playing) => {
-        if (playing) this.hide()
-        else this.show()
+        if (playing) hide(this)
+        else show(this)
       }),
     )
 
@@ -91,9 +91,6 @@ class Component extends HTMLElement {
       publish('local-players', localPlayers)
     }
   }
-
-  show() { this.removeAttribute('hidden') }
-  hide() { this.setAttribute('hidden', 'true') }
 }
 
 define(tagName, Component)
