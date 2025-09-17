@@ -48,7 +48,6 @@ input, button, select {
   border-radius: var(--border-radius-small);
   padding: var(--text-padding);
   color: var(--text-color);
-  accent-color: var(--color-mono-0);
 }
 
 input:focus, button:focus, select:focus {
@@ -62,6 +61,10 @@ input:disabled, button:disabled, select:disabled {
   border-color: var(--theme-color);
 }
 
+input {
+  text-overflow: ellipsis;
+}
+
 select {
   appearance: none;
 }
@@ -69,6 +72,7 @@ select {
 form {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   gap: var(--gap-small);
 }
 

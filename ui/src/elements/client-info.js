@@ -1,5 +1,5 @@
 import { publish, subscribe } from '@tris3d/game'
-import { cssRule, define, domComponent, h, styles, hide, show } from '../utils.js'
+import { cssRule, define, domComponent, h, styles } from '../utils.js'
 import { nicknameLabel } from '../i18n.js'
 
 const tagName = 'client-info'
@@ -8,10 +8,16 @@ styles(
   cssRule.hidable(tagName),
 )
 
+const maxlength = 32
+
 class Component extends HTMLElement {
   subscriptions = []
 
-  nickname = h('input', { id: 'nickname', type: 'text', maxlength: 256 })
+  nickname = h('input', {
+    id: 'nickname',
+    type: 'text',
+    maxlength,
+  })
 
   form = h('form', {}, [
     domComponent.field(nicknameLabel, this.nickname)
@@ -46,7 +52,7 @@ class Component extends HTMLElement {
     if (event.type === 'blur') {
       event.preventDefault()
       const nickname = event.target.value.trim()
-      publish('nickname', nickname)
+      publish('nickname', nickname.substring(0, maxlength))
     }
 
     if (event.type === 'submit') {
