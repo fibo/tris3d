@@ -43,7 +43,7 @@ input, button, select {
   border-color: var(--color-mono-9);
   border-width: var(--border-width);
   line-height: 1.5;
-  outline-color: var(--border-color);
+  outline: none;
   background-color: var(--color-mono-9);
   border-radius: var(--border-radius-small);
   padding: var(--text-padding);
@@ -54,7 +54,7 @@ input, button, select {
 input:focus, button:focus, select:focus {
   background-color: var(--color-mono-9);
   color: var(--text-color);
-  outline-color: var(--border-color);
+  border-color: var(--border-color);
 }
 
 input:disabled, button:disabled, select:disabled {
