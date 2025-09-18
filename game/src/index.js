@@ -1,5 +1,4 @@
 export { AI } from './AI.js'
 export { GameBoard } from './board.js'
 export { GameRoom } from './room.js'
-export { peek, publish, subscribe } from './pubsub.js'
 export { POSITIONS, VECTOR_OF_POSITION, WINNING_LINES } from './space.js'

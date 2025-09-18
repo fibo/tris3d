@@ -1,4 +1,4 @@
-import { publish, subscribe } from '@tris3d/game'
+import { publish, subscribe } from '@tris3d/state'
 import { define, domComponent, h } from '../dom.js'
 import { playModeLabel } from '../i18n.js'
 

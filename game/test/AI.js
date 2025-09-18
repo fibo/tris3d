@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
-import { tryToBlock, victoryIsMine } from '../src/AI.js'
+import { tryToBlock, victoryIsMine } from '#src/AI.js'
 
 test('tryToBlock', () => {
   assert.equal(tryToBlock(['A', 'H', 'G', '*', 'I'], 0), 'V')

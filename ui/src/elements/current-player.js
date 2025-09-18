@@ -1,4 +1,4 @@
-import { peek, subscribe } from '@tris3d/game'
+import { subscribe } from '@tris3d/state'
 import { define, domComponent, h, hide, show } from '../dom.js'
 import { currentPlayerLabel, yourTurnMessage } from '../i18n.js'
 import { cssRule, styleSheet } from '../style.js'
@@ -29,13 +29,13 @@ class Component extends HTMLElement {
         else hide(this)
       }),
 
-      subscribe('moves', (moves) => {
+      subscribe('moves', (moves, get) => {
         const { player, message } = this
         if (!moves) return
 
-        const players = peek('player-names')
+        const players = get('player-names')
         const currentPlayerIndex = moves.length % 3
-        const localPlayerIndex = peek('local-player-index')
+        const localPlayerIndex = get('local-player-index')
 
         // player name
         if (typeof currentPlayerIndex === 'number' && players[currentPlayerIndex])

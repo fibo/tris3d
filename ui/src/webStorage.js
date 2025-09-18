@@ -1,22 +1,22 @@
-import { publish, subscribe } from '@tris3d/game'
+import { publish, subscribe } from '@tris3d/state'
 
 // nickname
 
 subscribe('nickname', (nickname) => {
-  if (!nickname) return
-  localStorage.setItem('nickname', nickname)
+  if (typeof nickname === 'string')
+    localStorage.setItem('nickname', nickname)
 })
 
 const nickname = localStorage.getItem('nickname')
-if (nickname)
+if (nickname !== null)
   publish('nickname', nickname)
 
 // local-players
 
 subscribe('local-players', (localPlayers) => {
-  if (localPlayers)
+  if (Array.isArray(localPlayers))
     localStorage.setItem('local-players', JSON.stringify(localPlayers))
 })
 const storedLocalPlayers = localStorage.getItem('local-players')
-if (storedLocalPlayers)
+if (storedLocalPlayers !== null)
   publish('local-players', JSON.parse(storedLocalPlayers))

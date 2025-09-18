@@ -1,6 +1,6 @@
 // Actually it depends on @tris3d/canvas
 // but import is omitted.
-import { peek, publish, subscribe } from '@tris3d/game'
+import { publish, subscribe } from '@tris3d/state'
 import { define, h } from '../dom.js'
 import { css, cssRule, styleSheet } from '../style.js'
 
@@ -23,8 +23,6 @@ styleSheet(
 )
 
 class Component extends HTMLElement {
-  static observedAttributes = ['debug']
-
   subscriptions = []
 
   canvas = h(canvasTagName)
@@ -33,7 +31,10 @@ class Component extends HTMLElement {
   localinfo = h('local-info')
   onlineinfo = h('online-info')
 
-  widthSheet = new CSSStyleSheet()
+  sheet = {
+    canvas: new CSSStyleSheet(),
+    width: new CSSStyleSheet(),
+  }
 
   get width() {
     const { parentElement } = this
@@ -50,7 +51,7 @@ class Component extends HTMLElement {
 
     canvas.setAttribute('fps', 30)
 
-    document.adoptedStyleSheets.push(this.widthSheet)
+    document.adoptedStyleSheets.push(...Object.values(this.sheet))
 
     this.resize()
 
@@ -62,11 +63,11 @@ class Component extends HTMLElement {
           canvas.removeAttribute('moves')
       }),
 
-      subscribe('playing', (playing) => {
+      subscribe('playing', (playing, get) => {
         if (playing) {
-          const playmode = peek('playmode')
+          const playmode = get('playmode')
           if (playmode === 'local') {
-            const players = peek('local-players')
+            const players = get('local-players')
             const player = players.indexOf('human')
             canvas.setAttribute('player', player)
           }
@@ -92,24 +93,18 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
-    document.adoptedStyleSheets = document.adoptedStyleSheets.filter(sheet => sheet !== this.widthSheet)
+    document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
+      sheet => !Object.values(this.sheet).includes(sheet)
+    )
     this.subscriptions.forEach(unsubscribe => unsubscribe())
     window.removeEventListener('resize', this)
-  }
-
-  attributeChangedCallback(name, _oldValue, newValue) {
-    if (name === 'debug') {
-      const debug = newValue !== null
-      this.debug = debug
-      publish('debug', debug)
-    }
   }
 
   handleEvent(event) {
     if (event.type === 'move') {
       const { position } = event.detail
       publish('moves', (moves) => {
-        if (moves === undefined) return
+        if (!Array.isArray(moves)) return
         return [...moves, position]
       })
     }
@@ -120,7 +115,13 @@ class Component extends HTMLElement {
 
   resize() {
     const { width } = this
-    this.widthSheet.replace(
+    this.sheet.canvas.replaceSync(
+      css(canvasTagName, {
+        height: `${width}px`,
+        width: `${width}px`
+      })
+    )
+    this.sheet.width.replaceSync(
       css(tagName, { width: `${width}px` })
     )
     this.canvas.setAttribute('size', width)
@@ -133,13 +134,13 @@ class Component extends HTMLElement {
     socket.onmessage = (event) => {
       try {
         const { type, data } = JSON.parse(event.data)
-        if (this.debug) console.info('message', type, data)
+        console.info('message', type, data)
       } catch (error) {
         console.error(error)
       }
     }
     socket.onopen = (event) => {
-      if (this.debug) console.info('open', event)
+      console.info('open', event)
     }
   }
 }

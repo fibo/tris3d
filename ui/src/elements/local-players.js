@@ -1,4 +1,4 @@
-import { peek, publish, subscribe } from '@tris3d/game'
+import { publish, subscribe } from '@tris3d/state'
 import { define, domComponent, h, hide, show } from '../dom.js'
 import { aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, player1Label, player2Label, player3Label } from '../i18n.js'
 import { cssRule, styleSheet } from '../style.js'
@@ -76,40 +76,8 @@ class Component extends HTMLElement {
 
   handleEvent(event) {
     if (event.type === 'change') {
-      const key = event.target.id
-      const index = players[key]
-      const nextChoice = event.target.value
-      const previousLocalPlayers = peek('local-players')
-      const previousChoice = previousLocalPlayers[index]
-      const previousHumanIndex = previousLocalPlayers.indexOf('human')
-      // There must be no more than one human player.
-      if (nextChoice === 'human') {
-        if (previousHumanIndex !== -1)
-          this.select[previousHumanIndex].value = previousChoice
-      }
-      // AI before human should not be "stupid".
-      const localPlayers = this.localPlayers
-      const humanIndex = localPlayers.indexOf('human')
-      if (humanIndex !== -1) {
-        const indexBeforeHuman = humanIndex === 0 ? 2 : humanIndex - 1
-        const aiBeforeHuman = localPlayers[indexBeforeHuman]
-        const indexAfterHuman = humanIndex === 2 ? 0 : humanIndex + 1
-        const aiAfterHuman = localPlayers[indexAfterHuman]
-        if (aiBeforeHuman === 'stupid') {
-        // If both AIs are "stupid", do nothing.
-          if (aiAfterHuman !== 'stupid') {
-            // Swap the two AIs.
-            this.select[indexBeforeHuman].value = aiAfterHuman
-            this.select[indexAfterHuman].value = aiBeforeHuman
-          }
-        }
-      }
-      publish('local-players', this.localPlayers)
+      publish('local-players', this.select.map(item => item.value))
     }
-  }
-
-  get localPlayers() {
-    return this.select.map(item => item.value)
   }
 }
 

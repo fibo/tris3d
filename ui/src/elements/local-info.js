@@ -1,4 +1,4 @@
-import { publish, subscribe } from '@tris3d/game'
+import { publish, subscribe } from '@tris3d/state'
 import { define, h, hide, show } from '../dom.js'
 import { endGameLabel, quitLabel, startLabel } from '../i18n.js'
 import { cssRule, styleSheet } from '../style.js'

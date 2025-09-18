@@ -1,4 +1,4 @@
-import { peek, subscribe } from '@tris3d/game'
+import { subscribe } from '@tris3d/state'
 import { define, domComponent, h, hide, show } from '../dom.js'
 import { extraScoreLabel, gameOverLabel, youWinLabel } from '../i18n.js'
 import { cssRule, styleSheet } from '../style.js'
@@ -30,7 +30,7 @@ class Component extends HTMLElement {
         }
       }),
 
-      subscribe('winner-score', (score) => {
+      subscribe('winner-score', (score, get) => {
         const { scoreMessage, winnerMessage } = this
 
         if (typeof score !== 'number') {
@@ -39,9 +39,9 @@ class Component extends HTMLElement {
           return
         }
 
-        const moves = peek('moves')
+        const moves = get('moves')
         const winnerIndex = (moves.length - 1) % 3
-        const localPlayerIndex = peek('local-player-index')
+        const localPlayerIndex = get('local-player-index')
 
         if (localPlayerIndex === winnerIndex)
           winnerMessage.textContent = youWinLabel

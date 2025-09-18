@@ -4,16 +4,15 @@ import { resetDir, openBrowser, workspaceDir } from '@tris3d/repo'
 import { html } from '@tris3d/screens'
 import { context } from 'esbuild'
 
-const { ui: uiDir } = workspaceDir
+const showcaseDir = join(workspaceDir.ui, 'showcase')
 
-const showcaseDir = join(uiDir, 'showcase')
 const outdir = join(showcaseDir, 'out')
 
 async function generateHtml() {
   // Get all HTML files in showcase directory.
   const files = await readdir(showcaseDir)
   for (let page of files.filter(filename => extname(filename) === '.html')) {
-    const content = await readFile(join(uiDir, 'showcase', page), 'utf8')
+    const content = await readFile(join(showcaseDir, page), 'utf8')
     // Wrap the content in the HTML template.
     const template = `
 <head>
@@ -37,7 +36,7 @@ async function startServer({ port }) {
   await resetDir(outdir)
 
   const ctx = await context({
-    entryPoints: [join(uiDir, 'showcase', 'load.js')],
+    entryPoints: [join(showcaseDir, 'load.js')],
     bundle: true,
     format: 'esm',
     inject: [join(workspaceDir.repo, 'src', 'liveReload.js')],
@@ -54,7 +53,7 @@ async function startServer({ port }) {
   await ctx.watch()
 
   await ctx.serve({
-    servedir: join(outdir),
+    servedir: outdir,
     port,
   })
 }

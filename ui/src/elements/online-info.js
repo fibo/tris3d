@@ -1,4 +1,4 @@
-import { subscribe } from '@tris3d/game'
+import { subscribe } from '@tris3d/state'
 import { define, h, hide, show } from '../dom.js'
 import { cssRule, styleSheet } from '../style.js'
 

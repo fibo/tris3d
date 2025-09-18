@@ -4,11 +4,19 @@
   "version": "0.0.0",
   "type": "module",
   "exports": "./src/index.js",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
   "dependencies": {
     "@tris3d/game": "^0.0.0",
-    "@tris3d/screens": "^0.0.0"
+    "@tris3d/screens": "^0.0.0",
+    "@tris3d/state": "^0.0.0"
   },
   "devDependencies": {
+    "@tris3d/repo": "^0.0.0",
     "design-canvas": "0.1.0"
   }
 }
