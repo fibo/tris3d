@@ -23,7 +23,7 @@ class Component extends HTMLElement {
       h('option', { value: 'human' }, humanLabel),
       h('option', { value: 'stupid' }, aiStupidLabel),
       h('option', { value: 'smart' }, aiSmartLabel),
-      h('option', { value: 'bastard', disabled: true }, aiBastardLabel)
+      h('option', { value: 'bastard' }, aiBastardLabel)
     ])
   )
 
@@ -81,16 +81,35 @@ class Component extends HTMLElement {
       const nextChoice = event.target.value
       const previousLocalPlayers = peek('local-players')
       const previousChoice = previousLocalPlayers[index]
+      const previousHumanIndex = previousLocalPlayers.indexOf('human')
       // There must be no more than one human player.
       if (nextChoice === 'human') {
-        const previousHumanIndex = previousLocalPlayers.indexOf('human')
-        if (previousHumanIndex !== -1) {
+        if (previousHumanIndex !== -1)
           this.select[previousHumanIndex].value = previousChoice
+      }
+      // AI before human should not be "stupid".
+      const localPlayers = this.localPlayers
+      const humanIndex = localPlayers.indexOf('human')
+      if (humanIndex !== -1) {
+        const indexBeforeHuman = humanIndex === 0 ? 2 : humanIndex - 1
+        const aiBeforeHuman = localPlayers[indexBeforeHuman]
+        const indexAfterHuman = humanIndex === 2 ? 0 : humanIndex + 1
+        const aiAfterHuman = localPlayers[indexAfterHuman]
+        if (aiBeforeHuman === 'stupid') {
+        // If both AIs are "stupid", do nothing.
+          if (aiAfterHuman !== 'stupid') {
+            // Swap the two AIs.
+            this.select[indexBeforeHuman].value = aiAfterHuman
+            this.select[indexAfterHuman].value = aiBeforeHuman
+          }
         }
       }
-      const localPlayers = this.select.map(item => item.value)
-      publish('local-players', localPlayers)
+      publish('local-players', this.localPlayers)
     }
+  }
+
+  get localPlayers() {
+    return this.select.map(item => item.value)
   }
 }
 

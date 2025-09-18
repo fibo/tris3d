@@ -24,6 +24,7 @@ subscribe('moves', (moves) => {
 
   if (playing && playmode === 'local') {
     const localPlayers = peek('local-players')
+    const humanPlayerIndex = localPlayers.indexOf('human')
     const currentPlayer = localPlayers[board.turnPlayer]
 
     if (currentPlayer !== 'human') {
@@ -33,7 +34,7 @@ subscribe('moves', (moves) => {
         const moves = peek('moves')
         const board = new GameBoard(moves)
         if (board.gameIsOver) return
-        const nextMove = AI[currentPlayer](moves)
+        const nextMove = AI[currentPlayer](moves, humanPlayerIndex)
         if (!nextMove) return
         publish('moves', [...moves, nextMove])
       }, 1000 + Math.random() * 2000)

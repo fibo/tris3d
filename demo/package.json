@@ -5,6 +5,7 @@
   "type": "module",
   "dependencies": {
     "@tris3d/game": "0.0.0",
+    "@tris3d/screens": "0.0.0",
     "@tris3d/ui": "0.0.0"
   },
   "devDependencies": {

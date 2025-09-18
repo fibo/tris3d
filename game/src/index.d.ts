@@ -13,7 +13,7 @@ declare module '@tris3d/game' {
   export const AI = {
     stupid: (moves: string[]) => string,
     smart: (moves: string[]) => string,
-    bastard: (moves: string[], targetPlayerIndex: number) => string,
+    bastard: (moves: string[], targetPlayerIndex?: number) => string,
   }
 
   // pubsub.js
