@@ -1,69 +1,27 @@
-<!doctype html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   {metaViewport}
   {metaThemeColor}
 
   <title>{appName}</title>
-  <meta name="description" content="${appDescription}" />
+  <meta name="description" content="{appDescription}" />
 
-  <link rel="manifest" href="${manifestPathname}" />
+  <link rel="manifest" href="{manifestPathname}" />
 
   {baseStyle}
-
-  <style>
-    header {
-      display: flex;
-      flex-direction: column;
-      padding: 3em 2em;
-    }
-    .cta {
-      display: flex;
-      margin: 2em;
-    }
-    noscript {
-      color: magenta;
-      text-align: center;
-    }
-    @media (max-width: 717px) {
-      header {
-        text-align: center;
-      }
-      .cta {
-        justify-content: center;
-      }
-    }
-  </style>
+  {landingStyle}
 
   <script type="importmap">{importMap}</script>
 </head>
 <body>
-  <header>
-    <h1>{appName}</h1>
-    <p>{appDescription}</p>
-  </header>
-
-  <noscript>
-    <p>Opsss... your JavaScript looks disabled 😒</p>
-  </noscript>
-
-  <div class="cta">
-    <button id="play">play</button>
-  </div>
-
-  <footer>
-  </footer>
+  {landingHtml}
 
   <script type="module">
-    async function play() {
-      await import('./js/{jsCanvas}');
-      await import('./js/{jsUi}');
-    }
-
     addEventListener('load', () => {
-      document.querySelector('#play').addEventListener('click', play);
+      document.querySelector('.cta > button').addEventListener('click', async () => {
+        await import('./js/{jsUi}');
+        await import('./js/{jsCanvas}');
+      });
     });
   </script>
 </body>
-</html>

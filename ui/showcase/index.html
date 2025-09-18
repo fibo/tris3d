@@ -1,11 +1,26 @@
 <style>
   :root {
-    --design-canvas-background: #fefefe;
+    --design-canvas-background: #444;
     --design-canvas-shadow: none;
   }
 </style>
 
 <design-canvas>
+  <window-frame src="landing.html"
+    position="-400,-600"
+    size="800x600"
+  ></window-frame>
+
+  <window-frame src="landing.html"
+    position="-400,100"
+    size="400x700"
+  ></window-frame>
+
+  <window-frame src="page-not-found.html"
+    position="-1000,100"
+    size="400x700"
+  ></window-frame>
+
   <window-frame src="first-screen.html"
     position="70,100"
     size="400x700"
@@ -26,3 +41,5 @@
     size="400x700"
   ></window-frame>
 </design-canvas>
+
+<script type="module" src="load.js"></script>

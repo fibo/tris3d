@@ -1,0 +1,18 @@
+<header class="hero">
+  <h1>{appName}</h1>
+  <p>{appDescription}</p>
+</header>
+
+<div class="cta">
+  <button disabled>play</button>
+</div>
+
+<script type="module">
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.cta > button').disabled = false;
+  });
+</script>
+
+<noscript>
+  <p>Opsss... your JavaScript looks disabled 😒</p>
+</noscript>

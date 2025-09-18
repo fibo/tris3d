@@ -1,7 +1,10 @@
-import { themeColor } from './theme.js'
-import { baseCss } from './styles.js'
+import { themeColor } from '@tris3d/design'
+import { baseCss, landingCss } from './files.js'
+
+export const metaCharset = '<meta charset="utf-8">'
 
 export const baseStyle = `<style>${baseCss}</style>`
+export const landingStyle = `<style>${landingCss}</style>`
 
 export const emptyFavicon = '<link rel="icon" href="data:image/x-icon;base64,AA">'
 

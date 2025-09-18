@@ -2,7 +2,8 @@ import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { copyFile, readFile, rename, writeFile } from 'node:fs/promises'
 import { basename, extname, join } from 'node:path'
-import { appName, appDescription, baseStyle, metaThemeColor, metaViewport, themeColor } from '@tris3d/design'
+import { appName, appDescription, themeColor } from '@tris3d/design'
+import { html } from '@tris3d/screens'
 import { resetDir, isMainModule, workspaceDir } from '@tris3d/repo'
 import { build as esbuild } from 'esbuild'
 
@@ -31,23 +32,6 @@ export const htmlFilepath = Object.entries(htmlFilename).reduce(
     ...filepaths,
   }),
   {})
-
-function html(content, { js = {}, importMap = {} } = {}) {
-  return content
-    .replaceAll('{appDescription}', appDescription)
-    .replaceAll('{appName}', appName)
-    .replace('{baseStyle}', baseStyle)
-    .replace('{manifestPathname}', manifestPathname)
-    .replace('{metaThemeColor}', metaThemeColor)
-    .replace('{metaViewport}', metaViewport)
-    .replace('{importMap}', importMap)
-    .replace('{jsCanvas}', js.canvas)
-    .replace('{jsUi}', js.ui)
-    // Pretty good minification.
-    .replace(/\n\s+/g, '\n')
-    .replaceAll('\n', '')
-    .trim()
-}
 
 async function copyImages() {
   await resetDir(imagesDir)
@@ -99,19 +83,23 @@ export async function generateHtml() {
     },
   })
 
-  const canvas = await generateJs(join(srcDir, 'canvas.js'), { external: ['@tris3d/three'] })
-  const ui = await generateJs(join(srcDir, 'ui.js'))
-
-  const js = {
-    canvas,
-    ui,
-  }
+  const jsCanvas = await generateJs(join(srcDir, 'canvas.js'), { external: ['@tris3d/three'] })
+  const jsUi = await generateJs(join(srcDir, 'ui.js'))
 
   for (const [key, filename] of Object.entries(htmlFilename)) {
-    const content = await readFile(join(srcDir, filename), 'utf8')
+    const template = await readFile(join(srcDir, filename), 'utf8')
     await writeFile(
       htmlFilepath[key],
-      html(content, { js, importMap }),
+      html(template, {
+        jsCanvas,
+        jsUi,
+        importMap,
+        manifestPathname,
+      })
+      // Pretty good minification.
+        .replace(/\n\s+/g, '\n')
+        .replaceAll('\n', '')
+        .trim(),
       'utf-8'
     )
   }

@@ -1,0 +1,45 @@
+:root {
+  --theme-color: {themeColor};
+  --color-mono-0: black;
+  --color-mono-9: white;
+
+  --border-width: 1px;
+  --border-color: var(--color-mono-0);
+  --border-radius-small: 7px;
+  --border-radius-large: 11px;
+
+  --gap-small: 4px;
+  --gap: 15px;
+
+  --text-padding: 2px 9px;
+  --text-color: var(--color-mono-0);
+  --background-color: var(--color-white);
+}
+
+html {
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 17px;
+}
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+*::selection {
+  background-color: gainsboro;
+  color: var(--text-color);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  min-height: 100svh;
+  padding: 0 var(--gap);
+  background-color: var(--theme-color);
+  color: var(--text-color);
+}
+
+h1 {
+  font-size: 3rem;
+}

@@ -1,12 +1,8 @@
 import { publish, subscribe } from '@tris3d/game'
-import { cssRule, define, domComponent, h, styles, show, hide } from '../utils.js'
+import { define, domComponent, h } from '../dom.js'
 import { playModeLabel } from '../i18n.js'
 
 const tagName = 'playmode-switch'
-
-styles(
-  cssRule.hidable(tagName),
-)
 
 class Component extends HTMLElement {
   subscriptions = []

@@ -46,7 +46,7 @@ export WEB_SOCKET_URL=ws://tris3d.inversive.net:3456
 Build the PWA with
 
 ```shell
-npm run build -- --all
+npm run build
 ```
 
 Generated files are in _pwa/out_ folder.

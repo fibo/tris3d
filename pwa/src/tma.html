@@ -1,7 +1,5 @@
-<!doctype html>
-<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  {metaCharset}
   {metaViewport}
   {metaThemeColor}
 
@@ -22,17 +20,11 @@
   <script type="importmap">{importMap}</script>
 </head>
 <body>
-  <header>
-    <h1>{appName}</h1>
-    <p>{appDescription}</p>
-  </header>
-
   <script type="module">
     addEventListener('load', async () => {
-      await import('./js/{jsCanvas}');
       await import('./js/{jsUi}');
+      await import('./js/{jsCanvas}');
       window.Telegram.WebApp.disableVerticalSwipes();
     });
   </script>
 </body>
-</html>

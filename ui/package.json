@@ -5,7 +5,8 @@
   "type": "module",
   "exports": "./src/index.js",
   "dependencies": {
-    "@tris3d/game": "^0.0.0"
+    "@tris3d/game": "^0.0.0",
+    "@tris3d/screens": "^0.0.0"
   },
   "devDependencies": {
     "design-canvas": "0.1.0"

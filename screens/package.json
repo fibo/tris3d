@@ -1,16 +1,14 @@
 {
-  "name": "@tris3d/pwa",
+  "name": "@tris3d/screens",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "test": "node --test"
-  },
+  "types": "./src/index.d.ts",
+  "exports": "./src/index.js",
   "dependencies": {
-    "@tris3d/ui": "0.0.0"
+    "@tris3d/design": "0.0.0"
   },
   "devDependencies": {
-    "@tris3d/screens": "0.0.0",
     "@tris3d/repo": "0.0.0"
   }
 }

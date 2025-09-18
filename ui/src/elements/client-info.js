@@ -1,10 +1,11 @@
 import { publish, subscribe } from '@tris3d/game'
-import { cssRule, define, domComponent, h, styles } from '../utils.js'
+import { define, domComponent, h } from '../dom.js'
 import { nicknameLabel } from '../i18n.js'
+import { cssRule, styleSheet } from '../style.js'
 
 const tagName = 'client-info'
 
-styles(
+styleSheet(
   cssRule.hidable(tagName),
 )
 
@@ -17,6 +18,7 @@ class Component extends HTMLElement {
     id: 'nickname',
     type: 'text',
     maxlength,
+    spellcheck: 'false',
   })
 
   form = h('form', {}, [

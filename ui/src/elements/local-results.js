@@ -1,10 +1,11 @@
 import { peek, subscribe } from '@tris3d/game'
-import { cssRule, define, domComponent, styles, show, hide } from '../utils.js'
+import { define, domComponent, h, hide, show } from '../dom.js'
 import { extraScoreLabel, gameOverLabel, youWinLabel } from '../i18n.js'
+import { cssRule, styleSheet } from '../style.js'
 
 const tagName = 'local-results'
 
-styles(
+styleSheet(
   cssRule.hidable(tagName),
   cssRule.message(tagName),
   cssRule.title(tagName),

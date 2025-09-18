@@ -1,10 +1,11 @@
 import { peek, publish, subscribe } from '@tris3d/game'
+import { define, domComponent, h, hide, show } from '../dom.js'
 import { aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, player1Label, player2Label, player3Label } from '../i18n.js'
-import { cssRule, define, domComponent, h, styles, show, hide } from '../utils.js'
+import { cssRule, styleSheet } from '../style.js'
 
 const tagName = 'local-players'
 
-styles(
+styleSheet(
   cssRule.hidable(tagName),
 )
 

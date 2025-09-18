@@ -22,4 +22,4 @@ fi
 aws s3 sync $BUILD_DIR/js/ s3://$BUCKET/js/ --cache-control max-age=31536000,public
 # Upload HTML pages with short cache.
 aws s3 cp $BUILD_DIR/index.html s3://$BUCKET/index.html --cache-control max-age=300,public
-aws s3 cp $BUILD_DIR/index.html s3://$BUCKET/tma.html --cache-control max-age=300,public
+aws s3 cp $BUILD_DIR/tma.html s3://$BUCKET/tma.html --cache-control max-age=300,public

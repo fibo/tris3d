@@ -1,0 +1,48 @@
+:root {
+  --landing-spacing: 2em;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  padding: 3em var(--landing-spacing);
+}
+
+.cta {
+  display: flex;
+  margin: var(--landing-spacing);
+}
+
+.cta button {
+  font-size: 1.7rem;
+  background-color: var(--color-mono-9);
+  color: var(--text-color);
+  padding: 0.25em 0.4em;
+  border: var(--border-width) solid var(--color-mono-9);
+  border-radius: var(--border-radius-small);
+  outline: none;
+}
+
+.cta button:focus {
+  background-color: var(--color-mono-9);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.cta button:disabled {
+  display: none;
+}
+
+@media (max-width: 717px) {
+  .hero {
+    text-align: center;
+  }
+  .cta {
+    justify-content: center;
+  }
+}
+
+noscript {
+  color: magenta;
+  text-align: center;
+}

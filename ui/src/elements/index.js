@@ -1,3 +1,7 @@
+// Load main style sheet.
+import { mainCssRules, styleSheet } from '../style.js'
+styleSheet(...mainCssRules)
+// Initialize custom elements.
 import './client-info.js'
 import './current-player.js'
 import './game-playground.js'

@@ -1,4 +1,4 @@
-import { define, h } from '../utils.js'
+import { define, h } from '../dom.js'
 import { roomsLabel } from '../i18n.js'
 
 const tagName = 'room-list'

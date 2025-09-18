@@ -1,7 +1,7 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { extname, join } from 'node:path'
-import { appName, baseStyle, emptyFavicon, metaThemeColor, metaViewport } from '@tris3d/design'
 import { resetDir, openBrowser, workspaceDir } from '@tris3d/repo'
+import { html } from '@tris3d/screens'
 import { context } from 'esbuild'
 
 const { ui: uiDir } = workspaceDir
@@ -15,28 +15,20 @@ async function generateHtml() {
   for (let page of files.filter(filename => extname(filename) === '.html')) {
     const content = await readFile(join(uiDir, 'showcase', page), 'utf8')
     // Wrap the content in the HTML template.
-    const output = `<!DOCTYPE html>
-<html lang="en">
+    const template = `
 <head>
-  <meta charset="UTF-8">
+  {metaCharset}
   {emptyFavicon}
   {metaViewport}
   {metaThemeColor}
   <title>{appName}</title>
   {baseStyle}
-  <script type="module" src="load.js"></script>
 </head>
 <body>
-  {content}
+  ${content}
 </body>
-</html>
 `
-      .replace('{content}', content)
-      .replace('{appName}', appName)
-      .replace('{baseStyle}', baseStyle)
-      .replace('{emptyFavicon}', emptyFavicon)
-      .replace('{metaThemeColor}', metaThemeColor)
-      .replace('{metaViewport}', metaViewport)
+    const output = html(template)
     await writeFile(join(outdir, page), output, 'utf8')
   }
 }

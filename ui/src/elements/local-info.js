@@ -1,16 +1,13 @@
 import { publish, subscribe } from '@tris3d/game'
-import { css, cssRule, define, h, styles, show, hide } from '../utils.js'
+import { define, h, hide, show } from '../dom.js'
 import { endGameLabel, quitLabel, startLabel } from '../i18n.js'
+import { cssRule, styleSheet } from '../style.js'
 
 const tagName = 'local-info'
 
-styles(
+styleSheet(
   cssRule.hidable(tagName),
-  css(tagName, {
-    display: 'flex',
-    'flex-direction': 'column',
-    gap: 'var(--gap)',
-  }),
+  cssRule.flexColumn(tagName),
 )
 
 class Component extends HTMLElement {

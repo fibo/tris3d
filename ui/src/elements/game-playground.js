@@ -1,16 +1,15 @@
 // Actually it depends on @tris3d/canvas
 // but import is omitted.
 import { peek, publish, subscribe } from '@tris3d/game'
-import { css, define, h, styles } from '../utils.js'
+import { define, h } from '../dom.js'
+import { css, cssRule, styleSheet } from '../style.js'
 
 const tagName = 'game-playground'
 const canvasTagName = 'tris3d-canvas'
 
-styles(
+styleSheet(
+  cssRule.flexColumn(tagName),
   css(tagName, {
-    display: 'flex',
-    'flex-direction': 'column',
-    gap: 'var(--gap)',
     'min-height': '100vh',
     'padding-block': 'var(--gap)',
   }),
@@ -34,7 +33,7 @@ class Component extends HTMLElement {
   localinfo = h('local-info')
   onlineinfo = h('online-info')
 
-  canvasSheet = new CSSStyleSheet()
+  widthSheet = new CSSStyleSheet()
 
   get width() {
     const { parentElement } = this
@@ -51,7 +50,7 @@ class Component extends HTMLElement {
 
     canvas.setAttribute('fps', 30)
 
-    document.adoptedStyleSheets.push(this.canvasSheet)
+    document.adoptedStyleSheets.push(this.widthSheet)
 
     this.resize()
 
@@ -93,7 +92,7 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
-    document.adoptedStyleSheets = document.adoptedStyleSheets.filter(sheet => sheet !== this.canvasSheet)
+    document.adoptedStyleSheets = document.adoptedStyleSheets.filter(sheet => sheet !== this.widthSheet)
     this.subscriptions.forEach(unsubscribe => unsubscribe())
     window.removeEventListener('resize', this)
   }
@@ -120,13 +119,10 @@ class Component extends HTMLElement {
   }
 
   resize() {
-    const width = this.width
-    this.canvasSheet.replace(`
-      ${canvasTagName} {
-        width: ${width}px;
-        height: ${width}px;
-      }
-    `)
+    const { width } = this
+    this.widthSheet.replace(
+      css(tagName, { width: `${width}px` })
+    )
     this.canvas.setAttribute('size', width)
   }
 

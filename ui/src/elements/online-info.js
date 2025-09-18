@@ -1,10 +1,12 @@
 import { subscribe } from '@tris3d/game'
-import { cssRule, define, h, styles, hide, show } from '../utils.js'
+import { define, h, hide, show } from '../dom.js'
+import { cssRule, styleSheet } from '../style.js'
 
 const tagName = 'online-info'
 
-styles(
+styleSheet(
   cssRule.hidable(tagName),
+  cssRule.flexColumn(tagName),
 )
 
 class Component extends HTMLElement {

@@ -1,10 +1,11 @@
 import { peek, subscribe } from '@tris3d/game'
+import { define, domComponent, h, hide, show } from '../dom.js'
 import { currentPlayerLabel, yourTurnMessage } from '../i18n.js'
-import { cssRule, define, domComponent, h, styles, show, hide } from '../utils.js'
+import { cssRule, styleSheet } from '../style.js'
 
 const tagName = 'current-player'
 
-styles(
+styleSheet(
   cssRule.hidable(tagName),
   cssRule.message(tagName),
 )
