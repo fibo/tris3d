@@ -1,3 +1,6 @@
+// Order matters,
+// load web storage first cause it may publish some persistent state.
+import './webStorage.js'
 import '@tris3d/ui'
 
 // Cleanup the body.
