@@ -13,7 +13,7 @@ styleSheet(
 class Component extends HTMLElement {
   subscriptions = []
 
-  action = h('button')
+  action = h('button', { disabled: true }, startLabel)
   currentplayer = h('current-player')
   players = h('local-players')
   results = h('local-results')
@@ -22,18 +22,28 @@ class Component extends HTMLElement {
     hide(this)
 
     this.subscriptions.push(
+      subscribe('3D', (loaded) => {
+        if (loaded)
+          this.action.disabled = false
+      }),
+
       subscribe('game-over', (gameIsOver) => {
         if (gameIsOver)
           this.action.textContent = endGameLabel
       }),
 
       subscribe('playing', (playing) => {
-        this.action.textContent = playing ? quitLabel : startLabel
+        if (playing === true)
+          this.action.textContent = quitLabel
+        else if (playing === false)
+          this.action.textContent = startLabel
       }),
 
       subscribe('playmode', (playmode) => {
-        if (playmode === 'local') show(this)
-        else hide(this)
+        if (playmode === 'local')
+          show(this)
+        else if (playmode === 'online')
+          hide(this)
       }),
     )
 

@@ -64,6 +64,7 @@ class Component extends HTMLElement {
       }),
 
       subscribe('playing', (playing, get) => {
+        if (playing === undefined) return
         if (playing) {
           const playmode = get('playmode')
           if (playmode === 'local') {

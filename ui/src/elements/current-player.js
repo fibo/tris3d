@@ -25,6 +25,7 @@ class Component extends HTMLElement {
       }),
 
       subscribe('playing', (playing) => {
+        if (playing === undefined) return
         if (playing) show(this)
         else hide(this)
       }),

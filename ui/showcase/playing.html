@@ -4,8 +4,10 @@
 
 <script>
   addEventListener('load', () => {
+    publish('3D', true)
+    publish('playmode', 'training')
+    publish('playing', true)
     publish('nickname', 'pippo')
     publish('local-players', ['smart', 'human', 'stupid'])
-    publish('playing', true)
   })
 </script>

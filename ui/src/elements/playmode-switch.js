@@ -7,7 +7,7 @@ const tagName = 'playmode-switch'
 class Component extends HTMLElement {
   subscriptions = []
 
-  select = h('select', { id: 'playmode', name: 'playmode' }, [
+  select = h('select', { id: 'playmode', disabled: true }, [
     h('option', { value: 'local' }, 'training'),
     h('option', { value: 'online', disabled: true }, 'online'),
   ])
@@ -21,7 +21,8 @@ class Component extends HTMLElement {
 
     this.subscriptions.push(
       subscribe('playing', (playing) => {
-        this.select.disabled = !!playing
+        if (playing !== undefined)
+          this.select.disabled = !!playing
       }),
     )
 

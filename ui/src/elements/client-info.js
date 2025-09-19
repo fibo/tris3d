@@ -19,6 +19,7 @@ class Component extends HTMLElement {
     type: 'text',
     maxlength,
     spellcheck: 'false',
+    disabled: true,
   })
 
   form = h('form', {}, [
@@ -32,12 +33,16 @@ class Component extends HTMLElement {
     nickname.addEventListener('blur', this)
 
     this.subscriptions.push(
+      subscribe('3D', (loaded) => {
+        if (loaded) nickname.disabled = false
+      }),
+
       subscribe('nickname', (value) => {
-        if (value)
-          nickname.value = value
+        if (value) nickname.value = value
       }),
 
       subscribe('playing', (playing) => {
+        if (playing === undefined) return
         this.nickname.disabled = !!playing
       }),
     )

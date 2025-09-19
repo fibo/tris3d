@@ -19,7 +19,7 @@ class Component extends HTMLElement {
   subscriptions = []
 
   select = Object.keys(players).map(
-    player => h('select', { id: player }, [
+    player => h('select', { id: player, disabled: true }, [
       h('option', { value: 'human' }, humanLabel),
       h('option', { value: 'stupid' }, aiStupidLabel),
       h('option', { value: 'smart' }, aiSmartLabel),
@@ -36,6 +36,11 @@ class Component extends HTMLElement {
     this.select.forEach(item => item.addEventListener('change', this))
 
     this.subscriptions.push(
+      subscribe('3D', (loaded) => {
+        if (loaded)
+          this.select.forEach(item => item.disabled = false)
+      }),
+
       subscribe('nickname', (nickname) => {
         this.select.forEach((item) => {
           for (const option of item.options) {

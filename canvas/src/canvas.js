@@ -1,5 +1,6 @@
 import { AmbientLight, Group, PerspectiveCamera, OrbitControls, Raycaster, Scene, Vector3, WebGLRenderer } from '@tris3d/three'
 import { POSITIONS, GameBoard } from '@tris3d/game'
+import { publish } from '@tris3d/state'
 import { Cell } from './cell.js'
 
 const tagName = 'tris3d-canvas'
@@ -64,6 +65,7 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   connectedCallback() {
+    publish('3D', true)
     this.createRenderer()
     this.setupCamera()
     this.setupControls()

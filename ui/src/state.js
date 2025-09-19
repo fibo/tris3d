@@ -2,6 +2,13 @@ import { GameBoard, AI } from '@tris3d/game'
 import { publish, subscribe } from '@tris3d/state'
 import { humanLabel } from './i18n.js'
 
+// 3D
+
+subscribe('3D', (loaded) => {
+  if (loaded)
+    publish('playing', false)
+})
+
 // local-players
 
 publish('local-players', (storedLocalPlayers) => {
@@ -114,8 +121,6 @@ subscribe('moves', (moves, get) => {
 })
 
 // playing
-
-publish('playing', false)
 
 subscribe('playing', (playing, get) => {
   // Do nothing on initial call.
