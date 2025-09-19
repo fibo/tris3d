@@ -20,35 +20,25 @@ class Component extends HTMLElement {
     hide(this)
 
     this.client.on({
-      'game-over': (gameIsOver) => {
+      current_player_name: (name) => {
+        this.player.value = name || ''
+      },
+
+      game_over: (gameIsOver) => {
         if (gameIsOver) hide(this)
       },
 
       playing: (playing) => {
-        if (playing === true) show(this)
-        else if (playing === false) hide(this)
+        if (playing) show(this)
+        else hide(this)
       },
 
-      moves: (moves, get) => {
-        if (!moves) return
-
-        const players = get('player-names')
-        const currentPlayerIndex = moves.length % 3
-        const localPlayerIndex = get('local-player-index')
-
-        // player name
-        if (typeof currentPlayerIndex === 'number' && players[currentPlayerIndex])
-          this.player.textContent = players[currentPlayerIndex]
-        else
-          this.player.textContent = ''
-
-        // message
-        if ((typeof currentPlayerIndex === 'number' && typeof localPlayerIndex === 'number')
-          && (localPlayerIndex === currentPlayerIndex))
+      your_turn: (isYourTurn) => {
+        if (isYourTurn)
           this.message.textContent = yourTurnMessage
         else
           this.message.textContent = ''
-      }
+      },
     })
 
     this.append(

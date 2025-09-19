@@ -15,12 +15,21 @@ export const aiStupidLabel = '🤖 stupid AI'
 export const aiSmartLabel = '🤓 smart AI'
 export const aiBastardLabel = '😈 bastard AI'
 
-export const quitLabel = 'quit'
-export const startLabel = 'start'
-export const endGameLabel = 'end game'
-
 export const nicknameLabel = 'nick name'
 
-export const playModeLabel = 'play mode'
+export function translate(_lang) {
+  return {
+    action: (key) => {
+      if (key === 'start') return 'start'
+      if (key === 'quit') return 'quit'
+      if (key === 'end_game') return 'end game'
+    },
 
-export const roomsLabel = 'rooms'
+    playmode: (key) => {
+      if (key === 'training') return 'training'
+      if (key === 'multiplayer') return 'multi player'
+    },
+
+    rooms: 'rooms',
+  }
+}

@@ -1,5 +1,6 @@
 // Actually it depends on @tris3d/canvas
 // but import is omitted.
+import { Client } from '@tris3d/client'
 import { publish, subscribe } from '@tris3d/state'
 import { define, h } from '../dom.js'
 import { css, cssRule, styleSheet } from '../style.js'
@@ -23,11 +24,12 @@ styleSheet(
 )
 
 class Component extends HTMLElement {
+  client = new Client()
   subscriptions = []
 
   canvas = h(canvasTagName)
   nickName = h('nick-name')
-  playmodeSwitch = h('play-mode')
+  playMode = h('play-mode')
   localInfo = h('local-info')
   onlineInfo = h('online-info')
 
@@ -67,8 +69,8 @@ class Component extends HTMLElement {
         if (playing === undefined) return
         if (playing) {
           const playmode = get('playmode')
-          if (playmode === 'local') {
-            const players = get('local-players')
+          if (playmode === 'training') {
+            const players = get('local_players')
             const player = players.indexOf('human')
             canvas.setAttribute('player', player)
           }
@@ -97,6 +99,7 @@ class Component extends HTMLElement {
     document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
       sheet => !Object.values(this.sheet).includes(sheet)
     )
+    this.client.dispose()
     this.subscriptions.forEach(unsubscribe => unsubscribe())
     window.removeEventListener('resize', this)
   }

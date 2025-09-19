@@ -4,9 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "exports": "./src/index.js",
-  "imports": {
-    "#src/*": "./src/*"
-  },
   "types": "./src/index.d.ts",
   "scripts": {
     "test": "node --test"

@@ -1,4 +1,4 @@
-import { subscribe } from '@tris3d/state'
+import { Client } from '@tris3d/client'
 import { define, h, hide, show } from '../dom.js'
 import { cssRule, styleSheet } from '../style.js'
 
@@ -10,21 +10,21 @@ styleSheet(
 )
 
 class Component extends HTMLElement {
-  subscriptions = []
+  client = new Client()
 
   roomList = h('room-list')
 
   connectedCallback() {
     hide(this)
 
-    this.subscriptions.push(
-      subscribe('playmode', (playmode) => {
-        if (playmode === 'online')
+    this.client.on({
+      playmode: (playmode) => {
+        if (playmode === 'multiplayer')
           show(this)
         else
           hide(this)
-      }),
-    )
+      },
+    })
 
     this.append(
       this.roomList
@@ -32,7 +32,7 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.subscriptions.forEach(unsubscribe => unsubscribe())
+    this.client.dispose()
   }
 }
 

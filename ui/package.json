@@ -9,13 +9,11 @@
   },
   "dependencies": {
     "@tris3d/i18n": "^0.0.0",
-    "@tris3d/client": "^0.0.0",
-    "@tris3d/game": "^0.0.0",
-    "@tris3d/screens": "^0.0.0"
+    "@tris3d/client": "^0.0.0"
   },
   "devDependencies": {
     "@tris3d/repo": "^0.0.0",
-    "@tris3d/state": "^0.0.0",
+    "@tris3d/screens": "^0.0.0",
     "design-canvas": "0.1.0"
   }
 }

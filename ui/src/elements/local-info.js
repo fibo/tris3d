@@ -1,5 +1,4 @@
-import { publish, subscribe } from '@tris3d/state'
-import { endGameLabel, quitLabel, startLabel } from '@tris3d/i18n'
+import { Client } from '@tris3d/client'
 import { define, h, hide, show } from '../dom.js'
 import { cssRule, styleSheet } from '../style.js'
 
@@ -11,9 +10,9 @@ styleSheet(
 )
 
 class Component extends HTMLElement {
-  subscriptions = []
+  client = new Client()
 
-  action = h('button', {}, startLabel)
+  action = h('button', {})
   currentplayer = h('current-player')
   players = h('local-players')
   results = h('local-results')
@@ -21,26 +20,18 @@ class Component extends HTMLElement {
   connectedCallback() {
     hide(this)
 
-    this.subscriptions.push(
-      subscribe('game-over', (gameIsOver) => {
-        if (gameIsOver)
-          this.action.textContent = endGameLabel
-      }),
+    this.client.on({
+      action: (action) => {
+        this.action.textContent = this.client.translate.action(action)
+      },
 
-      subscribe('playing', (playing) => {
-        if (playing === true)
-          this.action.textContent = quitLabel
-        else if (playing === false)
-          this.action.textContent = startLabel
-      }),
-
-      subscribe('playmode', (playmode) => {
-        if (playmode === 'local')
+      playmode: (playmode) => {
+        if (playmode === 'training')
           show(this)
-        else if (playmode === 'online')
+        else if (playmode === 'multiplayer')
           hide(this)
-      }),
-    )
+      }
+    })
 
     this.action.addEventListener('click', this)
 
@@ -53,13 +44,13 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.subscriptions.forEach(unsubscribe => unsubscribe())
+    this.client.dispose()
     this.action.removeEventListener('click', this)
   }
 
   handleEvent(event) {
     if (event.type === 'click' && event.target === this.action) {
-      publish('playing', playing => !playing)
+      this.client.toogglePlaying()
     }
   }
 }

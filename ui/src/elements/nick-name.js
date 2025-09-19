@@ -1,4 +1,4 @@
-import { publish, subscribe } from '@tris3d/state'
+import { Client } from '@tris3d/client'
 import { nicknameLabel } from '@tris3d/i18n'
 import { define, domComponent, h } from '../dom.js'
 import { cssRule, styleSheet } from '../style.js'
@@ -12,6 +12,7 @@ styleSheet(
 const maxlength = 32
 
 class Component extends HTMLElement {
+  client = new Client()
   subscriptions = []
 
   nickname = h('input', {
@@ -31,30 +32,30 @@ class Component extends HTMLElement {
     form.addEventListener('submit', this)
     nickname.addEventListener('blur', this)
 
-    this.subscriptions.push(
-      subscribe('nickname', (value) => {
+    this.client.on({
+      nickname: (value) => {
         if (value) nickname.value = value
-      }),
+      },
 
-      subscribe('playing', (playing) => {
+      playing: (playing) => {
         if (playing === undefined) return
         this.nickname.disabled = !!playing
-      }),
-    )
+      },
+    })
 
     this.append(form)
   }
 
   disconnectedCallback() {
     this.form.removeEventListener('submit', this)
-    this.subscriptions.forEach(unsubscribe => unsubscribe())
+    this.client.dispose()
   }
 
   handleEvent(event) {
     if (event.type === 'blur') {
       event.preventDefault()
       const nickname = event.target.value.trim()
-      publish('nickname', nickname.substring(0, maxlength))
+      this.client.nickname = nickname.substring(0, maxlength)
     }
 
     if (event.type === 'submit') {

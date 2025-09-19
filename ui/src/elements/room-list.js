@@ -1,15 +1,21 @@
-import { roomsLabel } from '@tris3d/i18n'
+import { Client } from '@tris3d/client'
 import { define, h } from '../dom.js'
 
 const tagName = 'room-list'
 
 class Component extends HTMLElement {
-  title = h('span', null, roomsLabel)
+  client = new Client()
 
   connectedCallback() {
+    const title = h('span', null, this.client.translate.rooms)
+
     this.append(
-      this.title
+      title
     )
+  }
+
+  disconnectedCallback() {
+    this.client.dispose()
   }
 }
 

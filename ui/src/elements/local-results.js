@@ -1,4 +1,4 @@
-import { subscribe } from '@tris3d/state'
+import { Client } from '@tris3d/client'
 import { extraScoreLabel, gameOverLabel, youWinLabel } from '@tris3d/i18n'
 import { define, domComponent, hide, show } from '../dom.js'
 import { cssRule, styleSheet } from '../style.js'
@@ -12,7 +12,7 @@ styleSheet(
 )
 
 class Component extends HTMLElement {
-  subscriptions = []
+  client = new Client()
 
   title = domComponent.title(gameOverLabel)
   winnerMessage = domComponent.message()
@@ -21,36 +21,30 @@ class Component extends HTMLElement {
   connectedCallback() {
     hide(this)
 
-    this.subscriptions.push(
-      subscribe('game-over', (gameIsOver) => {
+    this.client.on({
+      game_over: (gameIsOver) => {
         if (gameIsOver)
           show(this)
         else {
           this.winnerMessage.textContent = ''
           hide(this)
         }
-      }),
+      },
 
-      subscribe('winner-score', (score, get) => {
-        const { scoreMessage, winnerMessage } = this
+      winner_score: (score) => {
+        if (score === 0)
+          this.scoreMessage.textContent = ''
+        else if (score > 1)
+          this.scoreMessage.textContent = extraScoreLabel
+      },
 
-        if (typeof score !== 'number') {
-          winnerMessage.textContent = ''
-          scoreMessage.textContent = ''
-          return
-        }
-
-        const moves = get('moves')
-        const winnerIndex = (moves.length - 1) % 3
-        const localPlayerIndex = get('local-player-index')
-
-        if (localPlayerIndex === winnerIndex)
-          winnerMessage.textContent = youWinLabel
-
-        if (score > 1)
-          scoreMessage.textContent = extraScoreLabel
-      }),
-    )
+      you_win: (youWin) => {
+        if (youWin)
+          this.winnerMessage.textContent = youWinLabel
+        else
+          this.winnerMessage.textContent = ''
+      }
+    })
 
     this.append(
       this.title,
@@ -60,7 +54,7 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.subscriptions.forEach(unsubscribe => unsubscribe())
+    this.client.dispose()
   }
 }
 

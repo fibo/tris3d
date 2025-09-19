@@ -1,4 +1,5 @@
-import { publish, subscribe } from '@tris3d/state'
+import { Client } from '@tris3d/client'
+import { subscribe } from '@tris3d/state'
 import { aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, player1Label, player2Label, player3Label } from '@tris3d/i18n'
 import { define, domComponent, h, hide, show } from '../dom.js'
 import { cssRule, styleSheet } from '../style.js'
@@ -16,6 +17,7 @@ const players = {
 }
 
 class Component extends HTMLElement {
+  client = new Client()
   subscriptions = []
 
   select = Object.keys(players).map(
@@ -49,7 +51,7 @@ class Component extends HTMLElement {
         })
       }),
 
-      subscribe('local-players', (localPlayers) => {
+      subscribe('local_players', (localPlayers) => {
         this.select.forEach((item, index) => {
           const player = localPlayers[index]
           for (const option of item.options)
@@ -73,13 +75,12 @@ class Component extends HTMLElement {
 
   disconnectedCallback() {
     this.select.forEach(item => item.removeEventListener('change', this))
-
-    this.subscriptions.forEach(unsubscribe => unsubscribe())
+    this.client.dispose()
   }
 
   handleEvent(event) {
     if (event.type === 'change') {
-      publish('local-players', this.select.map(item => item.value))
+      this.client.local_players = this.select.map(item => item.value)
     }
   }
 }

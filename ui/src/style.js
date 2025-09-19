@@ -57,6 +57,10 @@ export const mainCssRules = [
     'border-color': 'var(--theme-color)',
   }),
 
+  css('button', {
+    'min-height': '29.5px',
+  }),
+
   css('input', {
     'text-overflow': 'ellipsis',
   }),
