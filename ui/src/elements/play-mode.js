@@ -1,8 +1,8 @@
 import { publish, subscribe } from '@tris3d/state'
+import { playModeLabel } from '@tris3d/i18n'
 import { define, domComponent, h } from '../dom.js'
-import { playModeLabel } from '../i18n.js'
 
-const tagName = 'playmode-switch'
+const tagName = 'play-mode'
 
 class Component extends HTMLElement {
   subscriptions = []

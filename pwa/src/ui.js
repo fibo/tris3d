@@ -9,6 +9,6 @@ while (document.body.lastChild)
 
 // Init UI.
 
-const playground = document.createElement('game-playground')
+const playground = document.createElement('play-ground')
 playground.setAttribute('websocket', WEBSOCKET_URL)
 document.body.appendChild(playground)

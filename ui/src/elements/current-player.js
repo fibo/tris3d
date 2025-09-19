@@ -1,6 +1,6 @@
-import { subscribe } from '@tris3d/state'
+import { Client } from '@tris3d/client'
+import { currentPlayerLabel, yourTurnMessage } from '@tris3d/i18n'
 import { define, domComponent, h, hide, show } from '../dom.js'
-import { currentPlayerLabel, yourTurnMessage } from '../i18n.js'
 import { cssRule, styleSheet } from '../style.js'
 
 const tagName = 'current-player'
@@ -11,7 +11,7 @@ styleSheet(
 )
 
 class Component extends HTMLElement {
-  subscriptions = []
+  client = new Client()
 
   player = h('output', { id: 'current-player', type: 'text' })
   message = domComponent.message()
@@ -19,19 +19,17 @@ class Component extends HTMLElement {
   connectedCallback() {
     hide(this)
 
-    this.subscriptions.push(
-      subscribe('game-over', (gameIsOver) => {
+    this.client.on({
+      'game-over': (gameIsOver) => {
         if (gameIsOver) hide(this)
-      }),
+      },
 
-      subscribe('playing', (playing) => {
-        if (playing === undefined) return
-        if (playing) show(this)
-        else hide(this)
-      }),
+      playing: (playing) => {
+        if (playing === true) show(this)
+        else if (playing === false) hide(this)
+      },
 
-      subscribe('moves', (moves, get) => {
-        const { player, message } = this
+      moves: (moves, get) => {
         if (!moves) return
 
         const players = get('player-names')
@@ -40,18 +38,18 @@ class Component extends HTMLElement {
 
         // player name
         if (typeof currentPlayerIndex === 'number' && players[currentPlayerIndex])
-          player.textContent = players[currentPlayerIndex]
+          this.player.textContent = players[currentPlayerIndex]
         else
-          player.textContent = ''
+          this.player.textContent = ''
 
         // message
         if ((typeof currentPlayerIndex === 'number' && typeof localPlayerIndex === 'number')
           && (localPlayerIndex === currentPlayerIndex))
-          message.textContent = yourTurnMessage
+          this.message.textContent = yourTurnMessage
         else
-          message.textContent = ''
-      }),
-    )
+          this.message.textContent = ''
+      }
+    })
 
     this.append(
       domComponent.field(currentPlayerLabel, this.player),
@@ -60,7 +58,7 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.subscriptions.forEach(unsubscribe => unsubscribe())
+    this.client.dispose()
   }
 }
 

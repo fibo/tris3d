@@ -1,6 +1,6 @@
 import { subscribe } from '@tris3d/state'
-import { define, domComponent, h, hide, show } from '../dom.js'
-import { extraScoreLabel, gameOverLabel, youWinLabel } from '../i18n.js'
+import { extraScoreLabel, gameOverLabel, youWinLabel } from '@tris3d/i18n'
+import { define, domComponent, hide, show } from '../dom.js'
 import { cssRule, styleSheet } from '../style.js'
 
 const tagName = 'local-results'
@@ -23,7 +23,8 @@ class Component extends HTMLElement {
 
     this.subscriptions.push(
       subscribe('game-over', (gameIsOver) => {
-        if (gameIsOver) show(this)
+        if (gameIsOver)
+          show(this)
         else {
           this.winnerMessage.textContent = ''
           hide(this)

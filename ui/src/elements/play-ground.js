@@ -4,7 +4,7 @@ import { publish, subscribe } from '@tris3d/state'
 import { define, h } from '../dom.js'
 import { css, cssRule, styleSheet } from '../style.js'
 
-const tagName = 'game-playground'
+const tagName = 'play-ground'
 const canvasTagName = 'tris3d-canvas'
 
 styleSheet(
@@ -26,10 +26,10 @@ class Component extends HTMLElement {
   subscriptions = []
 
   canvas = h(canvasTagName)
-  clientInfo = h('client-info')
-  playmodeSwitch = h('playmode-switch')
-  localinfo = h('local-info')
-  onlineinfo = h('online-info')
+  nickName = h('nick-name')
+  playmodeSwitch = h('play-mode')
+  localInfo = h('local-info')
+  onlineInfo = h('online-info')
 
   sheet = {
     canvas: new CSSStyleSheet(),
@@ -84,10 +84,10 @@ class Component extends HTMLElement {
 
     this.append(
       canvas,
-      this.clientInfo,
-      this.playmodeSwitch,
-      this.localinfo,
-      this.onlineinfo,
+      this.nickName,
+      this.playMode,
+      this.localInfo,
+      this.onlineInfo,
     )
 
     window.addEventListener('resize', this)

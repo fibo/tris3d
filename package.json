@@ -15,7 +15,9 @@
   },
   "author": "Gianluca Casati (https://fibo.github.io/)",
   "workspaces": [
+    "i18n",
     "canvas",
+    "client",
     "demo",
     "design",
     "game",

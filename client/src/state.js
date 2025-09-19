@@ -1,12 +1,12 @@
+import { humanLabel } from '@tris3d/i18n'
 import { GameBoard, AI } from '@tris3d/game'
 import { publish, subscribe } from '@tris3d/state'
-import { humanLabel } from './i18n.js'
 
 // 3D
 
 subscribe('3D', (loaded) => {
   if (loaded)
-    publish('playing', false)
+    console.info('3D loaded')
 })
 
 // local-players

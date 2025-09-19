@@ -1,4 +1,13 @@
-// Then load state logic.
-import './state.js'
-// Finally, load UI elements.
-import './elements/index.js'
+// Load main style sheet.
+import { mainCssRules, styleSheet } from './style.js'
+styleSheet(...mainCssRules)
+// Initialize custom elements.
+import './elements/nick-name.js'
+import './elements/current-player.js'
+import './elements/play-ground.js'
+import './elements/local-info.js'
+import './elements/local-players.js'
+import './elements/local-results.js'
+import './elements/online-info.js'
+import './elements/play-mode.js'
+import './elements/room-list.js'

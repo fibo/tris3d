@@ -1,6 +1,6 @@
 import { publish, subscribe } from '@tris3d/state'
+import { endGameLabel, quitLabel, startLabel } from '@tris3d/i18n'
 import { define, h, hide, show } from '../dom.js'
-import { endGameLabel, quitLabel, startLabel } from '../i18n.js'
 import { cssRule, styleSheet } from '../style.js'
 
 const tagName = 'local-info'
@@ -13,7 +13,7 @@ styleSheet(
 class Component extends HTMLElement {
   subscriptions = []
 
-  action = h('button', { disabled: true }, startLabel)
+  action = h('button', {}, startLabel)
   currentplayer = h('current-player')
   players = h('local-players')
   results = h('local-results')
@@ -22,11 +22,6 @@ class Component extends HTMLElement {
     hide(this)
 
     this.subscriptions.push(
-      subscribe('3D', (loaded) => {
-        if (loaded)
-          this.action.disabled = false
-      }),
-
       subscribe('game-over', (gameIsOver) => {
         if (gameIsOver)
           this.action.textContent = endGameLabel

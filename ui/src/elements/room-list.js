@@ -1,5 +1,5 @@
+import { roomsLabel } from '@tris3d/i18n'
 import { define, h } from '../dom.js'
-import { roomsLabel } from '../i18n.js'
 
 const tagName = 'room-list'
 

@@ -1,9 +1,9 @@
 import { publish, subscribe } from '@tris3d/state'
+import { nicknameLabel } from '@tris3d/i18n'
 import { define, domComponent, h } from '../dom.js'
-import { nicknameLabel } from '../i18n.js'
 import { cssRule, styleSheet } from '../style.js'
 
-const tagName = 'client-info'
+const tagName = 'nick-name'
 
 styleSheet(
   cssRule.hidable(tagName),
@@ -19,7 +19,6 @@ class Component extends HTMLElement {
     type: 'text',
     maxlength,
     spellcheck: 'false',
-    disabled: true,
   })
 
   form = h('form', {}, [
@@ -33,10 +32,6 @@ class Component extends HTMLElement {
     nickname.addEventListener('blur', this)
 
     this.subscriptions.push(
-      subscribe('3D', (loaded) => {
-        if (loaded) nickname.disabled = false
-      }),
-
       subscribe('nickname', (value) => {
         if (value) nickname.value = value
       }),

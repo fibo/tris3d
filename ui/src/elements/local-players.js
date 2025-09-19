@@ -1,6 +1,6 @@
 import { publish, subscribe } from '@tris3d/state'
+import { aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, player1Label, player2Label, player3Label } from '@tris3d/i18n'
 import { define, domComponent, h, hide, show } from '../dom.js'
-import { aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, player1Label, player2Label, player3Label } from '../i18n.js'
 import { cssRule, styleSheet } from '../style.js'
 
 const tagName = 'local-players'
@@ -19,7 +19,7 @@ class Component extends HTMLElement {
   subscriptions = []
 
   select = Object.keys(players).map(
-    player => h('select', { id: player, disabled: true }, [
+    player => h('select', { id: player }, [
       h('option', { value: 'human' }, humanLabel),
       h('option', { value: 'stupid' }, aiStupidLabel),
       h('option', { value: 'smart' }, aiSmartLabel),
@@ -36,18 +36,15 @@ class Component extends HTMLElement {
     this.select.forEach(item => item.addEventListener('change', this))
 
     this.subscriptions.push(
-      subscribe('3D', (loaded) => {
-        if (loaded)
-          this.select.forEach(item => item.disabled = false)
-      }),
-
       subscribe('nickname', (nickname) => {
         this.select.forEach((item) => {
           for (const option of item.options) {
             if (option.value !== 'human')
               continue
-            if (nickname) option.textContent = nickname
-            else option.textContent = humanLabel
+            if (nickname)
+              option.textContent = nickname
+            else
+              option.textContent = humanLabel
           }
         })
       }),
@@ -55,10 +52,11 @@ class Component extends HTMLElement {
       subscribe('local-players', (localPlayers) => {
         this.select.forEach((item, index) => {
           const player = localPlayers[index]
-          for (const option of item.options) {
-            if (option.value === player) option.selected = true
-            else option.selected = false
-          }
+          for (const option of item.options)
+            if (option.value === player)
+              option.selected = true
+            else
+              option.selected = false
         })
       }),
 
