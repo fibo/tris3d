@@ -1,5 +1,6 @@
-import { Client } from '@tris3d/client'
-import { define, h, hide, show } from '../dom.js'
+import { StateController } from '@tris3d/client'
+import { define, h } from '../dom.js'
+import { showIfPlaymode } from '../state.js'
 import { cssRule, styleSheet } from '../style.js'
 
 const tagName = 'online-info'
@@ -10,20 +11,13 @@ styleSheet(
 )
 
 class Component extends HTMLElement {
-  client = new Client()
+  state = new StateController()
 
   roomList = h('room-list')
 
   connectedCallback() {
-    hide(this)
-
-    this.client.on({
-      playmode: (playmode) => {
-        if (playmode === 'multiplayer')
-          show(this)
-        else
-          hide(this)
-      },
+    this.state.on({
+      playmode: showIfPlaymode('multiplayer', this),
     })
 
     this.append(
@@ -32,7 +26,7 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.client.dispose()
+    this.state.dispose()
   }
 }
 

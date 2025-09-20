@@ -1,8 +1,8 @@
 import { publish } from '@tris3d/state'
 
-function initialize(key, value) {
-  publish(key, (storedValue) => {
-    if (storedValue === undefined) return value
+function initialize(key, defaultValue) {
+  publish(key, (initalValue) => {
+    if (initalValue === undefined) return defaultValue
   })
 }
 

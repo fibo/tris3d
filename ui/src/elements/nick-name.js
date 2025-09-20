@@ -1,18 +1,22 @@
-import { Client } from '@tris3d/client'
+import { StateController } from '@tris3d/client'
 import { nicknameLabel } from '@tris3d/i18n'
 import { define, domComponent, h } from '../dom.js'
-import { cssRule, styleSheet } from '../style.js'
+import { css, cssRule, styleSheet } from '../style.js'
 
 const tagName = 'nick-name'
 
 styleSheet(
   cssRule.hidable(tagName),
+
+  css('input#nickname', {
+    width: '21ch',
+  }),
 )
 
 const maxlength = 32
 
 class Component extends HTMLElement {
-  client = new Client()
+  state = new StateController()
   subscriptions = []
 
   nickname = h('input', {
@@ -32,14 +36,16 @@ class Component extends HTMLElement {
     form.addEventListener('submit', this)
     nickname.addEventListener('blur', this)
 
-    this.client.on({
-      nickname: (value) => {
-        if (value) nickname.value = value
+    this.state.on({
+      connected: (connected) => {
+        if (connected)
+          this.nickname.disabled = true
+        else
+          this.nickname.disabled = false
       },
 
-      playing: (playing) => {
-        if (playing === undefined) return
-        this.nickname.disabled = !!playing
+      nickname: (value) => {
+        if (value) nickname.value = value
       },
     })
 
@@ -48,14 +54,14 @@ class Component extends HTMLElement {
 
   disconnectedCallback() {
     this.form.removeEventListener('submit', this)
-    this.client.dispose()
+    this.state.dispose()
   }
 
   handleEvent(event) {
     if (event.type === 'blur') {
       event.preventDefault()
       const nickname = event.target.value.trim()
-      this.client.nickname = nickname.substring(0, maxlength)
+      this.state.nickname = nickname.substring(0, maxlength)
     }
 
     if (event.type === 'submit') {

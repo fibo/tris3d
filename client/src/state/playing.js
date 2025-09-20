@@ -19,9 +19,11 @@ subscribe('playing', (playing, get) => {
   }
 })
 
-subscribe('playing', (playing) => {
+export function updateTrainingAction(playing) {
+  if (playing === undefined)
+    publish('action', 'start')
   if (playing === true)
     publish('action', 'quit')
   else if (playing === false)
     publish('action', 'start')
-})
+}

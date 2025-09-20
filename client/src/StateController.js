@@ -1,7 +1,7 @@
 import { publish, subscribe } from '@tris3d/state'
-import { translate } from '@tris3d/i18n'
+import { playmodes } from './model.js'
 
-export class Client {
+export class StateController {
   #subscriptions = []
 
   on(listeners) {
@@ -16,10 +16,6 @@ export class Client {
     for (const unsubscribe of this.#subscriptions)
       unsubscribe()
     this.#subscriptions = []
-  }
-
-  get translate() {
-    return translate('en')
   }
 
   get actions() {
@@ -38,14 +34,17 @@ export class Client {
 
   /** @param {'training' | 'multiplayer'} value */
   set playmode(value) {
-    publish('playmode', value)
+    publish('playmode', (previous) => {
+      if (value === previous) return
+      return value
+    })
   }
 
   get playmodes() {
-    return ['training', 'multiplayer']
+    return playmodes
   }
 
-  toogglePlaying() {
+  togglePlaying() {
     publish('playing', value => !value)
   }
 }

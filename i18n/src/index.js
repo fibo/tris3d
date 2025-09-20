@@ -10,26 +10,27 @@ export const gameOverLabel = 'game over'
 export const youWinLabel = 'you win! 🏆'
 export const extraScoreLabel = 'extra score!!! 🎉'
 
-export const humanLabel = 'human'
-export const aiStupidLabel = '🤖 stupid AI'
-export const aiSmartLabel = '🤓 smart AI'
-export const aiBastardLabel = '😈 bastard AI'
-
 export const nicknameLabel = 'nick name'
 
-export function translate(_lang) {
-  return {
-    action: (key) => {
-      if (key === 'start') return 'start'
-      if (key === 'quit') return 'quit'
-      if (key === 'end_game') return 'end game'
-    },
+const translation = {
+  en: {
+    'action.start': 'start',
+    'action.quit': 'quit',
+    'action.end_game': 'end game',
+    'action.connect': 'connect',
 
-    playmode: (key) => {
-      if (key === 'training') return 'training'
-      if (key === 'multiplayer') return 'multi player'
-    },
+    'playmode.training': 'training',
+    'playmode.multiplayer': 'multi player',
+
+    'player.human': 'human',
+    'player.stupid': '🤖 stupid AI',
+    'player.smart': '🤓 smart AI',
+    'player.bastard': '😈 bastard AI',
 
     rooms: 'rooms',
   }
+}
+
+export function translate(lang, key) {
+  return translation[lang][key] || key
 }

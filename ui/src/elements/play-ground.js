@@ -1,6 +1,6 @@
 // Actually it depends on @tris3d/canvas
 // but import is omitted.
-import { Client } from '@tris3d/client'
+import { StateController } from '@tris3d/client'
 import { publish, subscribe } from '@tris3d/state'
 import { define, h } from '../dom.js'
 import { css, cssRule, styleSheet } from '../style.js'
@@ -21,13 +21,21 @@ styleSheet(
     'border-color': 'var(--border-color)',
     'border-radius': 'var(--border-radius-large)',
   }),
+  css(`${tagName} .actions`, {
+    display: 'flex',
+    gap: 'var(--gap)',
+    'justify-content': 'space-between',
+  }),
 )
 
 class Component extends HTMLElement {
-  client = new Client()
+  state = new StateController()
   subscriptions = []
 
   canvas = h(canvasTagName)
+
+  multiplayerAction = h('multiplayer-action', {}, '')
+  trainingAction = h('training-action', {}, '')
   nickName = h('nick-name')
   playMode = h('play-mode')
   localInfo = h('local-info')
@@ -57,6 +65,10 @@ class Component extends HTMLElement {
 
     this.resize()
 
+    // TODO
+    // this.state.on({
+    // })
+
     this.subscriptions.push(
       subscribe('moves', (moves) => {
         if (moves)
@@ -84,23 +96,26 @@ class Component extends HTMLElement {
       }),
     )
 
+    window.addEventListener('resize', this)
+
     this.append(
       canvas,
+      h('div', { class: 'actions' }, [
+        this.playMode,
+        this.trainingAction,
+        this.multiplayerAction,
+      ]),
       this.nickName,
-      this.playMode,
       this.localInfo,
       this.onlineInfo,
     )
-
-    window.addEventListener('resize', this)
   }
 
   disconnectedCallback() {
     document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
       sheet => !Object.values(this.sheet).includes(sheet)
     )
-    this.client.dispose()
-    this.subscriptions.forEach(unsubscribe => unsubscribe())
+    this.state.dispose()
     window.removeEventListener('resize', this)
   }
 

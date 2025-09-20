@@ -1,8 +1,8 @@
-import { humanLabel } from '@tris3d/i18n'
 import { publish, subscribe } from '@tris3d/state'
+import { i18n } from '../I18nController.js'
 
 // There must be no more than one human player.
-subscribe('local_players', (next, get) => {
+export function noMoreThanOneHuman(next, get) {
   if (!next) return
   if (!next.includes('human')) return
   const previous = get('local_players')
@@ -25,10 +25,10 @@ subscribe('local_players', (next, get) => {
   const wanted = [...next]
   wanted[previousHumanIndex] = previous[nextHumanIndex]
   publish('local_players', wanted)
-})
+}
 
 // AI before human should not be "stupid".
-subscribe('local_players', (next, get) => {
+export function aiBeforeHuman(next, get) {
   if (!next) return
   if (!next.includes('human')) return
   const previous = get('local_players')
@@ -50,13 +50,13 @@ subscribe('local_players', (next, get) => {
       publish('local_players', wanted)
     }
   }
-})
+}
 
 subscribe('local_players', (localPlayers, get) => {
   const nickname = get('nickname')
   const playerNames = localPlayers.map((player) => {
     if (player === 'human')
-      return nickname || humanLabel
+      return nickname || i18n.translate('player.human')
     return player
   })
   publish('player_names', playerNames)

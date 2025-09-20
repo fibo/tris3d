@@ -1,4 +1,4 @@
-import { Client } from '@tris3d/client'
+import { StateController } from '@tris3d/client'
 import { extraScoreLabel, gameOverLabel, youWinLabel } from '@tris3d/i18n'
 import { define, domComponent, hide, show } from '../dom.js'
 import { cssRule, styleSheet } from '../style.js'
@@ -7,12 +7,10 @@ const tagName = 'local-results'
 
 styleSheet(
   cssRule.hidable(tagName),
-  cssRule.message(tagName),
-  cssRule.title(tagName),
 )
 
 class Component extends HTMLElement {
-  client = new Client()
+  state = new StateController()
 
   title = domComponent.title(gameOverLabel)
   winnerMessage = domComponent.message()
@@ -21,7 +19,7 @@ class Component extends HTMLElement {
   connectedCallback() {
     hide(this)
 
-    this.client.on({
+    this.state.on({
       game_over: (gameIsOver) => {
         if (gameIsOver)
           show(this)
@@ -54,7 +52,7 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.client.dispose()
+    this.state.dispose()
   }
 }
 

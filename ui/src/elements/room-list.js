@@ -1,13 +1,13 @@
-import { Client } from '@tris3d/client'
-import { define, h } from '../dom.js'
+import { StateController, i18n } from '@tris3d/client'
+import { define, domComponent } from '../dom.js'
 
 const tagName = 'room-list'
 
 class Component extends HTMLElement {
-  client = new Client()
+  state = new StateController()
 
   connectedCallback() {
-    const title = h('span', null, this.client.translate.rooms)
+    const title = domComponent.title(i18n.translate('rooms'))
 
     this.append(
       title
@@ -15,7 +15,7 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.client.dispose()
+    this.state.dispose()
   }
 }
 

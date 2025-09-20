@@ -1,4 +1,4 @@
-import { Client } from '@tris3d/client'
+import { StateController } from '@tris3d/client'
 import { currentPlayerLabel, yourTurnMessage } from '@tris3d/i18n'
 import { define, domComponent, h, hide, show } from '../dom.js'
 import { cssRule, styleSheet } from '../style.js'
@@ -7,11 +7,10 @@ const tagName = 'current-player'
 
 styleSheet(
   cssRule.hidable(tagName),
-  cssRule.message(tagName),
 )
 
 class Component extends HTMLElement {
-  client = new Client()
+  state = new StateController()
 
   player = h('output', { id: 'current-player', type: 'text' })
   message = domComponent.message()
@@ -19,7 +18,7 @@ class Component extends HTMLElement {
   connectedCallback() {
     hide(this)
 
-    this.client.on({
+    this.state.on({
       current_player_name: (name) => {
         this.player.value = name || ''
       },
@@ -48,7 +47,7 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.client.dispose()
+    this.state.dispose()
   }
 }
 

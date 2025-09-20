@@ -17,12 +17,6 @@ export const cssRule = {
   hidable: tagName => css(`${tagName}[hidden]`, {
     display: 'none',
   }),
-  message: tagName => css(`${tagName} .message`, {
-    padding: 'var(--text-padding)',
-  }),
-  title: tagName => css(`${tagName} .title`, {
-    padding: 'var(--text-padding)',
-  }),
 }
 
 export function styleSheet(...rules) {
@@ -54,7 +48,7 @@ export const mainCssRules = [
 
   css('input:disabled, button:disabled, select:disabled', {
     'background-color': 'var(--theme-color)',
-    'border-color': 'var(--theme-color)',
+    'border-color': 'var(--border-color)',
   }),
 
   css('button', {
@@ -84,4 +78,11 @@ export const mainCssRules = [
     content: '":"',
   }),
 
+  css('.message', {
+    padding: 'var(--text-padding)',
+  }),
+
+  css('.title', {
+    padding: 'var(--text-padding)',
+  }),
 ]

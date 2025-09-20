@@ -1,13 +1,19 @@
-import { Client } from '@tris3d/client'
-import { subscribe } from '@tris3d/state'
-import { aiStupidLabel, aiSmartLabel, aiBastardLabel, humanLabel, player1Label, player2Label, player3Label } from '@tris3d/i18n'
-import { define, domComponent, h, hide, show } from '../dom.js'
-import { cssRule, styleSheet } from '../style.js'
+import { StateController, i18n } from '@tris3d/client'
+import { player1Label, player2Label, player3Label } from '@tris3d/i18n'
+import { define, domComponent, h } from '../dom.js'
+import { showIfPlaymode } from '../state.js'
+import { css, cssRule, styleSheet } from '../style.js'
 
 const tagName = 'local-players'
 
 styleSheet(
   cssRule.hidable(tagName),
+
+  css(tagName, {
+    display: 'flex',
+    'flex-direction': 'row',
+    'justify-content': 'center',
+  })
 )
 
 const players = {
@@ -17,17 +23,14 @@ const players = {
 }
 
 class Component extends HTMLElement {
-  client = new Client()
-  subscriptions = []
+  state = new StateController()
 
   select = Object.keys(players).map(
     player => h('select', { id: player }, [
-      h('option', { value: 'human' }, humanLabel),
-      h('option', { value: 'stupid' }, aiStupidLabel),
-      h('option', { value: 'smart' }, aiSmartLabel),
-      h('option', { value: 'bastard' }, aiBastardLabel)
-    ])
-  )
+      'human', 'stupid', 'smart', 'bastard'
+    ].map(value =>
+      h('option', { value }, i18n.translate(`player.${value}`)
+      ))))
 
   form = h('form', {},
     [player1Label, player2Label, player3Label].map(
@@ -35,23 +38,8 @@ class Component extends HTMLElement {
     ))
 
   connectedCallback() {
-    this.select.forEach(item => item.addEventListener('change', this))
-
-    this.subscriptions.push(
-      subscribe('nickname', (nickname) => {
-        this.select.forEach((item) => {
-          for (const option of item.options) {
-            if (option.value !== 'human')
-              continue
-            if (nickname)
-              option.textContent = nickname
-            else
-              option.textContent = humanLabel
-          }
-        })
-      }),
-
-      subscribe('local_players', (localPlayers) => {
+    this.state.on({
+      local_players: (localPlayers) => {
         this.select.forEach((item, index) => {
           const player = localPlayers[index]
           for (const option of item.options)
@@ -60,13 +48,25 @@ class Component extends HTMLElement {
             else
               option.selected = false
         })
-      }),
+      },
 
-      subscribe('playing', (playing) => {
-        if (playing) hide(this)
-        else show(this)
-      }),
-    )
+      nickname: (nickname) => {
+        this.select.forEach((item) => {
+          for (const option of item.options) {
+            if (option.value !== 'human')
+              continue
+            if (nickname)
+              option.textContent = nickname
+            else
+              option.textContent = i18n.translate('player.human')
+          }
+        })
+      },
+
+      playmode: showIfPlaymode('training', this),
+    })
+
+    this.select.forEach(item => item.addEventListener('change', this))
 
     this.append(
       this.form,
@@ -75,12 +75,12 @@ class Component extends HTMLElement {
 
   disconnectedCallback() {
     this.select.forEach(item => item.removeEventListener('change', this))
-    this.client.dispose()
+    this.state.dispose()
   }
 
   handleEvent(event) {
     if (event.type === 'change') {
-      this.client.local_players = this.select.map(item => item.value)
+      this.state.local_players = this.select.map(item => item.value)
     }
   }
 }
