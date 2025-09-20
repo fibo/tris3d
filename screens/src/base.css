@@ -1,7 +1,15 @@
 :root {
   --theme-color: {themeColor};
-  --color-mono-0: black;
-  --color-mono-9: white;
+  --color-mono-0: #000000;
+  --color-mono-1: #1a1a1a;
+  --color-mono-2: #333333;
+  --color-mono-3: #4d4d4d;
+  --color-mono-4: #666666;
+  --color-mono-5: #808080;
+  --color-mono-6: #999999;
+  --color-mono-7: #b3b3b3;
+  --color-mono-8: #dedede;
+  --color-mono-9: #ffffff;
 
   --border-width: 1px;
   --border-color: var(--color-mono-0);
@@ -13,7 +21,7 @@
 
   --text-padding: 2px 9px;
   --text-color: var(--color-mono-0);
-  --background-color: var(--color-white);
+  --background-color: var(--color-mono-9);
 }
 
 html {

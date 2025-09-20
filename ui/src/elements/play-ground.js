@@ -18,7 +18,7 @@ styleSheet(
     display: 'inline-block',
     'border-style': 'solid',
     'border-width': 'var(--border-width)',
-    'border-color': 'var(--border-color)',
+    'border-color': 'var(--color-mono-7)',
     'border-radius': 'var(--border-radius-large)',
   }),
   css(`${tagName} .actions`, {

@@ -47,8 +47,8 @@ export const mainCssRules = [
   }),
 
   css('input:disabled, button:disabled, select:disabled', {
-    'background-color': 'var(--theme-color)',
-    'border-color': 'var(--border-color)',
+    'background-color': 'var(--color-mono-8)',
+    'border-color': 'var(--color-mono-5)',
   }),
 
   css('button', {
@@ -76,6 +76,18 @@ export const mainCssRules = [
 
   css('label:after', {
     content: '":"',
+  }),
+
+  css('.field', {
+    width: 'fit-content',
+    'background-color': 'var(--color-mono-8)',
+    'border-width': 'var(--border-width)',
+    'border-radius': 'var(--border-radius-small)',
+    padding: 'var(--gap-small)',
+  }),
+
+  css('.message', {
+    padding: 'var(--text-padding)',
   }),
 
   css('.message', {
