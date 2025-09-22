@@ -8,6 +8,14 @@
   padding: 3em var(--landing-spacing);
 }
 
+h1 {
+  font-size: 3rem;
+}
+
+p {
+  padding: var(--text-padding);
+}
+
 .cta {
   display: flex;
   margin: var(--landing-spacing);
@@ -15,18 +23,18 @@
 
 .cta button {
   font-size: 1.7rem;
-  background-color: var(--color-mono-9);
-  color: var(--text-color);
+  background: var(--mono9);
+  color: var(--color1);
   padding: 0.25em 0.4em;
-  border: var(--border-width) solid var(--color-mono-9);
-  border-radius: var(--border-radius-small);
+  border: var(--width1) solid var(--mono9);
+  border-radius: var(--radius1);
   outline: none;
 }
 
 .cta button:focus {
-  background-color: var(--color-mono-9);
-  color: var(--text-color);
-  border-color: var(--border-color);
+  background: var(--mono9);
+  color: var(--color0);
+  border-color: var(--mono0);
 }
 
 .cta button:disabled {

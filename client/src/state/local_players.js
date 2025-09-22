@@ -1,4 +1,4 @@
-import { publish, subscribe } from '@tris3d/state'
+import { publish } from '@tris3d/state'
 import { i18n } from '../i18n.js'
 
 // There must be no more than one human player.
@@ -51,13 +51,3 @@ export function aiBeforeHuman(next, get) {
     }
   }
 }
-
-subscribe('local_players', (localPlayers, get) => {
-  const nickname = get('nickname')
-  const playerNames = localPlayers.map((player) => {
-    if (player === 'human')
-      return nickname || i18n.translate('player.human')
-    return player
-  })
-  publish('player_names', playerNames)
-})

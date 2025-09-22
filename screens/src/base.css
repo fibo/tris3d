@@ -1,27 +1,25 @@
 :root {
   --theme-color: {themeColor};
-  --color-mono-0: #000000;
-  --color-mono-1: #1a1a1a;
-  --color-mono-2: #333333;
-  --color-mono-3: #4d4d4d;
-  --color-mono-4: #666666;
-  --color-mono-5: #808080;
-  --color-mono-6: #999999;
-  --color-mono-7: #b3b3b3;
-  --color-mono-8: #dedede;
-  --color-mono-9: #ffffff;
+  --mono0: #000000;
+  --mono1: #1a1a1a;
+  --mono2: #2b2b2b;
+  --mono3: #3c3c3c;
+  --mono4: #808080;
+  --mono5: #cdcdcd;
+  --mono6: #dedede;
+  --mono7: #eaeaea;
+  --mono8: #fafafa;
+  --mono9: #ffffff;
 
-  --border-width: 1px;
-  --border-color: var(--color-mono-0);
-  --border-radius-small: 7px;
-  --border-radius-large: 11px;
+  --width1: 2px;
+  --width2: 3px;
+  --radius1: 7px;
+  --radius2: 11px;
 
-  --gap-small: 4px;
-  --gap: 15px;
+  --gap1: 5px;
+  --gap2: 15px;
 
   --text-padding: 2px 9px;
-  --text-color: var(--color-mono-0);
-  --background-color: var(--color-mono-9);
 }
 
 html {
@@ -35,19 +33,15 @@ html {
 }
 
 *::selection {
-  background-color: gainsboro;
-  color: var(--text-color);
+  background: var(--mono5);
+  color: var(--mono0);
 }
 
 body {
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
   min-height: 100svh;
-  padding: 0 var(--gap);
-  background-color: var(--theme-color);
-  color: var(--text-color);
-}
-
-h1 {
-  font-size: 3rem;
+  padding: 0 var(--gap2);
+  background: var(--theme-color);
+  color: var(--color1);
 }

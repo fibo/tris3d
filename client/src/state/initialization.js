@@ -1,4 +1,5 @@
 import { publish } from '@tris3d/state'
+import { defaultLocalPlayers } from '../model.js'
 
 function initialize(key, defaultValue) {
   publish(key, (initalValue) => {
@@ -6,6 +7,6 @@ function initialize(key, defaultValue) {
   })
 }
 
-initialize('local_players', ['human', 'stupid', 'stupid'])
+initialize('local_players', defaultLocalPlayers)
 
 initialize('playmode', 'training')

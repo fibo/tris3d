@@ -18,10 +18,6 @@ export class StateController {
     this.#subscriptions = []
   }
 
-  get actions() {
-    return ['start', 'quit', 'end_game']
-  }
-
   /** @param {string[]} value */
   set local_players(value) {
     publish('local_players', value)
@@ -42,6 +38,13 @@ export class StateController {
 
   get playmodes() {
     return playmodes
+  }
+
+  addMove(position) {
+    publish('moves', (moves) => {
+      if (!moves) return [position]
+      return [...moves, position]
+    })
   }
 
   togglePlaying() {

@@ -12,7 +12,7 @@ export const cssRule = {
   flexColumn: tagName => css(tagName, {
     display: 'flex',
     'flex-direction': 'column',
-    gap: 'var(--gap)',
+    gap: 'var(--gap2)',
   }),
   hidable: tagName => css(`${tagName}[hidden]`, {
     display: 'none',
@@ -30,25 +30,26 @@ export const mainCssRules = [
   css('input, button, select', {
     font: 'inherit',
     'border-style': 'solid',
-    'border-color': 'var(--color-mono-9)',
-    'border-width': 'var(--border-width)',
+    'border-color': 'var(--mono6)',
+    'border-width': 'var(--width2)',
     'line-height': '1.5',
     outline: 'none',
-    'background-color': 'var(--color-mono-9)',
-    'border-radius': 'var(--border-radius-small)',
+    background: 'var(--mono8)',
+    'border-radius': 'var(--radius1)',
     padding: 'var(--text-padding)',
-    color: 'var(--text-color)',
+    color: 'var(--mono1)',
+    'user-select': 'none',
   }),
 
   css('input:focus, button:focus, select:focus', {
-    'background-color': 'var(--color-mono-9)',
-    color: 'var(--text-color)',
-    'border-color': 'var(--border-color)',
+    background: 'var(--mono9)',
+    color: 'var(--mono0)',
+    'border-color': 'var(--mono3)',
   }),
 
   css('input:disabled, button:disabled, select:disabled', {
-    'background-color': 'var(--color-mono-8)',
-    'border-color': 'var(--color-mono-5)',
+    background: 'var(--mono7)',
+    color: 'var(--mono3)',
   }),
 
   css('button', {
@@ -59,6 +60,10 @@ export const mainCssRules = [
     'text-overflow': 'ellipsis',
   }),
 
+  css('input::placeholder', {
+    color: 'var(--mono4)',
+  }),
+
   css('select', {
     appearance: 'none',
   }),
@@ -67,7 +72,7 @@ export const mainCssRules = [
     display: 'flex',
     'flex-direction': 'column',
     overflow: 'hidden',
-    gap: 'var(--gap-small)'
+    gap: 'var(--gap1)'
   }),
 
   css('label', {
@@ -80,14 +85,12 @@ export const mainCssRules = [
 
   css('.field', {
     width: 'fit-content',
-    'background-color': 'var(--color-mono-8)',
-    'border-width': 'var(--border-width)',
-    'border-radius': 'var(--border-radius-small)',
-    padding: 'var(--gap-small)',
+    'border-radius': 'var(--radius1)',
   }),
 
-  css('.message', {
-    padding: 'var(--text-padding)',
+  css('.field--focusable:focus-within', {
+    background: 'var(--mono3)',
+    color: 'var(--mono8)',
   }),
 
   css('.message', {

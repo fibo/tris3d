@@ -1,7 +1,6 @@
 // Actually it depends on @tris3d/canvas
 // but import is omitted.
 import { StateController } from '@tris3d/client'
-import { publish, subscribe } from '@tris3d/state'
 import { define, h } from '../dom.js'
 import { css, cssRule, styleSheet } from '../style.js'
 
@@ -12,18 +11,18 @@ styleSheet(
   cssRule.flexColumn(tagName),
   css(tagName, {
     'min-height': '100vh',
-    'padding-block': 'var(--gap)',
+    'padding-block': 'var(--gap2)',
   }),
   css(`${tagName} > ${canvasTagName}`, {
     display: 'inline-block',
     'border-style': 'solid',
-    'border-width': 'var(--border-width)',
-    'border-color': 'var(--color-mono-7)',
-    'border-radius': 'var(--border-radius-large)',
+    'border-width': 'var(--width1)',
+    'border-color': 'var(--mono5)',
+    'border-radius': 'var(--radius2)',
   }),
   css(`${tagName} .actions`, {
     display: 'flex',
-    gap: 'var(--gap)',
+    gap: 'var(--gap2)',
     'justify-content': 'space-between',
   }),
 )
@@ -65,27 +64,16 @@ class Component extends HTMLElement {
 
     this.resize()
 
-    // TODO
-    // this.state.on({
-    // })
-
-    this.subscriptions.push(
-      subscribe('moves', (moves) => {
+    this.state.on({
+      moves: (moves) => {
         if (moves)
           canvas.setAttribute('moves', moves.join(''))
         else
           canvas.removeAttribute('moves')
-      }),
+      },
 
-      subscribe('playing', (playing, get) => {
-        if (playing === undefined) return
+      playing: (playing) => {
         if (playing) {
-          const playmode = get('playmode')
-          if (playmode === 'training') {
-            const players = get('local_players')
-            const player = players.indexOf('human')
-            canvas.setAttribute('player', player)
-          }
           canvas.setAttribute('moves', '')
           canvas.addEventListener('move', this)
         } else {
@@ -93,8 +81,8 @@ class Component extends HTMLElement {
           canvas.removeAttribute('player')
           canvas.removeEventListener('move', this)
         }
-      }),
-    )
+      },
+    })
 
     window.addEventListener('resize', this)
 
@@ -121,11 +109,7 @@ class Component extends HTMLElement {
 
   handleEvent(event) {
     if (event.type === 'move') {
-      const { position } = event.detail
-      publish('moves', (moves) => {
-        if (!Array.isArray(moves)) return
-        return [...moves, position]
-      })
+      this.state.addMove(event.detail.position)
     }
     if (event.type === 'resize') {
       this.resize()

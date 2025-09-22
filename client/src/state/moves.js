@@ -42,14 +42,19 @@ subscribe('moves', (moves, get) => {
   }
 })
 
+export function updateTrainingTurn(moves) {
+  if (moves === undefined) {
+    publish('current_player_index', -1)
+  } else {
+    const currentPlayerIndex = moves.length % 3
+    publish('current_player_index', currentPlayerIndex)
+  }
+}
+
 subscribe('moves', (moves, get) => {
   if (!moves) return
-  const players = get('player_names')
   const currentPlayerIndex = moves.length % 3
   const localPlayerIndex = get('local_player_index')
-
-  if (typeof currentPlayerIndex === 'number' && players[currentPlayerIndex])
-    publish('current_player_name', players[currentPlayerIndex])
 
   if ((typeof currentPlayerIndex === 'number' && typeof localPlayerIndex === 'number')
     && (localPlayerIndex === currentPlayerIndex))

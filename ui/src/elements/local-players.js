@@ -8,41 +8,51 @@ const tagName = 'local-players'
 styleSheet(
   cssRule.hidable(tagName),
 
-  css(tagName, {
-    display: 'flex',
-    'flex-direction': 'row',
-    'justify-content': 'center',
+  css(`${tagName} .player--current`, {
+    background: 'var(--mono3)',
+    color: 'var(--mono8)',
+  }),
+  css(`${tagName} .player--current select`, {
+    background: 'var(--mono3)',
+    'border-color': 'var(--mono3)',
+    color: 'var(--mono8)',
   })
 )
 
-const players = {
-  player1: 0,
-  player2: 1,
-  player3: 2,
-}
+const players = ['player1', 'player2', 'player3']
 
 class Component extends HTMLElement {
   state = new StateController()
 
-  select = Object.keys(players).map(
+  select = players.map(
     player => h('select', { id: player }, [
       'human', 'stupid', 'smart', 'bastard'
     ].map(value =>
       h('option', { value }, i18n.translate(`player.${value}`)
       ))))
 
-  form = h('form', {},
-    ['player1', 'player2', 'player3'].map(
-      (label, index) => domComponent.field(i18n.transate(label), this.select[index])
-    ))
+  player = players.map((label, i) =>
+    domComponent.field(i18n.translate(label), this.select[i])
+  )
 
   connectedCallback() {
     this.state.on({
+      current_player_index: (playerIndex) => {
+        this.player.forEach((item, index) => {
+          if (index === playerIndex) {
+            item.classList.add('player--current')
+            item.classList.remove('field--focusable')
+          } else {
+            item.classList.remove('player--current')
+            item.classList.add('field--focusable')
+          }
+        })
+      },
+
       local_players: (localPlayers) => {
         this.select.forEach((item, index) => {
-          const player = localPlayers[index]
           for (const option of item.options)
-            if (option.value === player)
+            if (option.value === localPlayers[index])
               option.selected = true
             else
               option.selected = false
@@ -62,13 +72,17 @@ class Component extends HTMLElement {
         })
       },
 
+      playing: (playing) => {
+        this.select.forEach(item => item.disabled = playing)
+      },
+
       playmode: showIfPlaymode('training', this),
     })
 
     this.select.forEach(item => item.addEventListener('change', this))
 
     this.append(
-      this.form,
+      h('form', {}, this.player)
     )
   }
 

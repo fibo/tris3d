@@ -27,3 +27,10 @@ export function updateTrainingAction(playing) {
   else if (playing === false)
     publish('action', 'start')
 }
+
+export function resetBoard(playing) {
+  if (playing === true)
+    publish('moves', [])
+  if (playing === false)
+    publish('moves', undefined)
+}

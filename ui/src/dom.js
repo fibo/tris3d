@@ -24,7 +24,9 @@ export function h(tagName, attributes = null, children = []) {
 }
 
 export const domComponent = {
-  field: (label, element) => h('div', { class: 'field' }, [
+  field: (label, element, classlist = []) => h('div', {
+    class: ['field', 'field--focusable', ...classlist].join(' '),
+  }, [
     h('label', { for: element.id }, [label]),
     element
   ]),

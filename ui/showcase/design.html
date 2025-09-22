@@ -1,0 +1,113 @@
+<script type="module" src="load.js"></script>
+
+<style>
+ section {
+   margin: 2em 0;
+ }
+
+ .colors {
+   display: flex;
+   flex-direction: row;
+   gap: 0;
+ }
+ .colors > div {
+   flex: 1;
+   width: 2em;
+   height: 2em;
+   line-height: 2em;
+   text-align: center;
+ }
+
+ .items {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 1em;
+ }
+</style>
+
+<section>
+  <h3>colors</h3>
+  <div class="colors">
+    <div style="background:var(--mono0);color:var(--mono9)">0</div>
+    <div style="background:var(--mono1);color:var(--mono9)">1</div>
+    <div style="background:var(--mono2);color:var(--mono9)">2</div>
+    <div style="background:var(--mono3);color:var(--mono9)">3</div>
+    <div style="background:var(--mono4);color:var(--mono9)">4</div>
+    <div style="background:var(--mono5);color:var(--mono0)">5</div>
+    <div style="background:var(--mono6);color:var(--mono0)">6</div>
+
+    <div style="background:var(--theme-color)"></div>
+
+    <div style="background:var(--mono7);color:var(--mono0)">7</div>
+    <div style="background:var(--mono8);color:var(--mono0)">8</div>
+    <div style="background:var(--mono9);color:var(--mono0)">9</div>
+  </div>
+</section>
+
+<section>
+  <p>Paragraph text, <b>bold</b> and <i>italic</i>.</p>
+
+  <p>
+    The following is
+    <!-- sync with *::selection in base.css -->
+    <span style="background:var(--mono5);color:var(--mono0)">selected</span>
+    text.
+  </p>
+</section>
+
+<section>
+  <h3>buttons</h3>
+
+  <div class="items">
+    <button>button</button>
+    <button disabled>disabled</button>
+  </div>
+</section>
+
+<section>
+  <h3>inputs</h3>
+
+  <div class="items">
+    <input type="text" value="text">
+    <input type="text" placeholder="placeholder">
+    <input type="text" value="disabled" disabled>
+    <input type="text" value="readonly" readonly>
+    <input type="text" value="input with overflow content">
+  </div>
+</section>
+
+<section>
+  <h3>selects</h3>
+
+  <div class="items">
+    <select>
+      <option>option 1</option>
+      <option>option 2</option>
+      <option>option 3</option>
+    </select>
+
+    <select disabled>
+      <option>disabled</option>
+    </select>
+  </div>
+</section>
+
+<section>
+  <h3>form fields</h3>
+
+  <form>
+    <div class="field">
+      <label for="field1">input</label>
+      <input id="field1" type="text" value="text">
+    </div>
+
+    <div class="field">
+      <label for="field2">select</label>
+      <select id="field2">
+        <option>option 1</option>
+        <option>option 2</option>
+        <option>option 3</option>
+      </select>
+    </div>
+  </form>
+</section>

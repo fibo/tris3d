@@ -7,7 +7,7 @@ const tagName = 'nick-name'
 styleSheet(
   cssRule.hidable(tagName),
 
-  css('input#nickname', {
+  css('.nickname', {
     width: '21ch',
   }),
 )
@@ -18,33 +18,37 @@ class Component extends HTMLElement {
   state = new StateController()
   subscriptions = []
 
-  nickname = h('input', {
+  input = h('input', {
     id: 'nickname',
+    class: 'nickname',
     type: 'text',
     maxlength,
     spellcheck: 'false',
   })
 
-  form = h('form', {}, [
-    domComponent.field(i18n.translate('nick_name'), this.nickname)
-  ])
+  field = domComponent.field(i18n.translate('nick_name'), this.input)
+
+  form = h('form', {}, [this.field])
 
   connectedCallback() {
-    const { form, nickname } = this
+    const { form, input } = this
 
     form.addEventListener('submit', this)
-    nickname.addEventListener('blur', this)
+    input.addEventListener('blur', this)
 
     this.state.on({
       connected: (connected) => {
-        if (connected)
-          this.nickname.disabled = true
-        else
-          this.nickname.disabled = false
+        if (connected) {
+          this.input.setAttribute('readonly', 'true')
+          this.feild.classList.remove('field--focusable')
+        } else {
+          this.input.removeAttribute('readonly')
+          this.field.classList.add('field--focusable')
+        }
       },
 
       nickname: (value) => {
-        if (value) nickname.value = value
+        if (value) input.value = value
       },
     })
 
@@ -53,19 +57,20 @@ class Component extends HTMLElement {
 
   disconnectedCallback() {
     this.form.removeEventListener('submit', this)
+    this.input.removeEventListener('blur', this)
     this.state.dispose()
   }
 
   handleEvent(event) {
     if (event.type === 'blur') {
       event.preventDefault()
-      const nickname = event.target.value.trim()
-      this.state.nickname = nickname.substring(0, maxlength)
+      const name = event.target.value.trim()
+      this.state.nickname = name.substring(0, maxlength)
     }
 
     if (event.type === 'submit') {
       event.preventDefault()
-      this.nickname.blur()
+      this.input.blur()
     }
   }
 }
