@@ -1,5 +1,4 @@
-import { StateController } from '@tris3d/client'
-import { extraScoreLabel, gameOverLabel, youWinLabel } from '@tris3d/i18n'
+import { StateController, i18n } from '@tris3d/client'
 import { define, domComponent, hide, show } from '../dom.js'
 import { cssRule, styleSheet } from '../style.js'
 
@@ -12,7 +11,7 @@ styleSheet(
 class Component extends HTMLElement {
   state = new StateController()
 
-  title = domComponent.title(gameOverLabel)
+  title = domComponent.title(i18n.translate('game_over'))
   winnerMessage = domComponent.message()
   scoreMessage = domComponent.message()
 
@@ -33,12 +32,12 @@ class Component extends HTMLElement {
         if (score === 0)
           this.scoreMessage.textContent = ''
         else if (score > 1)
-          this.scoreMessage.textContent = extraScoreLabel
+          this.scoreMessage.textContent = i18n.translate('extra_score')
       },
 
       you_win: (youWin) => {
         if (youWin)
-          this.winnerMessage.textContent = youWinLabel
+          this.winnerMessage.textContent = i18n.translate('you_win')
         else
           this.winnerMessage.textContent = ''
       }

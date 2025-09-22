@@ -8,6 +8,6 @@ import './state/winner_score.js'
 import { PlaymodeController } from './PlaymodeController.js'
 new PlaymodeController()
 
-export { i18n } from './I18nController.js'
+export { i18n } from './i18n.js'
 
 export { StateController } from './StateController.js'

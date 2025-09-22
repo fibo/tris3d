@@ -13,7 +13,6 @@ styleSheet(
 class Component extends HTMLElement {
   state = new StateController()
 
-  currentplayer = h('current-player')
   players = h('local-players')
   results = h('local-results')
 
@@ -23,7 +22,6 @@ class Component extends HTMLElement {
     })
 
     this.append(
-      this.currentplayer,
       this.players,
       this.results,
     )

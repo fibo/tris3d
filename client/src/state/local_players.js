@@ -1,5 +1,5 @@
 import { publish, subscribe } from '@tris3d/state'
-import { i18n } from '../I18nController.js'
+import { i18n } from '../i18n.js'
 
 // There must be no more than one human player.
 export function noMoreThanOneHuman(next, get) {

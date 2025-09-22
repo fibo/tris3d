@@ -1,5 +1,4 @@
-import { StateController } from '@tris3d/client'
-import { nicknameLabel } from '@tris3d/i18n'
+import { StateController, i18n } from '@tris3d/client'
 import { define, domComponent, h } from '../dom.js'
 import { css, cssRule, styleSheet } from '../style.js'
 
@@ -27,7 +26,7 @@ class Component extends HTMLElement {
   })
 
   form = h('form', {}, [
-    domComponent.field(nicknameLabel, this.nickname)
+    domComponent.field(i18n.translate('nick_name'), this.nickname)
   ])
 
   connectedCallback() {

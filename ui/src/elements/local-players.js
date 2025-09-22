@@ -1,5 +1,4 @@
 import { StateController, i18n } from '@tris3d/client'
-import { player1Label, player2Label, player3Label } from '@tris3d/i18n'
 import { define, domComponent, h } from '../dom.js'
 import { showIfPlaymode } from '../state.js'
 import { css, cssRule, styleSheet } from '../style.js'
@@ -33,8 +32,8 @@ class Component extends HTMLElement {
       ))))
 
   form = h('form', {},
-    [player1Label, player2Label, player3Label].map(
-      (label, index) => domComponent.field(label, this.select[index])
+    ['player1', 'player2', 'player3'].map(
+      (label, index) => domComponent.field(i18n.transate(label), this.select[index])
     ))
 
   connectedCallback() {
