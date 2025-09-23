@@ -1,6 +1,5 @@
 import { AmbientLight, Group, PerspectiveCamera, OrbitControls, Raycaster, Scene, Vector3, WebGLRenderer } from '@tris3d/three'
-import { POSITIONS, GameBoard } from '@tris3d/game'
-import { publish } from '@tris3d/state'
+import { POSITIONS } from '@tris3d/game'
 import { Cell } from './cell.js'
 
 const tagName = 'tris3d-canvas'
@@ -23,14 +22,12 @@ class Tris3dCanvas extends HTMLElement {
     'fps',
     'player',
     'moves',
+    'readonly',
     'size',
   ]
 
   // Frames per second
   FPS = 25
-
-  board = new GameBoard()
-  canvas = document.createElement('canvas')
 
   cellsGroup = new Group()
   scene = new Scene()
@@ -41,6 +38,7 @@ class Tris3dCanvas extends HTMLElement {
 
   positionCellMap = new Map()
   cellSphereUuidPositionMap = new Map()
+  boardMoves = []
 
   shouldRotateGroup = true
   shouldResize = false
@@ -49,23 +47,16 @@ class Tris3dCanvas extends HTMLElement {
   idleTimeout = 10_000
 
   get availableCellSpheres() {
-    const { board, positionCellMap } = this
     const spheres = []
-    for (const [position, cell] of positionCellMap) {
-      if (board.moves.includes(position)) continue
+    for (const [position, cell] of this.positionCellMap) {
+      if (this.boardMoves.includes(position))
+        continue
       spheres.push(cell.sphere)
     }
     return spheres
   }
 
-  get isReadOnly() {
-    const { playerIndex, board } = this
-    if (playerIndex === undefined) return true
-    return board.turnPlayer !== playerIndex
-  }
-
   connectedCallback() {
-    publish('3D', true)
     this.createRenderer()
     this.setupCamera()
     this.setupControls()
@@ -76,6 +67,7 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   disconnectedCallback() {
+    this.renderer.dispose()
     this.removeEventListeners()
     clearTimeout(this.idleTimeoutId)
   }
@@ -85,20 +77,17 @@ class Tris3dCanvas extends HTMLElement {
       if (newValue === null)
         this.resetMoves()
       else {
-        if (newValue === oldValue) return
         if (!newValue.includes(oldValue))
           this.resetMoves()
-        const { board } = this
         const newMoves = newValue.split('')
-        for (let i = board.moves.length; i < newMoves.length; i++) {
-          if (board.gameIsOver) break
+        for (let i = this.boardMoves.length; i < newMoves.length; i++) {
           const position = newMoves[i]
-          const success = board.addMove(position)
-          if (!success) break
           const cell = this.positionCellMap.get(position)
           const color = playerColors[i % 3]
-          if (cell) cell.select(color)
+          if (cell)
+            cell.select(color)
         }
+        this.boardMoves = newMoves
       }
     }
 
@@ -109,14 +98,8 @@ class Tris3dCanvas extends HTMLElement {
       }
     }
 
-    if (name === 'player') {
-      if (newValue === null)
-        this.playerIndex = undefined
-      else {
-        const index = parseInt(newValue, 10)
-        if (index >= 0 && index <= 2)
-          this.playerIndex = index
-      }
+    if (name === 'readonly') {
+      this.isReadOnly = newValue !== null
     }
 
     if (name === 'size') {
@@ -135,37 +118,28 @@ class Tris3dCanvas extends HTMLElement {
       if (this.isReadOnly) return
       const cell = this.pickCell(event)
       if (cell) {
-        this.addMove(cell.position)
-        cell.select()
+        this.dispatchEvent(new CustomEvent('move', { detail: { position: cell.position } }))
       }
     }
   }
 
   addEventListeners() {
-    this.canvas.addEventListener('pointerdown', this)
+    this.renderer.domElement.addEventListener('pointerdown', this)
   }
 
   removeEventListeners() {
-    this.canvas.removeEventListener('pointerdown', this)
-  }
-
-  addMove(position) {
-    const nextBoard = new GameBoard(this.board.moves)
-    const success = nextBoard.addMove(position)
-    if (success) {
-      const movesAttribute = this.getAttribute('moves') || ''
-      this.setAttribute('moves', movesAttribute + position)
-      this.dispatchEvent(new CustomEvent('move', { detail: { position } }))
-    }
+    this.renderer.domElement.removeEventListener('pointerdown', this)
   }
 
   createRenderer() {
-    const { canvas, size } = this
-    const renderer = this.renderer = new WebGLRenderer({ canvas, alpha: true, antialias: true })
-    renderer.setSize(size, size)
+    const renderer = this.renderer = new WebGLRenderer({
+      alpha: true,
+      antialias: true,
+      canvas: document.createElement('canvas'),
+    })
+    renderer.setSize(this.size, this.size)
     renderer.setPixelRatio(window.devicePixelRatio)
-    // Attach canvas to this DOM element
-    this.appendChild(canvas)
+    this.appendChild(renderer.domElement)
   }
 
   mainLoop() {
@@ -201,7 +175,7 @@ class Tris3dCanvas extends HTMLElement {
 
   pickCell(event) {
     const { camera, ray } = this
-    const rect = this.canvas.getBoundingClientRect()
+    const rect = this.renderer.domElement.getBoundingClientRect()
     const x = ((event.clientX - rect.left) / rect.width) * 2 - 1
     const y = -((event.clientY - rect.top) / rect.height) * 2 + 1
     const pointerVector = new Vector3(x, y, 1)
@@ -216,7 +190,7 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   resetMoves() {
-    this.board = new GameBoard()
+    this.boardMoves = []
     for (const cell of this.positionCellMap.values())
       cell.deselect()
   }

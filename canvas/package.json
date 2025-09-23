@@ -6,7 +6,6 @@
   "exports": "./src/canvas.js",
   "dependencies": {
     "@tris3d/game": "0.0.0",
-    "@tris3d/state": "0.0.0",
     "@tris3d/three": "0.0.0"
   }
 }
