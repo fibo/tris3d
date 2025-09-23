@@ -1,11 +1,11 @@
 import { VECTOR_OF_POSITION } from '@tris3d/game'
-import { BoxGeometry, Group, Mesh, MeshBasicMaterial, SphereGeometry } from '@tris3d/three'
+import { BoxGeometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, SphereGeometry } from '@tris3d/three'
 
 const neutralColor = 0x333333
 
 export class Cell {
   group = new Group()
-  cubeMaterial = new MeshBasicMaterial({
+  cubeMaterial = new MeshLambertMaterial({
     color: neutralColor,
   })
 

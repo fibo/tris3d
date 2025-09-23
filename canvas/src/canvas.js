@@ -1,4 +1,4 @@
-import { AmbientLight, Group, PerspectiveCamera, OrbitControls, Raycaster, Scene, Vector3, WebGLRenderer } from '@tris3d/three'
+import { AmbientLight, DirectionalLight, Group, PerspectiveCamera, OrbitControls, Raycaster, Scene, Vector3, WebGLRenderer } from '@tris3d/three'
 import { POSITIONS } from '@tris3d/game'
 import { Cell } from './cell.js'
 
@@ -31,7 +31,6 @@ class Tris3dCanvas extends HTMLElement {
 
   cellsGroup = new Group()
   scene = new Scene()
-  ambientLight = new AmbientLight(0x404040)
   ray = new Raycaster()
 
   size = 100
@@ -231,7 +230,51 @@ class Tris3dCanvas extends HTMLElement {
 
   setupLights() {
     const { scene } = this
-    scene.add(this.ambientLight)
+
+    const directionalLight0 = new DirectionalLight(0xe7feff)
+    directionalLight0.position.x = 6
+    directionalLight0.position.y = -4
+    directionalLight0.position.z = 0
+    directionalLight0.position.normalize()
+    scene.add(directionalLight0)
+
+    const directionalLight1 = new DirectionalLight(0xe7feff)
+    directionalLight1.position.x = -3
+    directionalLight1.position.y = 0
+    directionalLight1.position.z = 5
+    directionalLight1.position.normalize()
+    scene.add(directionalLight1)
+
+    const directionalLight2 = new DirectionalLight(0xe7feff)
+    directionalLight2.position.x = 0
+    directionalLight2.position.y = 9
+    directionalLight2.position.z = -5
+    directionalLight2.position.normalize()
+    scene.add(directionalLight2)
+
+    const directionalLight3 = new DirectionalLight(0xe7feff)
+    directionalLight3.position.x = -2
+    directionalLight3.position.y = 4
+    directionalLight3.position.z = 0
+    directionalLight3.position.normalize()
+    scene.add(directionalLight3)
+
+    const directionalLight4 = new DirectionalLight(0xe7feff)
+    directionalLight4.position.x = 3
+    directionalLight4.position.y = 0
+    directionalLight4.position.z = -2
+    directionalLight4.position.normalize()
+    scene.add(directionalLight4)
+
+    const directionalLight5 = new DirectionalLight(0xe7feff)
+    directionalLight5.position.x = 0
+    directionalLight5.position.y = -7
+    directionalLight5.position.z = 1
+    directionalLight5.position.normalize()
+    scene.add(directionalLight5)
+
+    const ambientLight = new AmbientLight(0x404040)
+    scene.add(ambientLight)
   }
 }
 

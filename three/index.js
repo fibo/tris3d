@@ -1,9 +1,11 @@
 export {
   AmbientLight,
   BoxGeometry,
+  DirectionalLight,
   Group,
   Mesh,
   MeshBasicMaterial,
+  MeshLambertMaterial,
   PerspectiveCamera,
   Raycaster,
   Scene,
