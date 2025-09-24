@@ -64,21 +64,34 @@ class Component extends HTMLElement {
     this.resize()
 
     this.state
+      .on_game_over((gameOver) => {
+        if (gameOver) {
+          canvas.setAttribute('readonly', 'true')
+        }
+      })
       .on_moves((moves) => {
         if (moves)
           canvas.setAttribute('moves', moves.join(''))
         else
           canvas.removeAttribute('moves')
       })
+      .on_next_training_ai_move((position) => {
+        setTimeout(() => {
+          this.state.addMove(position)
+        }, 1000 + Math.random() * 2000)
+      })
       .on_playing((playing) => {
         if (playing) {
           canvas.setAttribute('moves', '')
+          canvas.removeAttribute('winner')
           canvas.addEventListener('move', this)
         } else {
           canvas.removeAttribute('moves')
-          canvas.removeAttribute('player')
           canvas.removeEventListener('move', this)
         }
+      })
+      .on_winner((winner) => {
+        canvas.setAttribute('winner', winner.index)
       })
       .on_your_turn((yourTurn) => {
         if (yourTurn)

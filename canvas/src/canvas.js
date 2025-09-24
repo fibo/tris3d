@@ -22,6 +22,7 @@ class Tris3dCanvas extends HTMLElement {
     'moves',
     'readonly',
     'size',
+    'winner',
   ]
 
   // Frames per second
@@ -97,6 +98,14 @@ class Tris3dCanvas extends HTMLElement {
       this.size = size
       this.shouldResize = true
     }
+
+    if (name === 'winner') {
+      if (newValue === null) return
+      for (const cell of this.positionCellMap.values()) {
+        if (cell.isSelected) continue
+        cell.hide()
+      }
+    }
   }
 
   handleEvent(event) {
@@ -105,17 +114,13 @@ class Tris3dCanvas extends HTMLElement {
       const cell = this.pickCell(event)
       if (!cell) return
       if (this.isReadOnly) {
-        if (cell.isSelected) {
-          cell.piece.highlight(true)
-        } else {
+        if (!cell.isSelected) {
           for (const otherCell of this.positionCellMap.values())
             otherCell.sphere.highlight(false)
           cell.sphere.highlight(true)
         }
       } else {
-        if (cell.isSelected) {
-          // TODO highlight pieces
-        } else {
+        if (!cell.isSelected) {
           this.dispatchEvent(
             new CustomEvent('move', { detail: { position: cell.position } })
           )
@@ -212,7 +217,7 @@ class Tris3dCanvas extends HTMLElement {
     this.boardMoves = []
     for (const cell of this.positionCellMap.values()) {
       cell.sphere.highlight(false)
-      cell.deselect()
+      cell.reset()
     }
   }
 

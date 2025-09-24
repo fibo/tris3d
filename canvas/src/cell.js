@@ -44,13 +44,6 @@ class Cube {
     this.mesh = new Mesh(new BoxGeometry(cubeSide), this.material)
     group.add(this.mesh)
   }
-
-  highlight(highlight) {
-    if (highlight)
-      this.material.opacity = this.opacity.highlighted
-    else
-      this.material.opacity = this.opacity.default
-  }
 }
 
 export class Cell {
@@ -64,7 +57,7 @@ export class Cell {
     this.sphere = new Sphere(this.group)
     this.piece = new Cube(this.group)
 
-    this.deselect()
+    this.reset()
 
     const [x, y, z] = VECTOR_OF_POSITION[position].map(coordinate => (coordinate - 1) * 2.2)
     this.group.position.set(x, y, z)
@@ -77,9 +70,14 @@ export class Cell {
     this.sphere.mesh.visible = false
   }
 
-  deselect() {
+  reset() {
     this.isSelected = false
     this.piece.mesh.visible = false
     this.sphere.mesh.visible = true
+  }
+
+  hide() {
+    this.piece.mesh.visible = false
+    this.sphere.mesh.visible = false
   }
 }

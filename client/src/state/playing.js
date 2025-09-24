@@ -12,6 +12,4 @@ export function updateTrainingAction(playing) {
 export function resetBoard(playing) {
   if (playing === true)
     publish('moves', [])
-  if (playing === false)
-    publish('moves', undefined)
 }

@@ -27,9 +27,10 @@ export class StateController {
   on_local_players(listener) { return this.#on({ local_players: listener }) }
   on_moves(listener) { return this.#on({ moves: listener }) }
   on_nickname(listener) { return this.#on({ nickname: listener }) }
+  on_next_training_ai_move(listener) { return this.#on({ next_training_ai_move: listener }) }
   on_playing(listener) { return this.#on({ playing: listener }) }
   on_playmode(listener) { return this.#on({ playmode: listener }) }
-  on_winner_score(listener) { return this.#on({ winner_score: listener }) }
+  on_winner(listener) { return this.#on({ winner: listener }) }
   on_you_win(listener) { return this.#on({ you_win: listener }) }
   on_your_turn(listener) { return this.#on({ your_turn: listener }) }
 

@@ -1,17 +1,21 @@
 import { subscribe } from '@tris3d/state'
+import { endTrainingGame } from './state/game_over.js'
 import { aiBeforeHuman, noMoreThanOneHuman, setLocalPlayerIndex } from './state/local_players.js'
-import { updateCurrentPlayer, updateTurn } from './state/moves.js'
+import { checkIfGameIsOver, checkTrainingBoard, updateCurrentPlayer, updateTurn } from './state/moves.js'
 import { resetBoard, updateTrainingAction } from './state/playing.js'
-import { youWin } from './state/winner_score.js'
+import { youWin } from './state/winner.js'
 
 export class Training {
   #subscriptions = []
 
   enable() {
     this.#subscriptions.push(
+      subscribe('game_over', endTrainingGame),
       subscribe('local_players', setLocalPlayerIndex),
       subscribe('local_players', aiBeforeHuman),
       subscribe('local_players', noMoreThanOneHuman),
+      subscribe('moves', checkIfGameIsOver),
+      subscribe('moves', checkTrainingBoard),
       subscribe('moves', updateCurrentPlayer),
       subscribe('moves', updateTurn),
       subscribe('playing', updateTrainingAction),

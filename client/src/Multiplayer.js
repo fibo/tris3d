@@ -1,8 +1,8 @@
 import { publish, subscribe } from '@tris3d/state'
 import { updateMultiplayerAction } from './state/connected.js'
-import { updateCurrentPlayer, updateTurn } from './state/moves.js'
+import { checkIfGameIsOver, updateCurrentPlayer, updateTurn } from './state/moves.js'
 import { cannotConnectIfNoNickname } from './state/nickname.js'
-import { youWin } from './state/winner_score.js'
+import { youWin } from './state/winner.js'
 
 export class Multiplayer {
   #subscriptions = []
@@ -12,6 +12,7 @@ export class Multiplayer {
 
     this.#subscriptions.push(
       subscribe('connected', updateMultiplayerAction),
+      subscribe('moves', checkIfGameIsOver),
       subscribe('moves', updateCurrentPlayer),
       subscribe('moves', updateTurn),
       subscribe('nickname', cannotConnectIfNoNickname),

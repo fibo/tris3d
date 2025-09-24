@@ -26,7 +26,7 @@ class Component extends HTMLElement {
         hide(this)
       }
     })
-      .on_winner_score((score) => {
+      .on_winner(({ score }) => {
         if (score === 0)
           this.scoreMessage.textContent = ''
         else if (score > 1)
