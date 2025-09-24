@@ -31,7 +31,7 @@ class Component extends HTMLElement {
   state = new StateController()
   subscriptions = []
 
-  canvas = h(canvasTagName)
+  canvas = h(canvasTagName, { readonly: true })
 
   multiplayerAction = h('multiplayer-action', {}, '')
   trainingAction = h('training-action', {}, '')
@@ -41,18 +41,17 @@ class Component extends HTMLElement {
   onlineInfo = h('online-info')
 
   sheet = {
-    canvas: new CSSStyleSheet(),
     width: new CSSStyleSheet(),
   }
 
   get width() {
     const { parentElement } = this
     const { paddingLeft, paddingRight } = getComputedStyle(parentElement)
-    return Math.min(
-    // The availableWidth is the width of parent excluding its padding.
+    return Math.max(Math.min(
+      // The available width is the width of parent excluding its padding.
       parentElement.clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight),
-      // max size
-      500)
+      500), // max size
+    300) // min size
   }
 
   connectedCallback() {
@@ -64,15 +63,14 @@ class Component extends HTMLElement {
 
     this.resize()
 
-    this.state.on({
-      moves: (moves) => {
+    this.state
+      .on_moves((moves) => {
         if (moves)
           canvas.setAttribute('moves', moves.join(''))
         else
           canvas.removeAttribute('moves')
-      },
-
-      playing: (playing) => {
+      })
+      .on_playing((playing) => {
         if (playing) {
           canvas.setAttribute('moves', '')
           canvas.addEventListener('move', this)
@@ -81,8 +79,13 @@ class Component extends HTMLElement {
           canvas.removeAttribute('player')
           canvas.removeEventListener('move', this)
         }
-      },
-    })
+      })
+      .on_your_turn((yourTurn) => {
+        if (yourTurn)
+          canvas.removeAttribute('readonly')
+        else
+          canvas.setAttribute('readonly', 'true')
+      })
 
     window.addEventListener('resize', this)
 
@@ -118,12 +121,6 @@ class Component extends HTMLElement {
 
   resize() {
     const { width } = this
-    this.sheet.canvas.replaceSync(
-      css(canvasTagName, {
-        height: `${width}px`,
-        width: `${width}px`
-      })
-    )
     this.sheet.width.replaceSync(
       css(tagName, { width: `${width}px` })
     )

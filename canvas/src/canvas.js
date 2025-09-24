@@ -7,20 +7,18 @@ const tagName = 'tris3d-canvas'
 const radian = 2 * Math.PI / 360
 const angularSpeed = 17 * radian // radians per second
 
-const playerColors = [
-  0xff0000, // Player 0: Red
-  0x00ff00, // Player 1: Green
-  0x0000ff, // Player 2: Blue
-]
+const sheet = new CSSStyleSheet()
+sheet.replaceSync([tagName, '{ min-width: fit-content; }'].join(''))
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet]
 
 /**
  * @example
- * <tris3d-canvas size="200" player="1" moves="ABC"></tris3d-canvas>
+ * <tris3d-canvas size="200" moves="ABC"></tris3d-canvas>
  */
 class Tris3dCanvas extends HTMLElement {
   static observedAttributes = [
     'fps',
-    'player',
+    'playercolors',
     'moves',
     'readonly',
     'size',
@@ -29,31 +27,23 @@ class Tris3dCanvas extends HTMLElement {
   // Frames per second
   FPS = 25
 
+  playerColors = ['red', 'green', 'blue']
+
   cellsGroup = new Group()
   scene = new Scene()
   ray = new Raycaster()
 
-  size = 100
+  size = 300
 
   positionCellMap = new Map()
-  cellSphereUuidPositionMap = new Map()
+  cellUuidPositionMap = new Map()
   boardMoves = []
 
   shouldRotateGroup = true
-  shouldResize = false
+  shouldResize = true
 
   idleTimeoutId = 0
   idleTimeout = 10_000
-
-  get availableCellSpheres() {
-    const spheres = []
-    for (const [position, cell] of this.positionCellMap) {
-      if (this.boardMoves.includes(position))
-        continue
-      spheres.push(cell.sphere)
-    }
-    return spheres
-  }
 
   connectedCallback() {
     this.createRenderer()
@@ -76,13 +66,13 @@ class Tris3dCanvas extends HTMLElement {
       if (newValue === null)
         this.resetMoves()
       else {
-        if (!newValue.includes(oldValue))
+        if (newValue === '' || !newValue.includes(oldValue))
           this.resetMoves()
         const newMoves = newValue.split('')
         for (let i = this.boardMoves.length; i < newMoves.length; i++) {
           const position = newMoves[i]
           const cell = this.positionCellMap.get(position)
-          const color = playerColors[i % 3]
+          const color = this.playerColors[i % 3]
           if (cell)
             cell.select(color)
         }
@@ -105,8 +95,6 @@ class Tris3dCanvas extends HTMLElement {
       let size = parseInt(newValue, 10)
       size = Math.min(Math.max(size, 100), 700)
       this.size = size
-      this.style.width = `${size}px`
-      this.style.height = `${size}px`
       this.shouldResize = true
     }
   }
@@ -114,12 +102,44 @@ class Tris3dCanvas extends HTMLElement {
   handleEvent(event) {
     if (event.type === 'pointerdown') {
       this.gotUserInput()
-      if (this.isReadOnly) return
       const cell = this.pickCell(event)
-      if (cell) {
-        this.dispatchEvent(new CustomEvent('move', { detail: { position: cell.position } }))
+      if (!cell) return
+      if (this.isReadOnly) {
+        if (cell.isSelected) {
+          cell.piece.highlight(true)
+        } else {
+          for (const otherCell of this.positionCellMap.values())
+            otherCell.sphere.highlight(false)
+          cell.sphere.highlight(true)
+        }
+      } else {
+        if (cell.isSelected) {
+          // TODO highlight pieces
+        } else {
+          this.dispatchEvent(
+            new CustomEvent('move', { detail: { position: cell.position } })
+          )
+        }
       }
     }
+  }
+
+  get availableCellSpheres() {
+    const spheres = []
+    for (const [position, cell] of this.positionCellMap) {
+      if (!this.boardMoves.includes(position))
+        spheres.push(cell.sphere.mesh)
+    }
+    return spheres
+  }
+
+  get choosenCellPieces() {
+    const meshes = []
+    for (const [position, cell] of this.positionCellMap) {
+      if (this.boardMoves.includes(position))
+        meshes.push(cell.piece.mesh)
+    }
+    return meshes
   }
 
   addEventListeners() {
@@ -136,7 +156,6 @@ class Tris3dCanvas extends HTMLElement {
       antialias: true,
       canvas: document.createElement('canvas'),
     })
-    renderer.setSize(this.size, this.size)
     renderer.setPixelRatio(window.devicePixelRatio)
     this.appendChild(renderer.domElement)
   }
@@ -152,10 +171,8 @@ class Tris3dCanvas extends HTMLElement {
         if (this.shouldRotateGroup) {
           this.cellsGroup.rotation.y += angularSpeed / this.FPS
         }
-        if (this.shouldResize) {
-          this.renderer.setSize(this.size, this.size)
-          this.shouldResize = false
-        }
+        if (this.shouldResize)
+          this.resize()
         lastTime = document.timeline.currentTime
         this.renderer.render(this.scene, this.camera)
       }
@@ -173,25 +190,36 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   pickCell(event) {
-    const { camera, ray } = this
-    const rect = this.renderer.domElement.getBoundingClientRect()
+    const { camera, ray, rect } = this
     const x = ((event.clientX - rect.left) / rect.width) * 2 - 1
     const y = -((event.clientY - rect.top) / rect.height) * 2 + 1
     const pointerVector = new Vector3(x, y, 1)
     pointerVector.unproject(camera)
     ray.set(camera.position, pointerVector.sub(camera.position).normalize())
-    const intersects = ray.intersectObjects(this.availableCellSpheres)
+    const intersects = ray.intersectObjects([
+      ...this.availableCellSpheres,
+      ...this.choosenCellPieces,
+    ])
     const firstMatch = intersects[0]
     if (firstMatch) {
-      const position = this.cellSphereUuidPositionMap.get(firstMatch.object.uuid)
+      const group = firstMatch.object.parent
+      const position = this.cellUuidPositionMap.get(group.uuid)
       return this.positionCellMap.get(position)
     }
   }
 
   resetMoves() {
     this.boardMoves = []
-    for (const cell of this.positionCellMap.values())
+    for (const cell of this.positionCellMap.values()) {
+      cell.sphere.highlight(false)
       cell.deselect()
+    }
+  }
+
+  resize() {
+    this.renderer.setSize(this.size, this.size)
+    this.rect = this.renderer.domElement.getBoundingClientRect()
+    this.shouldResize = false
   }
 
   setupCamera() {
@@ -217,13 +245,13 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   setupGeometry() {
-    const { cellsGroup, cellSphereUuidPositionMap, positionCellMap, scene } = this
+    const { cellsGroup, cellUuidPositionMap, positionCellMap, scene } = this
     for (let i = 0; i < POSITIONS.length; i++) {
       const position = POSITIONS[i]
       const cell = new Cell(position)
       cellsGroup.add(cell.group)
       positionCellMap.set(position, cell)
-      cellSphereUuidPositionMap.set(cell.sphere.uuid, position)
+      cellUuidPositionMap.set(cell.group.uuid, position)
     }
     scene.add(cellsGroup)
   }

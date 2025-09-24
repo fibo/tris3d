@@ -36,8 +36,8 @@ class Component extends HTMLElement {
   )
 
   connectedCallback() {
-    this.state.on({
-      current_player_index: (playerIndex) => {
+    this.state
+      .on_current_player_index((playerIndex) => {
         this.player.forEach((item, index) => {
           if (index === playerIndex) {
             item.classList.add('player--current')
@@ -47,9 +47,8 @@ class Component extends HTMLElement {
             item.classList.add('field--focusable')
           }
         })
-      },
-
-      local_players: (localPlayers) => {
+      })
+      .on_local_players((localPlayers) => {
         this.select.forEach((item, index) => {
           for (const option of item.options)
             if (option.value === localPlayers[index])
@@ -57,9 +56,8 @@ class Component extends HTMLElement {
             else
               option.selected = false
         })
-      },
-
-      nickname: (nickname) => {
+      })
+      .on_nickname((nickname) => {
         this.select.forEach((item) => {
           for (const option of item.options) {
             if (option.value !== 'human')
@@ -70,14 +68,11 @@ class Component extends HTMLElement {
               option.textContent = i18n.translate('player.human')
           }
         })
-      },
-
-      playing: (playing) => {
+      })
+      .on_playing((playing) => {
         this.select.forEach(item => item.disabled = playing)
-      },
-
-      playmode: showIfPlaymode('training', this),
-    })
+      })
+      .on_playmode(showIfPlaymode('training', this))
 
     this.select.forEach(item => item.addEventListener('change', this))
 

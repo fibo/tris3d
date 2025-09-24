@@ -1,6 +1,6 @@
-import { publish, subscribe } from '@tris3d/state'
+import { publish } from '@tris3d/state'
 
-subscribe('winner_score', (score, get) => {
+export function youWin(score, get) {
   if (!score) return
   const moves = get('moves')
   const winnerIndex = (moves.length - 1) % 3
@@ -9,4 +9,4 @@ subscribe('winner_score', (score, get) => {
     publish('you_win', true)
   else
     publish('you_win', false)
-})
+}

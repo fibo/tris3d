@@ -16,9 +16,7 @@ class Component extends HTMLElement {
   roomList = h('room-list')
 
   connectedCallback() {
-    this.state.on({
-      playmode: showIfPlaymode('multiplayer', this),
-    })
+    this.state.on_playmode(showIfPlaymode('multiplayer', this))
 
     this.append(
       this.roomList

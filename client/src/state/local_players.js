@@ -1,5 +1,11 @@
 import { publish } from '@tris3d/state'
-import { i18n } from '../i18n.js'
+
+export function setLocalPlayerIndex(localPlayers) {
+  if (!localPlayers) return
+  const localPlayerIndex = localPlayers.indexOf('human')
+  if (localPlayerIndex > -1)
+    publish('local_player_index', localPlayerIndex)
+}
 
 // There must be no more than one human player.
 export function noMoreThanOneHuman(next, get) {

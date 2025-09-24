@@ -1,44 +1,85 @@
 import { VECTOR_OF_POSITION } from '@tris3d/game'
 import { BoxGeometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, SphereGeometry } from '@tris3d/three'
+import { color } from './colors.js'
 
-const neutralColor = 0x333333
+const { neutral } = color
+
+class Sphere {
+  opacity = {
+    default: 0.071,
+    highlighted: 0.4,
+  }
+
+  constructor(group) {
+    this.material = new MeshBasicMaterial({
+      color: neutral,
+      transparent: true,
+      opacity: this.opacity.default,
+    })
+    this.mesh = new Mesh(new SphereGeometry(1), this.material)
+    group.add(this.mesh)
+  }
+
+  highlight(highlight) {
+    if (highlight)
+      this.material.opacity = this.opacity.highlighted
+    else
+      this.material.opacity = this.opacity.default
+  }
+}
+
+class Cube {
+  opacity = {
+    default: 1,
+    highlighted: 0.2,
+  }
+
+  constructor(group) {
+    this.material = new MeshLambertMaterial({
+      color: neutral,
+      transparent: true,
+      opacity: this.opacity.default,
+    })
+    const cubeSide = (2 * Math.sqrt(3) / 3).toFixed(2) // approx 1.15
+    this.mesh = new Mesh(new BoxGeometry(cubeSide), this.material)
+    group.add(this.mesh)
+  }
+
+  highlight(highlight) {
+    if (highlight)
+      this.material.opacity = this.opacity.highlighted
+    else
+      this.material.opacity = this.opacity.default
+  }
+}
 
 export class Cell {
-  group = new Group()
-  cubeMaterial = new MeshLambertMaterial({
-    color: neutralColor,
-  })
+  isSelected = false
 
-  sphereMaterial = new MeshBasicMaterial({
-    color: neutralColor,
-    transparent: true,
-    opacity: 0.071,
-  })
+  group = new Group()
 
   constructor(position) {
     this.position = position
 
-    const sphere = this.sphere = new Mesh(new SphereGeometry(1), this.sphereMaterial)
-    this.group.add(sphere)
+    this.sphere = new Sphere(this.group)
+    this.piece = new Cube(this.group)
 
-    const cubeSide = (2 * Math.sqrt(3) / 3).toFixed(2) // approx 1.15
-    const cube = this.cube = new Mesh(new BoxGeometry(cubeSide), this.cubeMaterial)
-    cube.visible = false
-    this.group.add(cube)
+    this.deselect()
 
     const [x, y, z] = VECTOR_OF_POSITION[position].map(coordinate => (coordinate - 1) * 2.2)
     this.group.position.set(x, y, z)
   }
 
-  select(color) {
-    this.cubeMaterial.color.set(color)
-    this.cube.visible = true
-    this.sphere.visible = false
+  select(colorName) {
+    this.isSelected = true
+    this.piece.material.color.set(color[colorName])
+    this.piece.mesh.visible = true
+    this.sphere.mesh.visible = false
   }
 
   deselect() {
-    this.cubeMaterial.color.set(neutralColor)
-    this.cube.visible = false
-    this.sphere.visible = true
+    this.isSelected = false
+    this.piece.mesh.visible = false
+    this.sphere.mesh.visible = true
   }
 }

@@ -18,16 +18,13 @@ class Component extends HTMLElement {
 
     select.addEventListener('change', this)
 
-    this.state.on({
-      playing: (playing) => {
-        if (playing !== undefined)
-          select.disabled = !!playing
-      },
-
-      playmode: (playmode) => {
+    this.state
+      .on_playing((playing) => {
+        select.disabled = !!playing
+      })
+      .on_playmode((playmode) => {
         select.value = playmode
-      }
-    })
+      })
 
     this.append(select)
   }

@@ -16,13 +16,11 @@ class Component extends HTMLElement {
   button = h('button')
 
   connectedCallback() {
-    this.state.on({
-      action: (action) => {
+    this.state
+      .on_action((action) => {
         this.button.textContent = i18n.translate(`action.${action}`)
-      },
-
-      playmode: showIfPlaymode('training', this),
-    })
+      })
+      .on_playmode(showIfPlaymode('training', this))
 
     this.button.addEventListener('click', this)
 

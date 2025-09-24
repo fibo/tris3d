@@ -17,9 +17,7 @@ class Component extends HTMLElement {
   results = h('local-results')
 
   connectedCallback() {
-    this.state.on({
-      playmode: showIfPlaymode('training', this)
-    })
+    this.state.on_playmode(showIfPlaymode('training', this))
 
     this.append(
       this.players,

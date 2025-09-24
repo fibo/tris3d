@@ -17,10 +17,8 @@ describe('local_players', () => {
       ['stupid', 'stupid', 'human'], // no more than one human
       input[1],
     ]
-    state.on({
-      local_players: (value) => {
-        assert.deepEqual(value, expected[index])
-      },
+    state.on_local_players((value) => {
+      assert.deepEqual(value, expected[index])
     })
     index = 1
     state.local_players = input[0]
@@ -32,11 +30,9 @@ describe('local_players', () => {
     state.playmode = 'training'
 
     let check = false
-    state.on({
-      local_players: (value) => {
-        if (!check) return
-        assert.deepEqual(value, ['stupid', 'smart', 'human'])
-      },
+    state.on_local_players((value) => {
+      if (!check) return
+      assert.deepEqual(value, ['stupid', 'smart', 'human'])
     })
     state.local_players = ['smart', 'smart', 'human']
     check = true

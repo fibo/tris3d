@@ -16,17 +16,13 @@ class Component extends HTMLElement {
   button = h('button')
 
   connectedCallback() {
-    this.state.on({
-      action: (action) => {
-        this.button.textContent = i18n.translate(`action.${action}`)
-      },
-
-      connection_disabled: (disabled) => {
-        this.button.disabled = disabled
-      },
-
-      playmode: showIfPlaymode('multiplayer', this),
+    this.state.on_action((action) => {
+      this.button.textContent = i18n.translate(`action.${action}`)
     })
+      .on_connection_disabled((disabled) => {
+        this.button.disabled = disabled
+      })
+      .on_playmode(showIfPlaymode('multiplayer', this))
 
     this.button.addEventListener('click', this)
 

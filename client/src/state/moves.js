@@ -1,6 +1,7 @@
 import { GameBoard, AI } from '@tris3d/game'
 import { publish, subscribe } from '@tris3d/state'
 
+/*
 subscribe('moves', (moves, get) => {
   if (!moves) return
   const playmode = get('playmode')
@@ -42,15 +43,6 @@ subscribe('moves', (moves, get) => {
   }
 })
 
-export function updateTrainingTurn(moves) {
-  if (moves === undefined) {
-    publish('current_player_index', -1)
-  } else {
-    const currentPlayerIndex = moves.length % 3
-    publish('current_player_index', currentPlayerIndex)
-  }
-}
-
 subscribe('moves', (moves, get) => {
   if (!moves) return
   const currentPlayerIndex = moves.length % 3
@@ -62,3 +54,17 @@ subscribe('moves', (moves, get) => {
   else
     publish('your_turn', false)
 })
+*/
+
+function currentPlayerIndex(moves) {
+  if (!moves) return -1
+  return moves.length % 3
+}
+
+export function updateCurrentPlayer(moves) {
+  publish('current_player_index', currentPlayerIndex(moves))
+}
+
+export function updateTurn(moves, get) {
+  publish('your_turn', currentPlayerIndex(moves) === get('local_player_index'))
+}

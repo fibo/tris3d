@@ -18,30 +18,26 @@ class Component extends HTMLElement {
   connectedCallback() {
     hide(this)
 
-    this.state.on({
-      game_over: (gameIsOver) => {
-        if (gameIsOver)
-          show(this)
-        else {
-          this.winnerMessage.textContent = ''
-          hide(this)
-        }
-      },
-
-      winner_score: (score) => {
+    this.state.on_game_over((gameIsOver) => {
+      if (gameIsOver)
+        show(this)
+      else {
+        this.winnerMessage.textContent = ''
+        hide(this)
+      }
+    })
+      .on_winner_score((score) => {
         if (score === 0)
           this.scoreMessage.textContent = ''
         else if (score > 1)
           this.scoreMessage.textContent = i18n.translate('extra_score')
-      },
-
-      you_win: (youWin) => {
+      })
+      .on_you_win((youWin) => {
         if (youWin)
           this.winnerMessage.textContent = i18n.translate('you_win')
         else
           this.winnerMessage.textContent = ''
-      }
-    })
+      })
 
     this.append(
       this.title,

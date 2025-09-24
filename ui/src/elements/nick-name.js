@@ -36,8 +36,8 @@ class Component extends HTMLElement {
     form.addEventListener('submit', this)
     input.addEventListener('blur', this)
 
-    this.state.on({
-      connected: (connected) => {
+    this.state
+      .on_connected((connected) => {
         if (connected) {
           this.input.setAttribute('readonly', 'true')
           this.feild.classList.remove('field--focusable')
@@ -45,12 +45,10 @@ class Component extends HTMLElement {
           this.input.removeAttribute('readonly')
           this.field.classList.add('field--focusable')
         }
-      },
-
-      nickname: (value) => {
+      })
+      .on_nickname((value) => {
         if (value) input.value = value
-      },
-    })
+      })
 
     this.append(form)
   }
