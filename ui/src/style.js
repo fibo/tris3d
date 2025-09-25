@@ -1,3 +1,23 @@
+const _var = name => `var(--${name})`,
+  // sizes
+  gap1 = _var('gap1'),
+  gap2 = _var('gap2'),
+  radius1 = _var('radius1'),
+  // radius2 = _var('radius2'),
+  // width1 = _var('width1'),
+  width2 = _var('width2'),
+  // colors
+  mono0 = _var('mono0'),
+  mono1 = _var('mono1'),
+  // mono2 = _var('mono2'),
+  mono3 = _var('mono3'),
+  mono4 = _var('mono4'),
+  mono5 = _var('mono5'),
+  mono6 = _var('mono6'),
+  mono7 = _var('mono7'),
+  mono8 = _var('mono8'),
+  mono9 = _var('mono9')
+
 export function css(selector, rules) {
   return [
     `${selector} {`,
@@ -12,7 +32,7 @@ export const cssRule = {
   flexColumn: tagName => css(tagName, {
     display: 'flex',
     'flex-direction': 'column',
-    gap: 'var(--gap2)',
+    gap: gap2,
   }),
   hidable: tagName => css(`${tagName}[hidden]`, {
     display: 'none',
@@ -30,30 +50,30 @@ export const mainCssRules = [
   css('input, button, select', {
     font: 'inherit',
     'border-style': 'solid',
-    'border-color': 'var(--mono6)',
-    'border-width': 'var(--width2)',
+    'border-color': mono6,
+    'border-width': width2,
     'line-height': '1.5',
     outline: 'none',
-    background: 'var(--mono8)',
-    'border-radius': 'var(--radius1)',
+    background: mono8,
+    'border-radius': radius1,
     padding: 'var(--text-padding)',
-    color: 'var(--mono1)',
-    'user-select': 'none',
+    color: mono1,
   }),
 
   css('input:focus, button:focus, select:focus', {
-    background: 'var(--mono9)',
-    color: 'var(--mono0)',
-    'border-color': 'var(--mono3)',
+    background: mono9,
+    color: mono0,
+    'border-color': mono3,
   }),
 
   css('input:disabled, button:disabled, select:disabled', {
-    background: 'var(--mono7)',
-    color: 'var(--mono3)',
+    background: mono7,
+    color: mono3,
   }),
 
   css('button', {
     'min-height': '29.5px',
+    'user-select': 'none',
   }),
 
   css('input', {
@@ -61,7 +81,7 @@ export const mainCssRules = [
   }),
 
   css('input::placeholder', {
-    color: 'var(--mono4)',
+    color: mono4,
   }),
 
   css('select', {
@@ -72,11 +92,12 @@ export const mainCssRules = [
     display: 'flex',
     'flex-direction': 'column',
     overflow: 'hidden',
-    gap: 'var(--gap1)'
+    gap: gap1
   }),
 
   css('label', {
     padding: 'var(--text-padding)',
+    'user-select': 'none',
   }),
 
   css('label:after', {
@@ -84,13 +105,14 @@ export const mainCssRules = [
   }),
 
   css('.field', {
+    background: mono6,
     width: 'fit-content',
-    'border-radius': 'var(--radius1)',
+    'border-radius': radius1,
   }),
 
   css('.field--focusable:focus-within', {
-    background: 'var(--mono3)',
-    color: 'var(--mono8)',
+    background: mono3,
+    color: mono8,
   }),
 
   css('.message', {

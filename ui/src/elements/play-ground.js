@@ -41,6 +41,7 @@ class Component extends HTMLElement {
   onlineInfo = h('online-info')
 
   sheet = {
+    canvas: new CSSStyleSheet(),
     width: new CSSStyleSheet(),
   }
 
@@ -134,6 +135,9 @@ class Component extends HTMLElement {
 
   resize() {
     const { width } = this
+    this.sheet.canvas.replaceSync(
+      css(canvasTagName, { height: `${width}px` })
+    )
     this.sheet.width.replaceSync(
       css(tagName, { width: `${width}px` })
     )
