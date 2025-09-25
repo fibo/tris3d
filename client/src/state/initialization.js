@@ -1,4 +1,4 @@
-import { publish } from '@tris3d/state'
+import { publish } from '@tris3d/pubsub'
 import { defaultLocalPlayers } from '../model.js'
 
 function initialize(key, defaultValue) {

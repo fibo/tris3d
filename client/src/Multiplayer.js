@@ -1,4 +1,4 @@
-import { publish, subscribe } from '@tris3d/state'
+import { publish, subscribe } from '@tris3d/pubsub'
 import { updateMultiplayerAction } from './state/connected.js'
 import { checkIfGameIsOver, updateCurrentPlayer, updateTurn } from './state/moves.js'
 import { cannotConnectIfNoNickname } from './state/nickname.js'

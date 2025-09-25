@@ -1,4 +1,4 @@
-import { subscribe } from '@tris3d/state'
+import { subscribe } from '@tris3d/pubsub'
 import { Multiplayer } from './Multiplayer.js'
 import { Training } from './Training.js'
 

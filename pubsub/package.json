@@ -1,5 +1,5 @@
 {
-  "name": "@tris3d/state",
+  "name": "@tris3d/pubsub",
   "private": true,
   "version": "0.0.0",
   "type": "module",

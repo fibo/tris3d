@@ -1,4 +1,4 @@
-import { subscribe } from '@tris3d/state'
+import { subscribe } from '@tris3d/pubsub'
 import { endTrainingGame } from './state/game_over.js'
 import { aiBeforeHuman, noMoreThanOneHuman, setLocalPlayerIndex } from './state/local_players.js'
 import { checkIfGameIsOver, checkTrainingBoard, updateCurrentPlayer, updateTurn } from './state/moves.js'

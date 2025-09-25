@@ -11,6 +11,7 @@
     "@tris3d/client": "^0.0.0"
   },
   "devDependencies": {
+    "@tris3d/pubsub": "^0.0.0",
     "@tris3d/repo": "^0.0.0",
     "@tris3d/screens": "^0.0.0",
     "design-canvas": "0.1.0"

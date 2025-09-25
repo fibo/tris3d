@@ -1,4 +1,4 @@
-import { publish, subscribe } from '@tris3d/state'
+import { publish, subscribe } from '@tris3d/pubsub'
 import { playmodes } from './model.js'
 
 export class StateController {

@@ -1,4 +1,4 @@
-declare module '@tris3d/state' {
+declare module '@tris3d/pubsub' {
   export function publish(key: string, arg: unknown): void;
 
   export function subscribe(

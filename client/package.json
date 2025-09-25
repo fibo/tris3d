@@ -11,6 +11,6 @@
   "dependencies": {
     "@tris3d/i18n": "^0.0.0",
     "@tris3d/game": "^0.0.0",
-    "@tris3d/state": "^0.0.0"
+    "@tris3d/pubsub": "^0.0.0"
   }
 }

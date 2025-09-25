@@ -1,4 +1,4 @@
-import { publish } from '@tris3d/state'
+import { publish } from '@tris3d/pubsub'
 
 export function youWin(winner, get) {
   if (!winner) return

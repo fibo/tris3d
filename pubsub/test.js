@@ -1,8 +1,8 @@
 import { strict as assert } from 'node:assert'
 import { describe, test } from 'node:test'
-import { publish, subscribe } from '@tris3d/state'
+import { publish, subscribe } from '@tris3d/pubsub'
 
-describe('state', () => {
+describe('pubsub', () => {
   test('subscribe before publish', () => {
     subscribe('key with no value yet', (value) => {
       assert.equal(value, undefined)

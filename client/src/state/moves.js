@@ -1,5 +1,5 @@
 import { GameBoard, AI } from '@tris3d/game'
-import { publish } from '@tris3d/state'
+import { publish } from '@tris3d/pubsub'
 
 function currentPlayerIndex(moves) {
   if (!moves) return -1
