@@ -1,13 +1,13 @@
 import { StateController, i18n } from '@tris3d/client'
 import { define, domComponent, h } from '../dom.js'
-import { css, cssRule, styleSheet } from '../style.js'
+import { css, cssClass, cssRule, styleSheet } from '../style.js'
 
 const tagName = 'nick-name'
 
 styleSheet(
   cssRule.hidable(tagName),
 
-  css('.nickname', {
+  css(`.${cssClass.nickname}`, {
     width: '21ch',
   }),
 )
@@ -20,7 +20,7 @@ class Component extends HTMLElement {
 
   input = h('input', {
     id: 'nickname',
-    class: 'nickname',
+    class: cssClass.nickname,
     type: 'text',
     maxlength,
     spellcheck: 'false',
@@ -40,10 +40,10 @@ class Component extends HTMLElement {
       .on_connected((connected) => {
         if (connected) {
           this.input.setAttribute('readonly', 'true')
-          this.feild.classList.remove('field--focusable')
+          this.feild.classList.remove(cssClass.fieldFocusable)
         } else {
           this.input.removeAttribute('readonly')
-          this.field.classList.add('field--focusable')
+          this.field.classList.add(cssClass.fieldFocusable)
         }
       })
       .on_nickname((value) => {

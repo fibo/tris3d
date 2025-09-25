@@ -1,55 +1,62 @@
 import { StateController, i18n } from '@tris3d/client'
 import { define, domComponent, h } from '../dom.js'
 import { showIfPlaymode } from '../state.js'
-import { css, cssRule, styleSheet } from '../style.js'
+import { css, cssClass, cssRule, mono3, mono8, styleSheet } from '../style.js'
 
 const tagName = 'local-players'
 
 styleSheet(
   cssRule.hidable(tagName),
 
-  css(`${tagName} .player--current`, {
-    background: 'var(--mono3)',
-    color: 'var(--mono8)',
+  css(`${tagName} .${cssClass.playerCurrent}`, {
+    background: mono3,
+    color: mono8,
   }),
-  css(`${tagName} .player--current select`, {
-    background: 'var(--mono3)',
-    'border-color': 'var(--mono3)',
-    color: 'var(--mono8)',
+  css(`${tagName} .${cssClass.playerCurrent} select`, {
+    background: mono3,
+    'border-color': mono3,
+    color: mono8,
   })
 )
 
-const players = ['player1', 'player2', 'player3']
+const playerIds = ['player1', 'player2', 'player3']
 
 class Component extends HTMLElement {
   state = new StateController()
 
-  select = players.map(
-    player => h('select', { id: player }, [
+  selectColor = playerIds.map(
+    () => h('select', {}, [
+      'red', 'blue', 'green',
+    ].map(value =>
+      h('option', { value }, value)
+    )))
+
+  selectPlayer = playerIds.map(
+    id => h('select', { id }, [
       'human', 'stupid', 'smart', 'bastard'
     ].map(value =>
-      h('option', { value }, i18n.translate(`player.${value}`)
-      ))))
+      h('option', { value }, i18n.translate(`player.${value}`))
+    )))
 
-  player = players.map((label, i) =>
-    domComponent.field(i18n.translate(label), this.select[i])
+  players = playerIds.map((id, i) =>
+    domComponent.field(i18n.translate(id), this.selectPlayer[i])
   )
 
   connectedCallback() {
     this.state
       .on_current_player_index((playerIndex) => {
-        this.player.forEach((item, index) => {
+        this.players.forEach((item, index) => {
           if (index === playerIndex) {
-            item.classList.add('player--current')
-            item.classList.remove('field--focusable')
+            item.classList.add(cssClass.playerCurrent)
+            item.classList.remove(cssClass.fieldFocusable)
           } else {
-            item.classList.remove('player--current')
-            item.classList.add('field--focusable')
+            item.classList.remove(cssClass.playerCurrent)
+            item.classList.add(cssClass.fieldFocusable)
           }
         })
       })
       .on_local_players((localPlayers) => {
-        this.select.forEach((item, index) => {
+        this.selectPlayer.forEach((item, index) => {
           for (const option of item.options)
             if (option.value === localPlayers[index])
               option.selected = true
@@ -58,7 +65,7 @@ class Component extends HTMLElement {
         })
       })
       .on_nickname((nickname) => {
-        this.select.forEach((item) => {
+        this.selectPlayer.forEach((item) => {
           for (const option of item.options) {
             if (option.value !== 'human')
               continue
@@ -70,25 +77,30 @@ class Component extends HTMLElement {
         })
       })
       .on_playing((playing) => {
-        this.select.forEach(item => item.disabled = playing)
+        // Toggle disabled selects on playing.
+        this.selectPlayer.forEach(item => item.disabled = playing)
+        // Remove highlight when not playing.
+        if (!playing)
+          this.players.forEach(item =>
+            item.classList.remove(cssClass.playerCurrent))
       })
       .on_playmode(showIfPlaymode('training', this))
 
-    this.select.forEach(item => item.addEventListener('change', this))
+    this.selectPlayer.forEach(item => item.addEventListener('change', this))
 
     this.append(
-      h('form', {}, this.player)
+      h('form', {}, this.players)
     )
   }
 
   disconnectedCallback() {
-    this.select.forEach(item => item.removeEventListener('change', this))
+    this.selectPlayer.forEach(item => item.removeEventListener('change', this))
     this.state.dispose()
   }
 
   handleEvent(event) {
-    if (event.type === 'change') {
-      this.state.local_players = this.select.map(item => item.value)
+    if (event.type === 'change' && this.selectPlayer.includes(event.target)) {
+      this.state.local_players = this.selectPlayer.map(item => item.value)
     }
   }
 }

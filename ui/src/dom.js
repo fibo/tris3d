@@ -1,3 +1,5 @@
+import { cssClass } from './style.js'
+
 export function define(tagName, elementClass) {
   customElements.get(tagName) || customElements.define(tagName, elementClass)
 }
@@ -24,14 +26,14 @@ export function h(tagName, attributes = null, children = []) {
 }
 
 export const domComponent = {
-  field: (label, element, classlist = []) => h('div', {
-    class: ['field', 'field--focusable', ...classlist].join(' '),
+  field: (label, element) => h('div', {
+    class: [cssClass.field, cssClass.fieldFocusable].join(' '),
   }, [
     h('label', { for: element.id }, [label]),
     element
   ]),
-  message: (text = '') => h('div', { class: 'message' }, [text]),
-  title: text => h('div', { class: 'title' }, [text]),
+  message: (text = '') => h('div', { class: cssClass.message }, [text]),
+  title: text => h('div', { class: cssClass.title }, [text]),
 }
 
 export function show(element) {

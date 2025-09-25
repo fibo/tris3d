@@ -1,22 +1,24 @@
-const _var = name => `var(--${name})`,
+export const _var = name => `var(--${name})`,
   // sizes
   gap1 = _var('gap1'),
   gap2 = _var('gap2'),
   radius1 = _var('radius1'),
-  // radius2 = _var('radius2'),
-  // width1 = _var('width1'),
+  radius2 = _var('radius2'),
+  width1 = _var('width1'),
   width2 = _var('width2'),
   // colors
   mono0 = _var('mono0'),
   mono1 = _var('mono1'),
-  // mono2 = _var('mono2'),
+  mono2 = _var('mono2'),
   mono3 = _var('mono3'),
   mono4 = _var('mono4'),
   mono5 = _var('mono5'),
   mono6 = _var('mono6'),
   mono7 = _var('mono7'),
   mono8 = _var('mono8'),
-  mono9 = _var('mono9')
+  mono9 = _var('mono9'),
+  // others
+  textPadding = _var('text-padding')
 
 export function css(selector, rules) {
   return [
@@ -26,6 +28,16 @@ export function css(selector, rules) {
     )),
     '}'
   ].join('\n')
+}
+
+export const cssClass = {
+  field: 'field',
+  fieldFocusable: 'field--focusable',
+  message: 'message',
+  nickname: 'nickname',
+  playerCurrent: 'player--current',
+  row: 'row',
+  title: 'title',
 }
 
 export const cssRule = {
@@ -56,14 +68,14 @@ export const mainCssRules = [
     outline: 'none',
     background: mono8,
     'border-radius': radius1,
-    padding: 'var(--text-padding)',
+    padding: textPadding,
     color: mono1,
   }),
 
   css('input:focus, button:focus, select:focus', {
     background: mono9,
     color: mono0,
-    'border-color': mono3,
+    'border-color': mono2,
   }),
 
   css('input:disabled, button:disabled, select:disabled', {
@@ -96,7 +108,7 @@ export const mainCssRules = [
   }),
 
   css('label', {
-    padding: 'var(--text-padding)',
+    padding: textPadding,
     'user-select': 'none',
   }),
 
@@ -104,22 +116,22 @@ export const mainCssRules = [
     content: '":"',
   }),
 
-  css('.field', {
+  css(`.${cssClass.field}`, {
     background: mono6,
     width: 'fit-content',
     'border-radius': radius1,
   }),
 
-  css('.field--focusable:focus-within', {
+  css(`.${cssClass.fieldFocusable}:focus-within`, {
     background: mono3,
     color: mono8,
   }),
 
-  css('.message', {
-    padding: 'var(--text-padding)',
+  css(cssClass.message, {
+    padding: textPadding,
   }),
 
-  css('.title', {
-    padding: 'var(--text-padding)',
+  css(cssClass.title, {
+    padding: textPadding,
   }),
 ]

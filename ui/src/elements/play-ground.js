@@ -2,7 +2,7 @@
 // but import is omitted.
 import { StateController } from '@tris3d/client'
 import { define, h } from '../dom.js'
-import { css, cssRule, styleSheet } from '../style.js'
+import { css, cssRule, gap2, mono5, radius2, styleSheet, width1 } from '../style.js'
 
 const tagName = 'play-ground'
 const canvasTagName = 'tris3d-canvas'
@@ -11,18 +11,18 @@ styleSheet(
   cssRule.flexColumn(tagName),
   css(tagName, {
     'min-height': '100vh',
-    'padding-block': 'var(--gap2)',
+    'padding-block': gap2,
   }),
   css(`${tagName} > ${canvasTagName}`, {
     display: 'inline-block',
     'border-style': 'solid',
-    'border-width': 'var(--width1)',
-    'border-color': 'var(--mono5)',
-    'border-radius': 'var(--radius2)',
+    'border-width': width1,
+    'border-color': mono5,
+    'border-radius': radius2,
   }),
   css(`${tagName} .actions`, {
     display: 'flex',
-    gap: 'var(--gap2)',
+    gap: gap2,
     'justify-content': 'space-between',
   }),
 )
