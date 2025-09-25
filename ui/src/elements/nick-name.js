@@ -18,7 +18,7 @@ class Component extends HTMLElement {
   state = new StateController()
   subscriptions = []
 
-  input = h('input', {
+  input = domComponent.input({
     id: 'nickname',
     class: cssClass.nickname,
     type: 'text',
@@ -38,12 +38,13 @@ class Component extends HTMLElement {
 
     this.state
       .on_connected((connected) => {
+        const { input, field } = this
         if (connected) {
-          this.input.setAttribute('readonly', 'true')
-          this.feild.classList.remove(cssClass.fieldFocusable)
+          input.disable()
+          field.classList.remove(cssClass.fieldFocusable)
         } else {
-          this.input.removeAttribute('readonly')
-          this.field.classList.add(cssClass.fieldFocusable)
+          input.enable()
+          field.classList.add(cssClass.fieldFocusable)
         }
       })
       .on_nickname((value) => {

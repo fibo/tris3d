@@ -3,7 +3,6 @@ import { mainCssRules, styleSheet } from './style.js'
 styleSheet(...mainCssRules)
 // Initialize custom elements.
 import './elements/game-results.js'
-import './elements/local-info.js'
 import './elements/local-players.js'
 import './elements/multiplayer-action.js'
 import './elements/nick-name.js'

@@ -37,7 +37,8 @@ class Component extends HTMLElement {
   trainingAction = h('training-action', {}, '')
   nickName = h('nick-name')
   playMode = h('play-mode')
-  localInfo = h('local-info')
+  localPlayers = h('local-players')
+  gameResults = h('game-results')
   onlineInfo = h('online-info')
 
   sheet = {
@@ -111,7 +112,8 @@ class Component extends HTMLElement {
         this.multiplayerAction,
       ]),
       this.nickName,
-      this.localInfo,
+      this.localPlayers,
+      this.gameResults,
       this.onlineInfo,
     )
   }

@@ -14,7 +14,7 @@ export const _var = name => `var(--${name})`,
   mono4 = _var('mono4'),
   mono5 = _var('mono5'),
   mono6 = _var('mono6'),
-  mono7 = _var('mono7'),
+  // mono7 = _var('mono7'),
   mono8 = _var('mono8'),
   mono9 = _var('mono9'),
   // others
@@ -31,9 +31,11 @@ export function css(selector, rules) {
 }
 
 export const cssClass = {
+  disabled: 'disabled',
   field: 'field',
   fieldFocusable: 'field--focusable',
   flexRow: 'flex-row',
+  icon: 'icon',
   message: 'message',
   nickname: 'nickname',
   playerCurrent: 'player--current',
@@ -79,9 +81,10 @@ export const mainCssRules = [
     'border-color': mono2,
   }),
 
-  css('input:disabled, button:disabled, select:disabled', {
-    background: mono7,
-    color: mono3,
+  css(`input.${cssClass.disabled}, select.${cssClass.disabled}`, {
+    background: 'transparent',
+    'pointer-events': 'none',
+    color: mono1,
   }),
 
   css('button', {
@@ -133,6 +136,10 @@ export const mainCssRules = [
     'flex-direction': 'row',
     gap: gap1,
     'align-items': 'center',
+  }),
+
+  css(`.${cssClass.icon}`, {
+    'font-size': '1.5em',
   }),
 
   css(`.${cssClass.message}`, {

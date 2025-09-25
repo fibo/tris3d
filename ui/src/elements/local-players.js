@@ -24,34 +24,41 @@ const playerIds = ['player1', 'player2', 'player3']
 class Component extends HTMLElement {
   state = new StateController()
 
-  selectPlayer = playerIds.map(
-    id => h('select', { id }, [
-      'human', 'stupid', 'smart', 'bastard'
-    ].map(value =>
-      h('option', { value }, i18n.translate(`player.${value}`))
-    )))
+  playerSelectors = playerIds.map(id => domComponent.select({ id }, [
+    'human', 'stupid', 'smart', 'bastard'
+  ].map(value =>
+    ({ value, label: i18n.translate(`player.${value}`) })
+  )))
 
-  message = playerIds.map(() => h('span', {}))
+  winnerIcons = playerIds.map(() => domComponent.icon())
 
-  players = playerIds.map((id, i) =>
-    domComponent.field(i18n.translate(id), this.selectPlayer[i])
-  )
+  playerFields = playerIds.map((id, i) => {
+    const element = domComponent.field(i18n.translate(id), this.playerSelectors[i])
+    return Object.assign(element, {
+      normalize: () => {
+        element.classList.remove(cssClass.playerCurrent)
+        element.classList.add(cssClass.fieldFocusable)
+      },
+      highlight: () => {
+        element.classList.add(cssClass.playerCurrent)
+        element.classList.remove(cssClass.fieldFocusable)
+      },
+    })
+  })
 
   connectedCallback() {
     this.state
       .on_current_player_index((playerIndex) => {
-        this.players.forEach((item, index) => {
-          if (index === playerIndex) {
-            item.classList.add(cssClass.playerCurrent)
-            item.classList.remove(cssClass.fieldFocusable)
-          } else {
-            item.classList.remove(cssClass.playerCurrent)
-            item.classList.add(cssClass.fieldFocusable)
-          }
+        console.log('cc', playerIndex)
+        this.playerFields.forEach((item, index) => {
+          if (index === playerIndex)
+            item.highlight()
+          else
+            item.normalize()
         })
       })
       .on_local_players((localPlayers) => {
-        this.selectPlayer.forEach((item, index) => {
+        this.playerSelectors.forEach((item, index) => {
           for (const option of item.options)
             if (option.value === localPlayers[index])
               option.selected = true
@@ -60,7 +67,7 @@ class Component extends HTMLElement {
         })
       })
       .on_nickname((nickname) => {
-        this.selectPlayer.forEach((item) => {
+        this.playerSelectors.forEach((item) => {
           for (const option of item.options) {
             if (option.value !== 'human')
               continue
@@ -72,32 +79,35 @@ class Component extends HTMLElement {
         })
       })
       .on_playing((playing) => {
-        // Toggle disabled selects on playing.
-        this.selectPlayer.forEach(item => item.disabled = playing)
+        // Toggle enabled/disabled selects on playing.
+        this.playerSelectors.forEach((select) => {
+          if (playing)
+            select.disable()
+          else
+            select.enable()
+        })
         if (!playing) {
-        // Remove highlighted player when not playing.
-          this.players.forEach(item =>
-            item.classList.remove(cssClass.playerCurrent))
-          // Remove all messages.
-          this.message.forEach(item => item.textContent = '')
+          this.playerFields.forEach(item => item.normalize())
+          this.winnerIcons.forEach(item => item.textContent = '')
         }
       })
       .on_playmode(showIfPlaymode('training', this))
       .on_winner((winner) => {
-        this.message.forEach((item, index) => {
+        this.winnerIcons.forEach((item, index) => {
           if (winner.index === index)
             item.textContent = '🏆'
+          else item.textContent = ''
         })
       })
 
-    this.selectPlayer.forEach(item => item.addEventListener('change', this))
+    this.playerSelectors.forEach(item => item.addEventListener('change', this))
 
     this.append(
       h('form', {},
         playerIds.map((_, i) =>
           h('div', { class: cssClass.flexRow }, [
-            this.players[i],
-            this.message[i],
+            this.playerFields[i],
+            this.winnerIcons[i],
           ])
         )
       )
@@ -106,13 +116,13 @@ class Component extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.selectPlayer.forEach(item => item.removeEventListener('change', this))
+    this.playerSelectors.forEach(item => item.removeEventListener('change', this))
     this.state.dispose()
   }
 
   handleEvent(event) {
-    if (event.type === 'change' && this.selectPlayer.includes(event.target)) {
-      this.state.local_players = this.selectPlayer.map(item => item.value)
+    if (event.type === 'change' && this.playerSelectors.includes(event.target)) {
+      this.state.local_players = this.playerSelectors.map(item => item.value)
     }
   }
 }

@@ -26,13 +26,49 @@ export function h(tagName, attributes = null, children = []) {
 }
 
 export const domComponent = {
+  icon: () => h('span', { class: cssClass.icon }),
+
   field: (label, element) => h('div', {
     class: [cssClass.field, cssClass.fieldFocusable].join(' '),
   }, [
     h('label', { for: element.id }, [label]),
     element
   ]),
+
+  input: (attributes) => {
+    const element = h('input', attributes)
+    return Object.assign(element, {
+      disable: () => {
+        element.classList.add(cssClass.disabled)
+        element.setAttribute('tabindex', '-1')
+        element.setAttribute('readonly', 'true')
+      },
+      enable: () => {
+        element.removeAttribute('tabindex')
+        element.removeAttribute('readonly')
+        element.classList.remove(cssClass.disabled)
+      },
+    })
+  },
+
   message: (text = '') => h('div', { class: cssClass.message }, [text]),
+
+  select: (attributes, options) => {
+    const element = h('select', attributes, options.map(
+      ({ value, label }) => h('option', { value }, [label])
+    ))
+    return Object.assign(element, {
+      disable: () => {
+        element.classList.add(cssClass.disabled)
+        element.setAttribute('tabindex', '-1')
+      },
+      enable: () => {
+        element.removeAttribute('tabindex')
+        element.classList.remove(cssClass.disabled)
+      },
+    })
+  },
+
   title: text => h('div', { class: cssClass.title }, [text]),
 }
 

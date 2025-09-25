@@ -1,26 +1,28 @@
 import { StateController, i18n } from '@tris3d/client'
-import { define, h } from '../dom.js'
+import { define, domComponent, h } from '../dom.js'
 
 const tagName = 'play-mode'
 
 class Component extends HTMLElement {
   state = new StateController()
 
+  select = domComponent.select({ id: 'playmode' },
+    this.state.playmodes.map(playmode => ({
+      value: playmode,
+      label: i18n.translate(`playmode.${playmode}`)
+    })))
+
   connectedCallback() {
-    const select = h('select', { id: 'playmode' },
-      this.state.playmodes.map(playmode =>
-        h(
-          'option',
-          { value: playmode },
-          i18n.translate(`playmode.${playmode}`)
-        )
-      ))
+    const { select } = this
 
     select.addEventListener('change', this)
 
     this.state
       .on_playing((playing) => {
-        select.disabled = !!playing
+        if (playing)
+          select.disable()
+        else
+          select.enable()
       })
       .on_playmode((playmode) => {
         select.value = playmode
