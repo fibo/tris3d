@@ -28,6 +28,10 @@ class Tris3dCanvas extends HTMLElement {
   // Frames per second
   FPS = 25
 
+  // On pointerdown pick a cell and store it here.
+  // Then on pointerup check if the same cell is picked.
+  pointerdownCell = null
+
   playerColors = ['red', 'green', 'blue']
 
   cellsGroup = new Group()
@@ -109,10 +113,15 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   handleEvent(event) {
-    if (event.type === 'pointerup') {
+    if (event.type === 'pointerdown') {
       this.gotUserInput()
+      this.pointerdownCell = this.pickCell(event)
+    }
+
+    if (event.type === 'pointerup') {
       const cell = this.pickCell(event)
       if (!cell) return
+      if (cell !== this.pointerdownCell) return // prevents mis-clicks
       if (this.isReadOnly) {
         if (!cell.isSelected) {
           for (const otherCell of this.positionCellMap.values())
@@ -148,11 +157,13 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   addEventListeners() {
-    this.renderer.domElement.addEventListener('pointerup', this)
+    ['pointerdown', 'pointerup'].forEach(eventName =>
+      this.renderer.domElement.addEventListener(eventName, this))
   }
 
   removeEventListeners() {
-    this.renderer.domElement.removeEventListener('pointerup', this)
+    ['pointerdown', 'pointerup'].forEach(eventName =>
+      this.renderer.domElement.removeEventListener(eventName, this))
   }
 
   createRenderer() {
