@@ -14,7 +14,7 @@ class Component extends HTMLElement {
   state = new StateController()
 
   players = h('local-players')
-  results = h('local-results')
+  results = h('game-results')
 
   connectedCallback() {
     this.state.on_playmode(showIfPlaymode('training', this))

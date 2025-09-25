@@ -1,12 +1,7 @@
 import { GameBoard, AI } from '@tris3d/game'
 import { publish } from '@tris3d/pubsub'
 
-function currentPlayerIndex(moves) {
-  if (!moves) return -1
-  return moves.length % 3
-}
-
-export function checkIfGameIsOver(moves) {
+export function checkBoard(moves, get) {
   if (!moves) return
   const board = new GameBoard(moves)
   if (board.gameIsOver) {
@@ -16,10 +11,13 @@ export function checkIfGameIsOver(moves) {
         index: (moves.length - 1) % 3,
         score: board.numWinningLines
       })
+  } else {
+    publish('current_player_index', board.turnPlayer)
+    publish('your_turn', board.turnPlayer === get('local_player_index'))
   }
 }
 
-export function checkTrainingBoard(moves, get) {
+export function getTrainingNextMove(moves, get) {
   if (!moves) return
   const board = new GameBoard(moves)
   if (board.gameIsOver) return
@@ -37,12 +35,4 @@ export function checkTrainingBoard(moves, get) {
   }
   if (!nextMove) return
   publish('next_training_ai_move', nextMove)
-}
-
-export function updateCurrentPlayer(moves) {
-  publish('current_player_index', currentPlayerIndex(moves))
-}
-
-export function updateTurn(moves, get) {
-  publish('your_turn', currentPlayerIndex(moves) === get('local_player_index'))
 }

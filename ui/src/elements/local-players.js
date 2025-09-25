@@ -24,19 +24,14 @@ const playerIds = ['player1', 'player2', 'player3']
 class Component extends HTMLElement {
   state = new StateController()
 
-  selectColor = playerIds.map(
-    () => h('select', {}, [
-      'red', 'blue', 'green',
-    ].map(value =>
-      h('option', { value }, value)
-    )))
-
   selectPlayer = playerIds.map(
     id => h('select', { id }, [
       'human', 'stupid', 'smart', 'bastard'
     ].map(value =>
       h('option', { value }, i18n.translate(`player.${value}`))
     )))
+
+  message = playerIds.map(() => h('span', {}))
 
   players = playerIds.map((id, i) =>
     domComponent.field(i18n.translate(id), this.selectPlayer[i])
@@ -79,17 +74,34 @@ class Component extends HTMLElement {
       .on_playing((playing) => {
         // Toggle disabled selects on playing.
         this.selectPlayer.forEach(item => item.disabled = playing)
-        // Remove highlight when not playing.
-        if (!playing)
+        if (!playing) {
+        // Remove highlighted player when not playing.
           this.players.forEach(item =>
             item.classList.remove(cssClass.playerCurrent))
+          // Remove all messages.
+          this.message.forEach(item => item.textContent = '')
+        }
       })
       .on_playmode(showIfPlaymode('training', this))
+      .on_winner((winner) => {
+        this.message.forEach((item, index) => {
+          if (winner.index === index)
+            item.textContent = '🏆'
+        })
+      })
 
     this.selectPlayer.forEach(item => item.addEventListener('change', this))
 
     this.append(
-      h('form', {}, this.players)
+      h('form', {},
+        playerIds.map((_, i) =>
+          h('div', { class: cssClass.flexRow }, [
+            this.players[i],
+            this.message[i],
+          ])
+        )
+      )
+
     )
   }
 

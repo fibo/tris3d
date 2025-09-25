@@ -33,6 +33,7 @@ export function css(selector, rules) {
 export const cssClass = {
   field: 'field',
   fieldFocusable: 'field--focusable',
+  flexRow: 'flex-row',
   message: 'message',
   nickname: 'nickname',
   playerCurrent: 'player--current',
@@ -127,11 +128,19 @@ export const mainCssRules = [
     color: mono8,
   }),
 
-  css(cssClass.message, {
+  css(`.${cssClass.flexRow}`, {
+    display: 'flex',
+    'flex-direction': 'row',
+    gap: gap1,
+    'align-items': 'center',
+  }),
+
+  css(`.${cssClass.message}`, {
     padding: textPadding,
   }),
 
-  css(cssClass.title, {
+  css(`.${cssClass.title}`, {
+    'font-size': '1.2em',
     padding: textPadding,
   }),
 ]

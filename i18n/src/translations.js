@@ -17,10 +17,9 @@ export const translation = {
     player2: 'player 2',
     player3: 'player 3',
 
-    extra_score: 'extra score!!! 🎉',
     game_over: 'game over',
-    you_win: 'you win! 🏆',
-    your_turn: 'it\'s your turn!',
+    you_win: 'you win!',
+    your_turn: 'your turn',
     nick_name: 'nick name',
 
     rooms: 'rooms',

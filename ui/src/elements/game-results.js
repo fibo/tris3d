@@ -2,7 +2,7 @@ import { StateController, i18n } from '@tris3d/client'
 import { define, domComponent, hide, show } from '../dom.js'
 import { cssRule, styleSheet } from '../style.js'
 
-const tagName = 'local-results'
+const tagName = 'game-results'
 
 styleSheet(
   cssRule.hidable(tagName),
@@ -13,24 +13,20 @@ class Component extends HTMLElement {
 
   title = domComponent.title(i18n.translate('game_over'))
   winnerMessage = domComponent.message()
-  scoreMessage = domComponent.message()
 
   connectedCallback() {
     hide(this)
 
-    this.state.on_game_over((gameIsOver) => {
-      if (gameIsOver)
-        show(this)
-      else {
-        this.winnerMessage.textContent = ''
-        hide(this)
-      }
-    })
-      .on_winner(({ score }) => {
-        if (score === 0)
-          this.scoreMessage.textContent = ''
-        else if (score > 1)
-          this.scoreMessage.textContent = i18n.translate('extra_score')
+    this.state
+      .on_game_over((gameIsOver) => {
+        if (gameIsOver)
+          show(this)
+      })
+      .on_playing((playing) => {
+        if (!playing) {
+          this.winnerMessage.textContent = ''
+          hide(this)
+        }
       })
       .on_you_win((youWin) => {
         if (youWin)
@@ -42,7 +38,6 @@ class Component extends HTMLElement {
     this.append(
       this.title,
       this.winnerMessage,
-      this.scoreMessage,
     )
   }
 
