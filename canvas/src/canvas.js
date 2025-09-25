@@ -109,7 +109,7 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   handleEvent(event) {
-    if (event.type === 'pointerdown') {
+    if (event.type === 'pointerup') {
       this.gotUserInput()
       const cell = this.pickCell(event)
       if (!cell) return
@@ -148,11 +148,11 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   addEventListeners() {
-    this.renderer.domElement.addEventListener('pointerdown', this)
+    this.renderer.domElement.addEventListener('pointerup', this)
   }
 
   removeEventListeners() {
-    this.renderer.domElement.removeEventListener('pointerdown', this)
+    this.renderer.domElement.removeEventListener('pointerup', this)
   }
 
   createRenderer() {
