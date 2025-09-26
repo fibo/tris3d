@@ -2,6 +2,12 @@
   --landing-spacing: 2em;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .hero {
   display: flex;
   flex-direction: column;
@@ -18,13 +24,13 @@ p {
 
 .cta {
   display: flex;
-  margin: var(--landing-spacing);
+  margin: var(--landing-spacing) 0;
 }
 
 .cta button {
   font-size: 1.7rem;
   background: var(--mono9);
-  color: var(--color1);
+  color: var(--mono1);
   padding: 0.25em 0.4em;
   border: var(--width1) solid var(--mono9);
   border-radius: var(--radius1);
@@ -33,16 +39,20 @@ p {
 
 .cta button:focus {
   background: var(--mono9);
-  color: var(--color0);
+  color: var(--mono0);
   border-color: var(--mono0);
 }
 
-.cta button:disabled {
-  display: none;
+footer {
+  padding: 1em var(--landing-spacing);
+}
+
+footer a, footer a:visited, footer a:hover, footer a:active, footer a:link {
+  color: var(--mono2);
 }
 
 @media (max-width: 717px) {
-  .hero {
+  .hero, footer {
     text-align: center;
   }
   .cta {

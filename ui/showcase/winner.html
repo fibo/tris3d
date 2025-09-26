@@ -8,6 +8,9 @@
     publish('nickname', 'pippo')
     publish('local_players', ['smart', 'human', 'stupid'])
     publish('playing', true)
-    publish('moves', ['A', 'H', 'G', '*', 'I', 'F', 'V'])
+    publish('moves', ['A', 'H', 'G', '*', 'I', 'F'])
+    setTimeout(() =>
+      publish('moves', ['A', 'H', 'G', '*', 'I', 'F', 'V'])
+    , 1000)
   })
 </script>

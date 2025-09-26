@@ -36,7 +36,10 @@ async function startServer({ port }) {
   await resetDir(outdir)
 
   const ctx = await context({
-    entryPoints: [join(showcaseDir, 'load.js')],
+    entryPoints: [
+      join(showcaseDir, 'load.js'),
+      join(showcaseDir, 'design-canvas.js'),
+    ],
     bundle: true,
     format: 'esm',
     inject: [join(workspaceDir.repo, 'src', 'liveReload.js')],

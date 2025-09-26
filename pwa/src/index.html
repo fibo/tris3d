@@ -17,11 +17,9 @@
   {landingHtml}
 
   <script type="module">
-    addEventListener('load', () => {
-      document.querySelector('.cta > button').addEventListener('click', async () => {
-        await import('./js/{jsUi}');
-        await import('./js/{jsCanvas}');
-      });
+    document.querySelector('.cta > button').addEventListener('click', () => {
+      import('./js/{jsUi}');
+      import('./js/{jsCanvas}');
     });
   </script>
 </body>

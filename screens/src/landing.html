@@ -1,17 +1,16 @@
 <header class="hero">
   <h1>{appName}</h1>
+
   <p>{appDescription}</p>
+
+  <div class="cta">
+    <button>play</button>
+  </div>
 </header>
 
-<div class="cta">
-  <button disabled>play</button>
-</div>
-
-<script type="module">
-  addEventListener('DOMContentLoaded', () => {
-    document.querySelector('.cta > button').disabled = false;
-  });
-</script>
+<footer>
+  <a href="https://github.com/fibo/tris3d">GitHub</a>
+</footer>
 
 <noscript>
   <p>Opsss... your JavaScript looks disabled 😒</p>
