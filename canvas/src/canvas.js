@@ -28,7 +28,7 @@ class Tris3dCanvas extends HTMLElement {
     'moves',
     'readonly',
     'size',
-    'winner',
+    'winninglines',
   ]
 
   // Frames per second
@@ -115,11 +115,14 @@ class Tris3dCanvas extends HTMLElement {
       this.shouldResize = true
     }
 
-    if (name === 'winner') {
+    if (name === 'winninglines') {
       if (newValue === null) return
-      for (const cell of this.positionCellMap.values()) {
-        if (cell.isSelected) continue
-        cell.hide()
+      const lines = newValue.split(',')
+      for (const [position, cell] of this.positionCellMap.entries()) {
+        if (cell.isSelected) {
+          if (!lines.some(line => line.includes(position)))
+            cell.piece.dim()
+        } else cell.hide()
       }
     }
   }

@@ -4,7 +4,7 @@ import { color } from './colors.js'
 
 const { silver, white } = color
 
-class GlassSphere {
+class Piece {
   constructor(group) {
     this.material = new MeshLambertMaterial({
       color: white,
@@ -12,6 +12,10 @@ class GlassSphere {
     })
     this.mesh = new Mesh(new SphereGeometry(0.68), this.material)
     group.add(this.mesh)
+  }
+
+  dim() {
+    this.material.color.set(silver)
   }
 }
 
@@ -25,8 +29,8 @@ class Placeholder {
     group.add(this.mesh)
   }
 
-  highlight(highlight) {
-    if (highlight)
+  highlight(highlighted) {
+    if (highlighted)
       this.material.color.set(silver)
     else
       this.material.color.set(white)
@@ -42,7 +46,7 @@ export class Cell {
     this.position = position
 
     this.placeholder = new Placeholder(this.group)
-    this.piece = new GlassSphere(this.group)
+    this.piece = new Piece(this.group)
 
     this.reset()
 

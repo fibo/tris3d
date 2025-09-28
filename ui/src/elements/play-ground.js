@@ -89,7 +89,7 @@ class Component extends HTMLElement {
       .on_playing((playing) => {
         if (playing) {
           canvas.setAttribute('moves', '')
-          canvas.removeAttribute('winner')
+          canvas.removeAttribute('winninglines')
           canvas.addEventListener('move', this)
         } else {
           clearTimeout(this.trainingMoveTimeoutId)
@@ -98,7 +98,7 @@ class Component extends HTMLElement {
         }
       })
       .on_winner((winner) => {
-        canvas.setAttribute('winner', winner.index)
+        canvas.setAttribute('winninglines', winner.winningLines.map(line => line.join('')).join())
       })
       .on_your_turn((yourTurn) => {
         if (yourTurn)
