@@ -31,21 +31,19 @@ export class GameBoard {
 
   get moves() { return this.#moves.slice() }
 
-  get numWinningLines() {
+  get winningLines() {
+    const winningLines = []
     const numMoves = this.#moves.length
     // No player can win before the seventh move.
-    if (numMoves < 7) return 0
+    if (numMoves < 7) return winningLines
     const movesOfCurrentPlayer = []
     for (let i = numMoves - 1; i >= 0; i -= 3) {
       movesOfCurrentPlayer.push(this.#moves[i])
     }
-    let count = 0
-    for (const line of WINNING_LINES) {
-      if (line.every(position => movesOfCurrentPlayer.includes(position))) {
-        count++
-      }
-    }
-    return count
+    for (const line of WINNING_LINES)
+      if (line.every(position => movesOfCurrentPlayer.includes(position)))
+        winningLines.push(line)
+    return winningLines
   }
 
   get turnPlayer() {
@@ -67,7 +65,7 @@ export class GameBoard {
     if (this.#moves.includes(position)) return false
     // Add the move and check if the game has ended.
     this.#moves.push(position)
-    if (this.numWinningLines > 0) {
+    if (this.winningLines.length > 0) {
       this.#status = HAS_WINNER
     } else if (this.#moves.length === 27) {
       this.#status = IS_TIE

@@ -18,52 +18,44 @@ test('new Board', () => {
 })
 
 test('game play', () => {
-  for (const { turnPlayer, gameIsOver, hasWinner, moves } of [
+  for (const { turnPlayer, gameIsOver, hasWinner, isTie, moves } of [
     {
-      turnPlayer: 0,
-      gameIsOver: false,
       moves: [],
+      gameIsOver: false,
+      turnPlayer: 0,
     },
     {
-      turnPlayer: 1,
-      gameIsOver: false,
       moves: ['A', 'B', 'C', 'D'],
-    },
-    {
-      gameIsOver: true,
-      moves: ['A', 'H', 'G', '*', 'I', 'F', 'V'],
-      hasWinner: true,
-    },
-    {
-      turnPlayer: 1,
       gameIsOver: false,
-      moves: ['A', 'H', 'G', '*', 'I', 'F', 'B'],
+      turnPlayer: 1,
     },
     {
+      moves: ['A', 'H', 'G', '*', 'I', 'F', 'V'],
       gameIsOver: true,
-      moves: ['A', 'H', 'G', '*', 'I', 'F', 'B', 'C', 'D', 'V'],
       hasWinner: true,
     },
-    // TODO test tie
-    // {
-    //   gameIsOver: true,
-    //   moves: [
-    //     'A', 'B', 'C', 'D', 'E', 'F', 'G', '*', 'I', 'H',
-    //     'K', 'J', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-    //     'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-    //   ],
-    //   hasWinner: false,
-    //   hasTie: true,
-    //   turnPlayer: undefined,
-    // },
+    {
+      moves: ['A', 'H', 'G', '*', 'I', 'F', 'B'],
+      gameIsOver: false,
+      turnPlayer: 1,
+    },
+    {
+      moves: ['A', 'H', 'G', '*', 'I', 'F', 'B', 'C', 'D', 'V'],
+      gameIsOver: true,
+      hasWinner: true,
+    },
+    {
+      // moves leading to a tie
+      moves: ['N', 'U', 'R', 'C', 'W', 'H', 'P', 'B', 'M', 'T', 'G', '*', 'K', 'A', 'X', 'F', 'Q', 'L', 'J', 'D', 'I', 'Y', 'O', 'S', 'Z', 'E', 'V'],
+      gameIsOver: true,
+      isTie: true,
+    },
   ]) {
-    const board = new GameBoard()
-    for (const move of moves) {
-      assert.equal(board.addMove(move), true, 'add move')
-    }
+    const board = new GameBoard(moves)
     assert.equal(board.turnPlayer, turnPlayer, 'turnPlayer')
     assert.equal(board.gameIsOver, gameIsOver, 'gameIsOver')
     assert.equal(board.hasWinner, hasWinner, 'hasWinner')
+    assert.equal(board.isTie, isTie, 'isTie')
   }
 })
 

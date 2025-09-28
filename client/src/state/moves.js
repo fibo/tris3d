@@ -9,7 +9,7 @@ export function checkBoard(moves, get) {
     if (board.hasWinner)
       publish('winner', {
         index: (moves.length - 1) % 3,
-        score: board.numWinningLines
+        winningLines: board.winningLines,
       })
   } else {
     publish('current_player_index', board.turnPlayer)
