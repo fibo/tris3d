@@ -1,4 +1,9 @@
-export const _var = name => `var(--${name})`,
+export const cssVarName = {
+  color: '--color',
+}
+
+const _var = name => `var(--${name})`
+export const
   // sizes
   gap1 = _var('gap1'),
   gap2 = _var('gap2'),
@@ -53,10 +58,6 @@ export const cssRule = {
   hidable: tagName => css(`${tagName}[hidden]`, {
     display: 'none',
   }),
-}
-
-export function radialGradientCircle(color) {
-  return `radial-gradient(circle at 30% 30%, ${color}, #444)`
 }
 
 export function styleSheet(...rules) {
@@ -144,6 +145,7 @@ export const mainCssRules = [
   }),
 
   css(`.${cssClass.color}`, {
+    background: `radial-gradient(circle at 30% 30%, var(${cssVarName.color}), #444)`,
     width: '1.5em',
     height: '1.5em',
     'border-radius': '50%',

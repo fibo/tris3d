@@ -111,3 +111,21 @@
     </div>
   </form>
 </section>
+
+<section>
+  <h3>player colors</h3>
+
+  <div class="flex-row" id="player-colors">
+  </div>
+  <script>
+    addEventListener('load', () => {
+      const playerColors = document.getElementById('player-colors')
+      // The playerColor is exposed by load.js
+      for (const color of Object.values(playerColor)) {
+        const element = domComponent.color()
+        element.setColor(color.str)
+        playerColors.appendChild(element)
+      }
+    })
+  </script>
+</section>

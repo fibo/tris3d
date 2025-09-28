@@ -11,6 +11,12 @@ export const playerColor = {
   yellow: {
     hex: 0xfeeb28, str: '#feeb28'
   },
+  pink: {
+    hex: 0xff69b4, str: '#ff69b4'
+  },
+  orange: {
+    hex: 0xffac1c, str: '#ffac1c'
+  },
 }
 
 export const defaultPlayerColors = ['red', 'green', 'blue']

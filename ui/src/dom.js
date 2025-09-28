@@ -1,4 +1,12 @@
-import { cssClass } from './style.js'
+import { cssClass, cssVarName } from './style.js'
+
+export const aria = {
+  disabled: 'aria-disabled',
+}
+
+const dataAttribute = {
+  playerId: 'data-playerid',
+}
 
 export function define(tagName, elementClass) {
   customElements.get(tagName) || customElements.define(tagName, elementClass)
@@ -26,7 +34,29 @@ export function h(tagName, attributes = null, children = []) {
 }
 
 export const domComponent = {
-  color: () => h('span', { class: cssClass.color }),
+  color: (playerId) => {
+    const element = h('span', {
+      class: cssClass.color,
+      [dataAttribute.playerId]: playerId,
+    })
+    return Object.assign(element, {
+      disable: () => {
+        element.setAttribute(aria.disabled, 'true')
+      },
+      enable: () => {
+        element.removeAttribute(aria.disabled)
+      },
+      get isDisabled() {
+        return element.getAttribute(aria.disabled) === 'true'
+      },
+      get playerId() {
+        return element.getAttribute(dataAttribute.playerId)
+      },
+      setColor: (color) => {
+        element.style.setProperty(cssVarName.color, color)
+      },
+    })
+  },
 
   icon: () => h('span', { class: cssClass.icon }),
 

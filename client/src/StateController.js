@@ -1,5 +1,6 @@
 import { publish, subscribe } from '@tris3d/pubsub'
 import { playmodes } from './model.js'
+import { playerColor } from '@tris3d/game'
 
 export class StateController {
   #subscriptions = []
@@ -66,5 +67,23 @@ export class StateController {
 
   togglePlaying() {
     publish('playing', value => !value)
+  }
+
+  changePlayerColor(index) {
+    publish('player_colors', (current) => {
+      const currentColorNames = current.map(({ colorName }) => colorName)
+      const otherColorNames = currentColorNames.filter((_, i) => i !== index)
+      const nextColorNames = [...currentColorNames]
+      // All colors except the ones already taken by other players.
+      const colorNames = Object.keys(playerColor).filter(
+        colorName => !otherColorNames.includes(colorName))
+      for (let i = 0; i < colorNames.length; i++)
+        if (colorNames[i] === currentColorNames[index]) {
+          nextColorNames[index] = colorNames[(i + 1) % colorNames.length]
+          break
+        }
+      return nextColorNames.map(
+        colorName => ({ colorName, color: playerColor[colorName] }))
+    })
   }
 }

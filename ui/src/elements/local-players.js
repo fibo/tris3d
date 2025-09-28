@@ -1,7 +1,7 @@
 import { StateController, i18n } from '@tris3d/client'
-import { define, domComponent, h } from '../dom.js'
+import { aria, define, domComponent, h } from '../dom.js'
 import { showIfPlaymode } from '../state.js'
-import { css, cssClass, cssRule, mono3, mono8, radialGradientCircle, styleSheet } from '../style.js'
+import { css, cssClass, cssRule, mono3, mono8, styleSheet } from '../style.js'
 
 const tagName = 'local-players'
 
@@ -31,7 +31,7 @@ class Component extends HTMLElement {
   )))
 
   winnerIcons = playerIds.map(() => domComponent.icon())
-  playerColors = playerIds.map(() => domComponent.color())
+  playerColors = playerIds.map(playerId => domComponent.color(playerId))
 
   playerFields = playerIds.map((id, i) => {
     const element = domComponent.field(i18n.translate(id), this.playerSelectors[i])
@@ -80,7 +80,7 @@ class Component extends HTMLElement {
       })
       .on_player_colors((colors) => {
         this.playerColors.forEach((item, index) => {
-          item.style.background = radialGradientCircle(colors[index].color.str)
+          item.setColor(colors[index].color.str)
         })
       })
       .on_playing((playing) => {
@@ -91,6 +91,14 @@ class Component extends HTMLElement {
           else
             select.enable()
         })
+        // Toggle enabled/disabled color pickers on playing.
+        this.playerColors.forEach((color) => {
+          if (playing)
+            color.disable()
+          else
+            color.enable()
+        })
+        // On stop playing, cleanup.
         if (!playing) {
           this.playerFields.forEach(item => item.normalize())
           this.winnerIcons.forEach(item => item.textContent = '')
@@ -104,6 +112,8 @@ class Component extends HTMLElement {
           else item.textContent = ''
         })
       })
+
+    this.playerColors.forEach(item => item.addEventListener('click', this))
 
     this.playerSelectors.forEach(item => item.addEventListener('change', this))
 
@@ -129,6 +139,12 @@ class Component extends HTMLElement {
   handleEvent(event) {
     if (event.type === 'change' && this.playerSelectors.includes(event.target)) {
       this.state.local_players = this.playerSelectors.map(item => item.value)
+    }
+
+    if (event.type === 'click' && this.playerColors.includes(event.target)) {
+      if (event.target.getAttribute(aria.disabled)) return
+      const index = playerIds.indexOf(event.target.playerId)
+      this.state.changePlayerColor(index)
     }
   }
 }
