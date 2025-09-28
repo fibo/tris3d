@@ -1,6 +1,7 @@
 import { AmbientLight, DirectionalLight, Group, PerspectiveCamera, OrbitControls, Raycaster, Scene, Vector3, WebGLRenderer } from '@tris3d/three'
-import { POSITIONS } from '@tris3d/game'
+import { POSITIONS, defaultPlayerColors } from '@tris3d/game'
 import { Cell } from './cell.js'
+import { color } from './colors.js'
 
 const tagName = 'tris3d-canvas'
 
@@ -10,6 +11,11 @@ const angularSpeed = 17 * radian // radians per second
 const sheet = new CSSStyleSheet()
 sheet.replaceSync([tagName, '{ min-width: fit-content; }'].join(''))
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet]
+
+const { silver, white } = color
+
+// Minimum frames per second is 18, maximum is 60.
+const minFPS = 18
 
 /**
  * @example
@@ -26,13 +32,13 @@ class Tris3dCanvas extends HTMLElement {
   ]
 
   // Frames per second
-  FPS = 25
+  FPS = minFPS
 
   // On pointerdown pick a cell and store it here.
   // Then on pointerup check if the same cell is picked.
-  pointerdownCell = null
+  cellAtPointerdown = null
 
-  playerColors = ['red', 'green', 'blue']
+  playerColors = defaultPlayerColors
 
   cellsGroup = new Group()
   scene = new Scene()
@@ -87,9 +93,15 @@ class Tris3dCanvas extends HTMLElement {
 
     if (name === 'fps') {
       const fps = parseInt(newValue, 10)
-      if (fps >= 20 && fps <= 60) {
+      if (fps >= minFPS && fps <= 60)
         this.FPS = fps
-      }
+    }
+
+    if (name === 'playercolors') {
+      if (newValue === null)
+        this.playerColors = defaultPlayerColors
+      else
+        this.playerColors = newValue.split(',')
     }
 
     if (name === 'readonly') {
@@ -115,18 +127,18 @@ class Tris3dCanvas extends HTMLElement {
   handleEvent(event) {
     if (event.type === 'pointerdown') {
       this.gotUserInput()
-      this.pointerdownCell = this.pickCell(event)
+      this.cellAtPointerdown = this.pickCell(event)
     }
 
     if (event.type === 'pointerup') {
       const cell = this.pickCell(event)
       if (!cell) return
-      if (cell !== this.pointerdownCell) return // prevents mis-clicks
+      if (cell !== this.cellAtPointerdown) return // prevents mis-clicks
       if (this.isReadOnly) {
         if (!cell.isSelected) {
           for (const otherCell of this.positionCellMap.values())
-            otherCell.sphere.highlight(false)
-          cell.sphere.highlight(true)
+            otherCell.placeholder.highlight(false)
+          cell.placeholder.highlight(true)
         }
       } else {
         if (!cell.isSelected) {
@@ -142,7 +154,7 @@ class Tris3dCanvas extends HTMLElement {
     const spheres = []
     for (const [position, cell] of this.positionCellMap) {
       if (!this.boardMoves.includes(position))
-        spheres.push(cell.sphere.mesh)
+        spheres.push(cell.placeholder.mesh)
     }
     return spheres
   }
@@ -181,16 +193,20 @@ class Tris3dCanvas extends HTMLElement {
     const next = () => {
       if (
         // Should we render a new frame?
-        // Yes, it deltaT time has elapsed since lastTime scene was rendered.
+        // IF deltaT time has elapsed since lastTime scene was rendered;
+        // THEN render the scene.
         document.timeline.currentTime - lastTime > /* deltaT */ 1000 / this.FPS
       ) {
-        if (this.shouldRotateGroup) {
+        if (this.shouldRotateGroup)
           this.cellsGroup.rotation.y += angularSpeed / this.FPS
-        }
+
         if (this.shouldResize)
           this.resize()
-        lastTime = document.timeline.currentTime
+
+        this.controls.update()
         this.renderer.render(this.scene, this.camera)
+
+        lastTime = document.timeline.currentTime
       }
       requestAnimationFrame(next)
     }
@@ -227,7 +243,7 @@ class Tris3dCanvas extends HTMLElement {
   resetMoves() {
     this.boardMoves = []
     for (const cell of this.positionCellMap.values()) {
-      cell.sphere.highlight(false)
+      cell.placeholder.highlight(false)
       cell.reset()
     }
   }
@@ -249,9 +265,9 @@ class Tris3dCanvas extends HTMLElement {
   }
 
   setupControls() {
-    const controls = new OrbitControls(this.camera, this.renderer.domElement)
+    const controls = this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     controls.enableDamping = true
-    controls.dampingFactor = 0.25
+    controls.dampingFactor = 0.17
     controls.enablePan = false
     controls.enableZoom = false
     controls.update()
@@ -275,49 +291,49 @@ class Tris3dCanvas extends HTMLElement {
   setupLights() {
     const { scene } = this
 
-    const directionalLight0 = new DirectionalLight(0xe7feff)
+    const directionalLight0 = new DirectionalLight(white)
     directionalLight0.position.x = 6
     directionalLight0.position.y = -4
     directionalLight0.position.z = 0
     directionalLight0.position.normalize()
     scene.add(directionalLight0)
 
-    const directionalLight1 = new DirectionalLight(0xe7feff)
+    const directionalLight1 = new DirectionalLight(white)
     directionalLight1.position.x = -3
     directionalLight1.position.y = 0
     directionalLight1.position.z = 5
     directionalLight1.position.normalize()
     scene.add(directionalLight1)
 
-    const directionalLight2 = new DirectionalLight(0xe7feff)
+    const directionalLight2 = new DirectionalLight(white)
     directionalLight2.position.x = 0
     directionalLight2.position.y = 9
     directionalLight2.position.z = -5
     directionalLight2.position.normalize()
     scene.add(directionalLight2)
 
-    const directionalLight3 = new DirectionalLight(0xe7feff)
+    const directionalLight3 = new DirectionalLight(white)
     directionalLight3.position.x = -2
     directionalLight3.position.y = 4
     directionalLight3.position.z = 0
     directionalLight3.position.normalize()
     scene.add(directionalLight3)
 
-    const directionalLight4 = new DirectionalLight(0xe7feff)
+    const directionalLight4 = new DirectionalLight(white)
     directionalLight4.position.x = 3
     directionalLight4.position.y = 0
     directionalLight4.position.z = -2
     directionalLight4.position.normalize()
     scene.add(directionalLight4)
 
-    const directionalLight5 = new DirectionalLight(0xe7feff)
+    const directionalLight5 = new DirectionalLight(white)
     directionalLight5.position.x = 0
     directionalLight5.position.y = -7
     directionalLight5.position.z = 1
     directionalLight5.position.normalize()
     scene.add(directionalLight5)
 
-    const ambientLight = new AmbientLight(0x404040)
+    const ambientLight = new AmbientLight(silver)
     scene.add(ambientLight)
   }
 }

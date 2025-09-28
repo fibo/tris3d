@@ -66,9 +66,19 @@ function smart(moves) {
   const win = victoryIsMine(moves)
   if (win) return win
 
-  const nextPlayerIndex = (moves.length + 1) % 3
-  const block = tryToBlock(moves, nextPlayerIndex)
-  if (block) return block
+  // Try to block the next player (most of the time).
+  if (Math.random() < 0.6) {
+    const nextPlayerIndex = (moves.length + 1) % 3
+    const block = tryToBlock(moves, nextPlayerIndex)
+    if (block) return block
+  }
+
+  // Try to block other player (most of the time).
+  if (Math.random() < 0.6) {
+    const otherPlayerIndex = (moves.length + 2) % 3
+    const block = tryToBlock(moves, otherPlayerIndex)
+    if (block) return block
+  }
 
   // If no winning move is found, behave like a stupid AI.
   return stupid(moves)
@@ -77,11 +87,17 @@ function smart(moves) {
 function bastard(moves, targetPlayerIndex = 0) {
   if (noMore(moves)) return ''
 
+  // Try to win (most of the time).
+  if (Math.random() < 0.6) {
+    const win = victoryIsMine(moves)
+    if (win) return win
+  }
+
   const block = tryToBlock(moves, targetPlayerIndex)
   if (block) return block
 
-  // If no winning move is found, behave like a smart AI.
-  return smart(moves)
+  // If no winning move is found, behave like a stupid AI.
+  return stupid(moves)
 }
 
 export const AI = {

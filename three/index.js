@@ -4,7 +4,6 @@ export {
   DirectionalLight,
   Group,
   Mesh,
-  MeshBasicMaterial,
   MeshLambertMaterial,
   PerspectiveCamera,
   Raycaster,

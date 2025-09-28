@@ -30,6 +30,7 @@ styleSheet(
 class Component extends HTMLElement {
   state = new StateController()
   subscriptions = []
+  trainingMoveTimeoutId = 0
 
   canvas = h(canvasTagName, { readonly: true })
 
@@ -59,7 +60,7 @@ class Component extends HTMLElement {
   connectedCallback() {
     const { canvas } = this
 
-    canvas.setAttribute('fps', 30)
+    canvas.setAttribute('fps', 25)
 
     document.adoptedStyleSheets.push(...Object.values(this.sheet))
 
@@ -78,9 +79,12 @@ class Component extends HTMLElement {
           canvas.removeAttribute('moves')
       })
       .on_next_training_ai_move((position) => {
-        setTimeout(() => {
+        this.trainingMoveTimeoutId = setTimeout(() => {
           this.state.addMove(position)
         }, 1000 + Math.random() * 2000)
+      })
+      .on_player_colors((colors) => {
+        canvas.setAttribute('playercolors', colors.map(({ colorName }) => colorName).join())
       })
       .on_playing((playing) => {
         if (playing) {
@@ -88,6 +92,7 @@ class Component extends HTMLElement {
           canvas.removeAttribute('winner')
           canvas.addEventListener('move', this)
         } else {
+          clearTimeout(this.trainingMoveTimeoutId)
           canvas.removeAttribute('moves')
           canvas.removeEventListener('move', this)
         }

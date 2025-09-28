@@ -1,7 +1,7 @@
 import { StateController, i18n } from '@tris3d/client'
 import { define, domComponent, h } from '../dom.js'
 import { showIfPlaymode } from '../state.js'
-import { css, cssClass, cssRule, mono3, mono8, styleSheet } from '../style.js'
+import { css, cssClass, cssRule, mono3, mono8, radialGradientCircle, styleSheet } from '../style.js'
 
 const tagName = 'local-players'
 
@@ -31,6 +31,7 @@ class Component extends HTMLElement {
   )))
 
   winnerIcons = playerIds.map(() => domComponent.icon())
+  playerColors = playerIds.map(() => domComponent.color())
 
   playerFields = playerIds.map((id, i) => {
     const element = domComponent.field(i18n.translate(id), this.playerSelectors[i])
@@ -49,7 +50,6 @@ class Component extends HTMLElement {
   connectedCallback() {
     this.state
       .on_current_player_index((playerIndex) => {
-        console.log('cc', playerIndex)
         this.playerFields.forEach((item, index) => {
           if (index === playerIndex)
             item.highlight()
@@ -76,6 +76,11 @@ class Component extends HTMLElement {
             else
               option.textContent = i18n.translate('player.human')
           }
+        })
+      })
+      .on_player_colors((colors) => {
+        this.playerColors.forEach((item, index) => {
+          item.style.background = radialGradientCircle(colors[index].color.str)
         })
       })
       .on_playing((playing) => {
@@ -107,6 +112,7 @@ class Component extends HTMLElement {
         playerIds.map((_, i) =>
           h('div', { class: cssClass.flexRow }, [
             this.playerFields[i],
+            this.playerColors[i],
             this.winnerIcons[i],
           ])
         )

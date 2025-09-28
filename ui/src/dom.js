@@ -26,10 +26,12 @@ export function h(tagName, attributes = null, children = []) {
 }
 
 export const domComponent = {
+  color: () => h('span', { class: cssClass.color }),
+
   icon: () => h('span', { class: cssClass.icon }),
 
   field: (label, element) => h('div', {
-    class: [cssClass.field, cssClass.fieldFocusable].join(' '),
+    class: `${cssClass.field} ${cssClass.fieldFocusable}`,
   }, [
     h('label', { for: element.id }, [label]),
     element

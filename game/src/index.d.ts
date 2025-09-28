@@ -16,6 +16,13 @@ declare module '@tris3d/game' {
     bastard: (moves: string[], targetPlayerIndex?: number) => string,
   }
 
+  // players.js
+  export const defaultPlayerColors: string[];
+  export const playerColor: Record<string, {
+    hex: number;
+    str: string;
+  }>;
+
   // space.js
   export const POSITIONS: string[];
   export const VECTOR_OF_POSITION: Record<string, [number, number, number]>;

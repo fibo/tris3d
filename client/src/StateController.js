@@ -29,6 +29,7 @@ export class StateController {
   on_nickname(listener) { return this.#on({ nickname: listener }) }
   on_next_training_ai_move(listener) { return this.#on({ next_training_ai_move: listener }) }
   on_playing(listener) { return this.#on({ playing: listener }) }
+  on_player_colors(listener) { return this.#on({ player_colors: listener }) }
   on_playmode(listener) { return this.#on({ playmode: listener }) }
   on_winner(listener) { return this.#on({ winner: listener }) }
   on_you_win(listener) { return this.#on({ you_win: listener }) }

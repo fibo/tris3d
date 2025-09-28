@@ -1,6 +1,9 @@
+import { playerColor } from '@tris3d/game'
+
 export const color = {
-  red: 0xff0000,
-  green: 0x00ff00,
-  blue: 0x0000ff,
-  neutral: 0x333333,
+  white: 0xffffff,
+  silver: 0xc0c0c0,
 }
+
+for (const [colorName, { hex }] of Object.entries(playerColor))
+  color[colorName] = hex

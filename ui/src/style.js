@@ -31,6 +31,7 @@ export function css(selector, rules) {
 }
 
 export const cssClass = {
+  color: 'color',
   disabled: 'disabled',
   field: 'field',
   fieldFocusable: 'field--focusable',
@@ -52,6 +53,10 @@ export const cssRule = {
   hidable: tagName => css(`${tagName}[hidden]`, {
     display: 'none',
   }),
+}
+
+export function radialGradientCircle(color) {
+  return `radial-gradient(circle at 30% 30%, ${color}, #444)`
 }
 
 export function styleSheet(...rules) {
@@ -136,6 +141,12 @@ export const mainCssRules = [
     'flex-direction': 'row',
     gap: gap1,
     'align-items': 'center',
+  }),
+
+  css(`.${cssClass.color}`, {
+    width: '1.5em',
+    height: '1.5em',
+    'border-radius': '50%',
   }),
 
   css(`.${cssClass.icon}`, {

@@ -1,4 +1,5 @@
 export { AI } from './AI.js'
 export { GameBoard } from './board.js'
 export { GameRoom } from './room.js'
+export { defaultPlayerColors, playerColor } from './players.js'
 export { POSITIONS, VECTOR_OF_POSITION, WINNING_LINES } from './space.js'
