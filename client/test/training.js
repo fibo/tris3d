@@ -40,3 +40,25 @@ describe('local_players', () => {
     state.dispose()
   })
 })
+
+describe('next_training_ai_move', () => {
+  test('is triggered only when it is AI turn', () => {
+    const state = new StateController()
+    state.playmode = 'training'
+    state.local_players = ['human', 'stupid', 'smart']
+
+    const aiMoves = []
+    const humanMove = 'A'
+    state.on_next_training_ai_move((position) => {
+      aiMoves.push(state.addMove(position))
+    })
+    state.on_moves((moves) => {
+      assert.deepEqual(moves, [humanMove, ...aiMoves])
+    })
+    state.addMove(humanMove)
+    state.on_moves((moves) => {
+      assert.equal(moves.length, 3)
+    })
+    state.dispose()
+  })
+})

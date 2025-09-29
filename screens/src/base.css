@@ -25,6 +25,9 @@
 html {
   font-family: "Lucida Console", Monaco, monospace;
   font-size: 17px;
+
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
 }
 
 * {
@@ -43,5 +46,5 @@ body {
   min-height: 100svh;
   padding: 0 var(--gap2);
   background: var(--theme-color);
-  color: var(--color1);
+  color: var(--mono1);
 }
