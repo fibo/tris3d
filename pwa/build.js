@@ -13,12 +13,18 @@ if (!WEBSOCKET_URL) {
   process.exit(1)
 }
 
+const BUCKET = process.env.BUCKET
+if (!BUCKET) {
+  console.error('Missing BUCKET environment variable')
+  process.exit(1)
+}
+
 const srcDir = join(workspaceDir.pwa, 'src')
 const outDir = join(workspaceDir.pwa, 'out')
 const imagesDir = join(outDir, 'images')
 const jsDir = join(outDir, 'js')
 
-const manifestPathname = 'manifest.json'
+const pwaManifestPathname = 'manifest.json'
 
 const htmlFilename = {
   index: 'index.html',
@@ -37,8 +43,9 @@ async function copyImages() {
   await resetDir(imagesDir)
   const designImagesDir = join(workspaceDir.design, 'images')
   await copyFile(join(designImagesDir, 'favicon.ico'), join(outDir, 'favicon.ico'))
-  await copyFile(join(designImagesDir, 'logo-192.png'), join(imagesDir, 'logo-192.png'))
-  await copyFile(join(designImagesDir, 'logo-512.png'), join(imagesDir, 'logo-512.png'))
+  const logos = ['logo-180.png', 'logo-192.png', 'logo-512.png']
+  for (const logo of logos)
+    await copyFile(join(designImagesDir, logo), join(imagesDir, logo))
 }
 
 function computeChecksum(filepath) {
@@ -94,7 +101,7 @@ export async function generateHtml() {
         jsCanvas,
         jsUi,
         importMap,
-        manifestPathname,
+        manifestPathname: pwaManifestPathname,
       })
       // Pretty good minification.
         .replace(/\n\s+/g, '\n')
@@ -105,8 +112,8 @@ export async function generateHtml() {
   }
 }
 
-async function generateManifest() {
-  const manifestContent = JSON.stringify({
+async function generatePwaManifest() {
+  const content = JSON.stringify({
     name: appName,
     start_url: '.',
     description: appDescription,
@@ -124,14 +131,28 @@ async function generateManifest() {
       },
     ],
   })
-  await writeFile(join(outDir, manifestPathname), manifestContent, 'utf-8')
+  await writeFile(join(outDir, pwaManifestPathname), content, 'utf-8')
+}
+
+async function generateTonconnectManifest() {
+  const baseUrl = `https://${BUCKET}`
+  const content = JSON.stringify({
+    name: appName,
+    url: `${baseUrl}/${htmlFilename.telegramMiniApp}`,
+    iconUrl: `${baseUrl}/images/logo-180.png`,
+    // privacyPolicyUrl: '',
+    // termsOfUseUrl: '',
+  })
+  await writeFile(join(outDir, 'tonconnect-manifest.json'), content, 'utf-8')
 }
 
 export async function build() {
   await resetDir(outDir)
 
   await copyImages()
-  await generateManifest()
+
+  await generatePwaManifest()
+  await generateTonconnectManifest()
 
   await generateHtml()
 }
